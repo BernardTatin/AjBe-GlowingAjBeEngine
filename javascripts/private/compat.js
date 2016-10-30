@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   compat.js
  * Author: marcel
  *
@@ -77,11 +77,11 @@ if (!Array.prototype.map) {
             throw new TypeError(' this is null or not defined');
         }
 
-        // 1. Let O be the result of calling ToObject passing the |this| 
+        // 1. Let O be the result of calling ToObject passing the |this|
         //    value as the argument.
         var O = Object(this);
 
-        // 2. Let lenValue be the result of calling the Get internal 
+        // 2. Let lenValue be the result of calling the Get internal
         //    method of O with the argument "length".
         // 3. Let len be ToUint32(lenValue).
         var len = O.length >>> 0;
@@ -97,8 +97,8 @@ if (!Array.prototype.map) {
             T = thisArg;
         }
 
-        // 6. Let A be a new array created as if by the expression new Array(len) 
-        //    where Array is the standard built-in constructor with that name and 
+        // 6. Let A be a new array created as if by the expression new Array(len)
+        //    where Array is the standard built-in constructor with that name and
         //    len is the value of len.
         A = new Array(len);
 
@@ -112,18 +112,18 @@ if (!Array.prototype.map) {
 
             // a. Let Pk be ToString(k).
             //   This is implicit for LHS operands of the in operator
-            // b. Let kPresent be the result of calling the HasProperty internal 
+            // b. Let kPresent be the result of calling the HasProperty internal
             //    method of O with argument Pk.
             //   This step can be combined with c
             // c. If kPresent is true, then
             if (k in O) {
 
-                // i. Let kValue be the result of calling the Get internal 
+                // i. Let kValue be the result of calling the Get internal
                 //    method of O with argument Pk.
                 kValue = O[k];
 
-                // ii. Let mappedValue be the result of calling the Call internal 
-                //     method of callback with T as the this value and argument 
+                // ii. Let mappedValue be the result of calling the Call internal
+                //     method of callback with T as the this value and argument
                 //     list containing kValue, k, and O.
                 mappedValue = callback.call(T, kValue, k, O);
 

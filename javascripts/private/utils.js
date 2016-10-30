@@ -30,7 +30,7 @@ var utils = (function () {
         /**
          Populates the <code>env</code> variable with user agent and feature test
          information.
-         
+
          @method getEnv
          @private
          */
