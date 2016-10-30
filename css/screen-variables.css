@@ -1,0 +1,55 @@
+/* 
+    screen-variables.less
+    Created on : 3 juin 2015, 21:25:47
+    Author     : bernard
+*/
+.boxshadow .shadow {
+  -webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.7);
+  -moz-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.7);
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.7);
+}
+.no-boxshadow .shadow {
+  border: 1px solid rgba(0, 0, 0, 0.7);
+}
+.no-boxshadow .shadow .shadow {
+  border: 1px solid rgba(0, 0, 0, 0.7);
+}
+.text-shadow {
+  text-shadow: 2px 2px rgba(0, 0, 0, 0.7);
+}
+.margin-auto {
+  margin: 0 auto;
+}
+.default-font {
+  font: normal normal 15px/1.5 ciclesemi, nerislight, 'Helvetica', Verdana, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+}
+.title-font {
+  font-family: blanchcondensed, baron_neueblack_italic, 'Helvetica', Verdana, Arial, sans-serif;
+  letter-spacing: -1px;
+  word-spacing: 5px;
+}
+.footer-font {
+  font-family: 'baron_neueblack', 'Helvetica', Verdana, Arial, sans-serif;
+}
+.hx-font {
+  font-family: 'nexa_bold', 'baron_neueblack', 'Helvetica', Verdana, Arial, sans-serif;
+}
+.text-font {
+  font-family: ciclesemi, nerislight, 'Helvetica', Verdana, Arial, sans-serif;
+}
+.text-italic-font {
+  font-family: cicle_semi_italicsemi_italic, nerislight_italic, 'Helvetica', Verdana, Arial, sans-serif;
+}
+.text-bold-font {
+  font-family: cicle_gorditagordita, nerisblack, 'Helvetica', Verdana, Arial, sans-serif;
+}
+.text-bold-italic-font {
+  font-family: ciclegordita_italic, 'Helvetica', Verdana, Arial, sans-serif;
+}
+.code-font {
+  font: normal normal 0.8em/1.7 "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+}
+/*# sourceMappingURL=screen-variables.css.map */

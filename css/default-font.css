@@ -1,0 +1,129 @@
+/*
+ * default-font.less
+ */
+.default-font {
+  font: normal normal 15px/1.5 'Helvetica', Verdana, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+}
+.title-font {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+  letter-spacing: -1px;
+  word-spacing: 5px;
+}
+.footer-font {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+.hx-font {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+.text-font {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+.text-italic-font {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+.text-bold-font {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+.text-bold-italic-font {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+.code-font {
+  font: normal normal 0.8em/1.7 "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+}
+/*
+ * fonts.less
+ */
+body {
+  font: normal normal 15px/1.5 'Helvetica', Verdana, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+}
+#header h1 {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+  letter-spacing: -1px;
+  word-spacing: 5px;
+  font-size: 5.5em;
+}
+#header h2 {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+  letter-spacing: -1px;
+  word-spacing: 5px;
+  font-size: 4.2em;
+}
+footer p {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+  font-size: .8em;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#article blockquote {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#article blockquote em {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#article blockquote strong {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#article blockquote strong em,
+#article blockquote em strong {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#article code,
+#article pre {
+  font: normal normal 0.8em/1.7 "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+}
+#article table th {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+  font-size: .85em;
+}
+#article dt {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#main_title {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+  letter-spacing: -1px;
+  word-spacing: 5px;
+  font-size: 3.85em;
+}
+#main_content p {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+  color: black;
+}
+#main_content p em {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#main_content p strong {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#main_content p em strong,
+#main_content p strong em {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#main_content .italic {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#main_content .italic strong {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#main_content .italic em {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#main_content .italic em strong,
+#main_content .italic strong em {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+p.current-node,
+#main_content p.current-node {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}

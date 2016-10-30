@@ -1,0 +1,93 @@
+/* 
+    dimensions.less
+    Created on : 10 juin 2015, 23:10:20
+    Author     : bernard
+*/
+.positionRelative {
+  position: relative;
+}
+.floatRight {
+  float: right;
+}
+.floatLeft {
+  float: left;
+}
+@media (max-width: 800px) {
+  #shell {
+    width: 95%;
+  }
+  #header {
+    width: 95%;
+  }
+  #footer {
+    max-width: 95%;
+  }
+  #article img {
+    max-width: 75%;
+  }
+  #article table {
+    width: 85%;
+  }
+  #main_content {
+    width: 85%;
+  }
+}
+@media (min-width: 800px) {
+  #shell {
+    width: 680px;
+  }
+  #header {
+    width: 680px;
+  }
+  #footer {
+    max-width: 680px;
+  }
+  #article {
+    position: relative;
+    z-index: 1;
+  }
+  #article img {
+    max-width: 480px;
+  }
+  #article table {
+    width: 580px;
+  }
+  #main_content {
+    width: 580px;
+  }
+  #toc {
+    position: relative;
+    z-index: 2;
+    float: right;
+    width: 33%;
+    max-width: 200px;
+    min-width: 120px;
+  }
+}
+@media (min-width: 1200px) {
+  #shell {
+    width: 95%;
+  }
+  #header {
+    width: 95%;
+  }
+  #footer {
+    max-width: 95%;
+  }
+  #article img {
+    max-width: 75%;
+  }
+  #article table {
+    width: 85%;
+  }
+  #main_content {
+    width: 85%;
+    -webkit-column-count: 2;
+    -moz-column-count: 2;
+    column-count: 2;
+    -webkit-column-gap: 35px;
+    -moz-column-gap: 35px;
+    column-gap: 35px;
+  }
+}
+/*# sourceMappingURL=dimensions.css.map */

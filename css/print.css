@@ -1,0 +1,672 @@
+/* 
+    print.less
+    Created on : 3 juin 2015, 14:00:29
+    Author     : bernard
+*/
+/* variables */
+/* 
+    screen-variables.less
+    Created on : 3 juin 2015, 21:25:47
+    Author     : bernard
+*/
+.boxshadow .shadow {
+  -webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.7);
+  -moz-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.7);
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.7);
+}
+.no-boxshadow .shadow {
+  border: 1px solid rgba(0, 0, 0, 0.7);
+}
+.no-boxshadow .shadow .shadow {
+  border: 1px solid rgba(0, 0, 0, 0.7);
+}
+.text-shadow {
+  text-shadow: 2px 2px rgba(0, 0, 0, 0.7);
+}
+.margin-auto {
+  margin: 0 auto;
+}
+/*
+ * default-font.less
+ */
+.default-font {
+  font: normal normal 15px/1.5 'Helvetica', Verdana, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+}
+.title-font {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+  letter-spacing: -1px;
+  word-spacing: 5px;
+}
+.footer-font {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+.hx-font {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+.text-font {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+.text-italic-font {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+.text-bold-font {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+.text-bold-italic-font {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+.code-font {
+  font: normal normal 0.8em/1.7 "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+}
+/*
+ * fonts.less
+ */
+body {
+  font: normal normal 15px/1.5 'Helvetica', Verdana, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+}
+#header h1 {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+  letter-spacing: -1px;
+  word-spacing: 5px;
+  font-size: 5.5em;
+}
+#header h2 {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+  letter-spacing: -1px;
+  word-spacing: 5px;
+  font-size: 4.2em;
+}
+footer p {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+  font-size: .8em;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#article blockquote {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#article blockquote em {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#article blockquote strong {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#article blockquote strong em,
+#article blockquote em strong {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#article code,
+#article pre {
+  font: normal normal 0.8em/1.7 "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+}
+#article table th {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+  font-size: .85em;
+}
+#article dt {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#main_title {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+  letter-spacing: -1px;
+  word-spacing: 5px;
+  font-size: 3.85em;
+}
+#main_content p {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+  color: black;
+}
+#main_content p em {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#main_content p strong {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#main_content p em strong,
+#main_content p strong em {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#main_content .italic {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#main_content .italic strong {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#main_content .italic em {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#main_content .italic em strong,
+#main_content .italic strong em {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+p.current-node,
+#main_content p.current-node {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+/* 
+    dimensions.less
+    Created on : 10 juin 2015, 23:10:20
+    Author     : bernard
+*/
+.positionRelative {
+  position: relative;
+}
+.floatRight {
+  float: right;
+}
+.floatLeft {
+  float: left;
+}
+@media (max-width: 800px) {
+  #shell {
+    width: 95%;
+  }
+  #header {
+    width: 95%;
+  }
+  #footer {
+    max-width: 95%;
+  }
+  #article img {
+    max-width: 75%;
+  }
+  #article table {
+    width: 85%;
+  }
+  #main_content {
+    width: 85%;
+  }
+}
+@media (min-width: 800px) {
+  #shell {
+    width: 680px;
+  }
+  #header {
+    width: 680px;
+  }
+  #footer {
+    max-width: 680px;
+  }
+  #article {
+    position: relative;
+    z-index: 1;
+  }
+  #article img {
+    max-width: 480px;
+  }
+  #article table {
+    width: 580px;
+  }
+  #main_content {
+    width: 580px;
+  }
+  #toc {
+    position: relative;
+    z-index: 2;
+    float: right;
+    width: 33%;
+    max-width: 200px;
+    min-width: 120px;
+  }
+}
+@media (min-width: 1200px) {
+  #shell {
+    width: 95%;
+  }
+  #header {
+    width: 95%;
+  }
+  #footer {
+    max-width: 95%;
+  }
+  #article img {
+    max-width: 75%;
+  }
+  #article table {
+    width: 85%;
+  }
+  #main_content {
+    width: 85%;
+    -webkit-column-count: 2;
+    -moz-column-count: 2;
+    column-count: 2;
+    -webkit-column-gap: 35px;
+    -moz-column-gap: 35px;
+    column-gap: 35px;
+  }
+}
+/* STYLES */
+body {
+  background-color: white;
+  font: normal normal 15px/1.5 'Helvetica', Verdana, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+}
+#shell {
+  background: white;
+  color: #544943;
+  display: block;
+  margin: 0 auto;
+}
+/* header */
+#header {
+  position: relative;
+  margin: 0 auto;
+  background-color: #444444;
+}
+#header h1 {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+  letter-spacing: -1px;
+  word-spacing: 5px;
+  font-size: 5.5em;
+  background-color: transparent;
+  color: #ff6600;
+  text-align: left;
+  padding: 14px 20px 0;
+  margin-left: 8px;
+}
+#header h1 a {
+  color: #ff6600;
+}
+#header h2 {
+  background-color: transparent;
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+  letter-spacing: -1px;
+  word-spacing: 5px;
+  font-size: 4.2em;
+  color: #ffd070;
+  padding-bottom: 14px;
+  margin-top: -3px;
+  margin-right: 8px;
+  text-align: right;
+}
+/* footer */
+footer {
+  padding-top: 4px;
+  margin: 4px auto 40px;
+  text-align: center;
+  clear: both;
+}
+footer > p:first-child {
+  padding-top: 12px;
+  border-top: 5px double #d3ccc1;
+}
+footer p {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+  font-size: .8em;
+  color: #8b786f;
+}
+footer a {
+  color: #cd596b;
+}
+footer span.octocat {
+  display: block;
+  width: 30px;
+  height: 30px;
+  margin: 0 auto;
+}
+/* content */
+a {
+  color: #417090;
+  text-decoration: none;
+}
+a:hover {
+  color: #417090;
+  text-decoration: underline;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#article {
+  width: 100%;
+}
+#article p {
+  margin: .7em 0;
+}
+#article ul {
+  padding-left: 1.35em;
+}
+#article ul li {
+  padding-left: 10px;
+}
+#article ol {
+  margin: .7em 0;
+  list-style-type: decimal;
+  padding-left: 1.35em;
+}
+#article blockquote {
+  margin: 20px 0;
+  color: #8b786f;
+  padding-left: 1.35em;
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#article blockquote em {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#article blockquote strong {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#article blockquote strong em,
+#article blockquote em strong {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#article img {
+  border: 2px solid rgba(0, 0, 0, 0.7);
+}
+#article hr {
+  border: none;
+  outline: none;
+  height: 18px;
+  background: transparent url('../images/hr.jpg') center center repeat-x;
+  margin: 0 0 20px;
+}
+#article code,
+#article pre {
+  font: normal normal 0.8em/1.7 "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+}
+#article code {
+  padding: 0 5px 1px;
+  font-weight: bold;
+}
+#article pre {
+  margin: 10px 0 20px;
+  padding: .7em;
+  background: #cc9;
+  border-bottom: 2px solid #bdb6ad;
+  overflow: auto;
+}
+#article pre code {
+  padding: 0;
+}
+#article table {
+  background: #fff6e9;
+  display: table;
+  border-collapse: separate;
+  border-bottom: 2px solid #bdb6ad;
+  margin: 10px 0;
+}
+#article table tr {
+  display: table-row;
+}
+#article table th {
+  display: table-cell;
+  padding: 2px 10px;
+  border: solid #ece4d8;
+  border-width: 0 2px 2px 0;
+  color: #cd596b;
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+  font-size: .85em;
+}
+#article table td {
+  display: table-cell;
+  padding: 0 .7em;
+  border: solid #ece4d8;
+  border-width: 0 2px 2px 0;
+}
+#article table td:last-child,
+#article table th:last-child {
+  border-right: none;
+}
+#article table tr:last-child td {
+  border-bottom: none;
+}
+#article dl {
+  margin: .7em 0 20px;
+}
+#article dt {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#article dd {
+  padding-left: 1.35em;
+}
+#article dd p:first-child {
+  margin-top: 0;
+}
+/* Content based headers */
+#main_title {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+  letter-spacing: -1px;
+  word-spacing: 5px;
+  font-size: 3.85em;
+  clear: both;
+  border-bottom: 5px double #d3ccc1;
+  color: #ff6600;
+  text-align: center;
+  margin: 1.1em 0 .38em;
+  padding-bottom: 10px;
+}
+#main_content {
+  text-align: justify;
+  margin: 0 auto;
+}
+#main_content > h1:first-child,
+#main_content > h2:first-child,
+#main_content > h3:first-child,
+#main_content > h4:first-child,
+#main_content > h5:first-child,
+#main_content > h6:first-child {
+  margin-top: 0;
+}
+#main_content h1 {
+  font-size: 2.85em;
+  border-bottom: 5px double #d3ccc1;
+  color: #ff6600;
+  text-align: center;
+  margin: 1.1em 0 .38em;
+  line-height: 1.2;
+  padding-bottom: 10px;
+  text-shadow: 2px 2px rgba(0, 0, 0, 0.7);
+}
+#main_content h2 {
+  font-size: 1.58em;
+  color: #ff6600;
+  margin: .95em 0 .5em;
+  line-height: 1.2;
+  padding-bottom: 10px;
+  text-shadow: 2px 2px rgba(0, 0, 0, 0.7);
+}
+#main_content h3 {
+  margin: 20px 0 10px;
+  font-size: 1.45em;
+  color: #ff6600;
+}
+#main_content h4 {
+  margin: .6em 0;
+  font-size: 1.2em;
+  color: #ff6600;
+}
+#main_content h5 {
+  margin: .7em 0;
+  font-size: 1em;
+  color: #ff6600;
+}
+#main_content h6 {
+  margin: .8em 0;
+  font-size: .85em;
+  color: #ff6600;
+}
+#main_content p {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+  color: black;
+}
+#main_content p em {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#main_content p strong {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#main_content p em strong,
+#main_content p strong em {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#main_content .italic p {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#main_content .italic p strong {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#main_content .italic p em {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#main_content .italic p em strong,
+#main_content .italic p strong em {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#toc {
+  display: block;
+  padding: 8px;
+  margin: 15px;
+  word-break: break-all;
+  letter-spacing: -1px;
+  border: 1px solid rgba(0, 0, 0, 0.7);
+}
+#toc h2 {
+  margin: 20px 0 10px;
+  font-size: 1.45em;
+  color: #ff6600;
+}
+#toc ul {
+  padding-left: 2em;
+  list-style-type: square;
+}
+#toc ul li a,
+#toc ul li p {
+  color: #417090;
+}
+#toc ul li a:hover,
+#toc ul li p:hover {
+  color: #417090;
+  text-decoration: underline;
+  cursor: pointer;
+}
+#toc ul ul {
+  list-style-type: disc;
+}
+#navigation {
+  background-color: black;
+  display: block;
+  height: 2em;
+}
+#navigation a,
+#navigation p {
+  background-color: black;
+  padding: 3px 3px 3px 15px;
+  border-right: #666 3px solid;
+  float: left;
+  color: #ff6600;
+}
+#navigation a:hover,
+#navigation p:hover {
+  color: #ff6600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+p.current-node,
+#main_content p.current-node {
+  font-family: 'Helvetica', Verdana, Arial, sans-serif;
+}
+#toc .hidden,
+#navigation .hidden {
+  display: none;
+}
+/* ============================================== */
+/* 
+    poems-styles.less
+    Created on : 7 juin 2015, 00:15:31
+    Author     : bernard
+*/
+/* ============================================== */
+#article section {
+  margin-bottom: 0.7em;
+}
+#article section .mtpoem p {
+  text-align: left;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+#article .mtaude {
+  margin-top: 0.9em;
+}
+#article .mtaude br {
+  margin-top: 0.0em;
+  padding: 0;
+}
+#article .mtaude p {
+  line-height: 1.3em;
+  margin-top: 0.0em;
+  margin-bottom: 0em;
+  margin-left: 2.5em;
+  padding: 0;
+}
+#article .mtleft {
+  text-align: left;
+}
+#article .mtcenter {
+  text-align: center;
+}
+#article .mtright {
+  text-align: right;
+}
+#article .mtjustify {
+  text-align: justify;
+}
+.par,
+.nicepar p {
+  margin-bottom: 1em;
+}
+/* ============================================== */
+.twocols {
+  /* pour display */
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  /* pour flex-wrap */
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+.mtblock {
+  /* pour flex-wrap */
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  display: block;
+  width: 45%;
+  margin: 2px;
+  padding: 10px;
+  -moz-box-shadow: 10px 10px 5px #656565;
+  -webkit-box-shadow: 10px 10px 5px #656565;
+  -o-box-shadow: 10px 10px 5px #656565;
+  box-shadow: 10px 10px 5px #656565;
+}
+.mtsimpleblock {
+  display: block;
+  width: 40%;
+  max-width: 250px;
+  margin: 2%;
+  padding: 10px;
+  -moz-box-shadow: 10px 10px 5px #656565;
+  -webkit-box-shadow: 10px 10px 5px #656565;
+  -o-box-shadow: 10px 10px 5px #656565;
+  box-shadow: 10px 10px 5px #656565;
+}
