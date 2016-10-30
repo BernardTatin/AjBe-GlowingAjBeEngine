@@ -2,7 +2,7 @@
 
 gitBase=~/git
 kernel=$gitBase/bright-marcel-kernel
-othersites=$gitBase/bright-marcel-sample
+othersites=$gitBase/bright-marcel
 
 prepareKernel () {
 	cd $kernel
