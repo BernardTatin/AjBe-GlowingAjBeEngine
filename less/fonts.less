@@ -1,0 +1,96 @@
+/*
+ * fonts.less
+ */
+
+body {
+    .default-font();
+}
+
+#header {
+	h1 {
+        .title-font();
+        font-size: 5.5em;
+        // text-transform: uppercase;
+	}
+	h2 {
+        .title-font();
+        font-size: 4.2em;
+	}
+}
+
+footer {
+    p {
+        .footer-font();
+        font-size: .8em;
+	}
+}
+
+h1,h2,h3,h4,h5,h6 {
+    .hx-font();
+}
+
+#article {
+    blockquote {
+        .text-italic-font();
+        em {
+            .text-font();
+        }
+        strong {
+            .text-bold-italic-font();
+        }
+        strong em, em strong {
+            .text-bold-font();
+        }
+    }
+    code, pre {
+        .code-font();
+    }
+	table {
+		th {
+            .text-bold-font();
+            font-size: .85em;
+		}
+	}
+    dt {
+        .text-bold-font();
+    }
+}
+
+#main_title {
+    .title-font();
+    font-size: 3.85em;
+}
+
+#main_content {
+    p {
+        .text-font();
+        color: black;
+        em {
+            .text-italic-font();
+        }
+        strong {
+            .text-bold-font();
+        }
+        em strong, strong em {
+            .text-bold-italic-font();
+        }
+    }
+    .italic {
+            .text-italic-font();
+            strong {
+                .text-bold-italic-font();
+            }
+            em {
+                .text-font();
+            }
+            em strong, strong em {
+                .text-bold-font();
+            }
+    }
+}
+
+p.current-node, #main_content p.current-node {
+    .text-bold-italic-font();
+}
+
+

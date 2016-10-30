@@ -1,0 +1,125 @@
+/* 
+    dimensions.less
+    Created on : 10 juin 2015, 23:10:20
+    Author     : bernard
+*/
+
+
+@main-width: 680px;
+@main-content-bigmargin: 100px;
+@header-width: @main-width;
+@footer-max-width: @main-width;
+@main-content-width: @main-width - @main-content-bigmargin;
+@img-max-width: @main-content-width - @main-content-bigmargin;
+@table-width: @main-content-width;
+
+
+@little-main-width: 95%;
+@little-main-content-bigmargin: 10px;
+@little-header-width: @little-main-width;
+@little-footer-max-width: @little-main-width;
+@little-main-content-width: @little-main-width - @little-main-content-bigmargin;
+@little-img-max-width: @little-main-content-width - @little-main-content-bigmargin;
+@little-table-width: @little-main-content-width;
+
+
+@menu-width: 33%;
+@menu-max-width: 200px;
+@menu-min-width: 120px;
+
+.positionRelative {
+    position: relative;
+}
+.zIndex(@index) {
+    z-index: @index;
+}
+.floatRight {
+    float: right;
+}
+.floatLeft {
+    float: left;
+}
+
+@little-screen-width: 800px;
+
+@media (max-width: @little-screen-width) {
+    #shell {
+        width: @little-main-width;
+    }
+    #header {
+        width: @little-header-width;
+    }
+    #footer {
+        max-width: @little-footer-max-width;
+    }
+    #article {
+        img {
+            max-width: @little-img-max-width;
+        }
+        table {
+            width: @little-table-width;
+        }
+    }
+    #main_content {
+        width: @little-main-content-width;
+    }
+}
+@media (min-width: @little-screen-width) {
+    #shell {
+        width: @main-width;
+    }
+    #header {
+        width: @header-width;
+    }
+    #footer {
+        max-width: @footer-max-width;
+    }
+    #article {
+        .positionRelative();
+        .zIndex(1);
+        img {
+            max-width: @img-max-width;
+        }
+        table {
+            width: @table-width;
+        }
+    }
+    #main_content {
+        width: @main-content-width;
+    }
+    #toc {
+        .positionRelative();
+        .zIndex(2);
+        float: right;
+        width: @menu-width;
+        max-width: @menu-max-width;
+        min-width: @menu-min-width;
+    }
+}
+
+@media (min-width: 1200px) {
+    #shell {
+        width: 95%;
+    }
+    #header {
+        width: 95%;
+    }
+    #footer {
+        max-width: 95%;
+    }
+    #article img {
+        max-width: 75%;
+    }
+    #article table {
+        width: 85%;
+    }
+    #main_content {
+        width: 85%;
+        -webkit-column-count: 2;
+        -moz-column-count: 2;
+        column-count: 2;
+        -webkit-column-gap: 35px;
+        -moz-column-gap: 35px;
+        column-gap: 35px;
+    }
+}

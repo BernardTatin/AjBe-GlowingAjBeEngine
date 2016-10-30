@@ -1,0 +1,58 @@
+/* 
+    screen-variables.less
+    Created on : 3 juin 2015, 21:25:47
+    Author     : bernard
+*/
+
+@nice-grey: #444;
+@light-grey: #aaa;
+@nice-yellow: #ffd070;
+@light-yellow: #ffc;
+@nice-red: #ff5458;
+@orange: #f60;
+
+@body-back-color: @nice-grey;
+
+@shell-back-color: white;   // @light-yellow;
+@shell-color: #544943;
+@link-color: #417090;
+@shadow-color: rgba(0, 0, 0, 0.7);
+@head-back-color: @nice-grey;
+@head-sitename-color: @orange;
+@head-more-color: @nice-yellow;
+
+@hx-color: @orange;
+
+@main-border-color: #d3ccc1;
+@main-border: 5px double @main-border-color;
+
+
+
+.boxshadow .shadow {
+    -webkit-box-shadow: 5px 5px 5px @shadow-color;
+    -moz-box-shadow: 5px 5px 5px @shadow-color;
+    box-shadow: 5px 5px 5px @shadow-color;
+}
+
+.no-boxshadow .shadow {
+    border: 1px solid @shadow-color;
+    .shadow {
+        border: 1px solid @shadow-color;
+    }
+}
+
+.text-shadow {
+    text-shadow: 2px 2px @shadow-color;
+}
+.margin-auto {
+    margin: 0 auto;
+}
+
+.link(@lcolor) {
+    color: @lcolor;
+    &:hover {
+        color: @lcolor;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+}
