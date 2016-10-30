@@ -1,8 +1,26 @@
-#!/bin/sh
+#!/bin/bash
 
 gitBase=~/git
 kernel=$gitBase/bright-marcel-kernel
 othersites=$gitBase/bright-marcel
+
+case $# in
+	0)
+		gitBase=~/git
+		;;
+	1)
+		gitBase=$1
+		;;
+	2)
+		gitBase=$1
+		othersites=$2
+		;;
+	*)
+		gitBase=$1
+		othersites=$@
+		;;
+esac
+
 
 prepareKernel () {
 	cd $kernel

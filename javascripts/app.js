@@ -1,12 +1,11 @@
 "use strict";
 
-
 var marcel_kernel = (function () {
     var appConstants = {
-        jsRoot: '../bright-marcel-kernel/javascripts'
+        jsRoot: 'bright-marcel-kernel/javascripts'
     },
         appVariables = {
-            config: 'pages/config.js',
+            config: 'gitio/pages/config.js',
             main_code: 'private/main-purejs.js',
             libs: ['public/joose.min.js', 'private/utils.js', 'private/myajax.js', 'private/purejs-lib.js', 'private/jprint.js'],
             libname: 'pure Javascript 0.1.1',
