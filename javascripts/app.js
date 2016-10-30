@@ -3,7 +3,7 @@
 
 var marcel_kernel = (function () {
     var appConstants = {
-        jsRoot: '../marcel-kernel/javascripts'
+        jsRoot: '../bright-marcel-kernel/javascripts'
     },
         appVariables = {
             config: 'pages/config.js',
