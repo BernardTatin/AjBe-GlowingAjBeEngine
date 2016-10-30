@@ -1,6 +1,6 @@
 /*
  * myajax.js
- * 
+ *
  * classes for ajax request, using classic Javascript, before version 6
  */
 "use strict";

@@ -249,7 +249,7 @@ p.current-node,
 }
 /* STYLES */
 body {
-  background-color: #444444;
+  background-color: #444;
 }
 #shell {
   background: white;
@@ -261,17 +261,17 @@ body {
 #header {
   position: relative;
   margin: 0 auto;
-  background-color: #444444;
+  background-color: #444;
 }
 #header h1 {
   background-color: transparent;
-  color: #ff6600;
+  color: #f60;
   text-align: left;
   padding: 14px 20px 0;
   margin-left: 8px;
 }
 #header h1 a {
-  color: #ff6600;
+  color: #f60;
 }
 #header h2 {
   background-color: transparent;
@@ -409,7 +409,7 @@ a:hover {
 #main_title {
   clear: both;
   border-bottom: 5px double #d3ccc1;
-  color: #ff6600;
+  color: #f60;
   text-align: center;
   margin: 1.1em 0 .38em;
   padding-bottom: 10px;
@@ -429,7 +429,7 @@ a:hover {
 #main_content h1 {
   font-size: 2.85em;
   border-bottom: 5px double #d3ccc1;
-  color: #ff6600;
+  color: #f60;
   text-align: center;
   margin: 1.1em 0 .38em;
   line-height: 1.2;
@@ -438,7 +438,7 @@ a:hover {
 }
 #main_content h2 {
   font-size: 1.58em;
-  color: #ff6600;
+  color: #f60;
   margin: .95em 0 .5em;
   line-height: 1.2;
   padding-bottom: 10px;
@@ -447,22 +447,22 @@ a:hover {
 #main_content h3 {
   margin: 20px 0 10px;
   font-size: 1.45em;
-  color: #ff6600;
+  color: #f60;
 }
 #main_content h4 {
   margin: .6em 0;
   font-size: 1.2em;
-  color: #ff6600;
+  color: #f60;
 }
 #main_content h5 {
   margin: .7em 0;
   font-size: 1em;
-  color: #ff6600;
+  color: #f60;
 }
 #main_content h6 {
   margin: .8em 0;
   font-size: .85em;
-  color: #ff6600;
+  color: #f60;
 }
 @media not print {
   #toc {
@@ -476,7 +476,7 @@ a:hover {
   #toc h2 {
     margin: 20px 0 10px;
     font-size: 1.45em;
-    color: #ff6600;
+    color: #f60;
   }
   #toc ul {
     padding-left: 2em;
@@ -508,11 +508,11 @@ a:hover {
     padding: 3px 3px 3px 15px;
     border-right: #666 3px solid;
     float: left;
-    color: #ff6600;
+    color: #f60;
   }
   #navigation a:hover,
   #navigation p:hover {
-    color: #ff6600;
+    color: #f60;
     text-decoration: underline;
     cursor: pointer;
   }
