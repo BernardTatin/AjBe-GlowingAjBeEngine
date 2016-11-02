@@ -13,8 +13,8 @@ var utils = (function () {
      @private
      */
     function getEnv() {
-        var ua = navigator.userAgent;
         if (!env) {
+            var ua = navigator.userAgent;
             env = {
             };
 

@@ -199,7 +199,6 @@ Class("PageArticle", {
     methods: {
         resizeSVG: function () {
             var maxWidth = utils.getElementById(this.getPlace()).clientWidth;
-            console.log('resize SVG in');
 
             this.forEachElementById('svg',
                 function (element) {
@@ -208,9 +207,7 @@ Class("PageArticle", {
                     var newHeight = height * maxWidth / width;
                     element.style.width = maxWidth + 'px';
                     element.style.height = newHeight + 'px';
-                    console.log('resize ' + width + ' -> ' + maxWidth);
                 });
-            console.log('resize SVG out');
         }
     },
     override: {
@@ -341,17 +338,6 @@ Class("Session", {
 
 });
 
-var resizeEventListener = function (e) {
-    // cf http://www.sitepoint.com/javascript-this-event-handlers/
-    e = e || window.event;
-    var myself = e.target || e.srcElement;
-
-    console.log('resize...');
-    if (allPages && allPages[PAGESCTS.ARTICLE]) {
-        allPages[PAGESCTS.ARTICLE].resizeSVG();
-        console.log('resize SVG!');
-    }
-};
 
 function start() {
     var session;
@@ -362,13 +348,9 @@ function start() {
         e = e || window.event;
         var myself = e.target || e.srcElement;
 
-        console.log('resize...');
         var article = window.article;
         if (article) {
             article.resizeSVG();
-            console.log('resize SVG!');
-        } else {
-            console.log('resize pas d\'article!');
         }
     });
     session = new Session();
