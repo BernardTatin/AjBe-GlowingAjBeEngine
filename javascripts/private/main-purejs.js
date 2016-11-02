@@ -338,15 +338,6 @@ Class("Session", {
 
 });
 
-var resizeEventListener = function (e) {
-    // cf http://www.sitepoint.com/javascript-this-event-handlers/
-    e = e || window.event;
-    var myself = e.target || e.srcElement;
-
-    if (allPages && allPages[PAGESCTS.ARTICLE]) {
-        allPages[PAGESCTS.ARTICLE].resizeSVG();
-    }
-};
 
 function start() {
     var session;
