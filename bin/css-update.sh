@@ -34,7 +34,10 @@ prepareSite () {
 	for site in $othersites
 	do
 		cd $site
-		lessc --include-path=$kernel/less less/local-font.less > css/local-font.css
+		for f in local-font local
+		do
+			lessc --include-path=$kernel/less less/$f.less > css/$f.css
+		done
 	done
 }
 

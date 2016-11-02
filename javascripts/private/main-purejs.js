@@ -315,7 +315,6 @@ var clickdEventListener = function (e) {
         allPages.reloadArticle(new PageArticle(query, 'article', myself.session));
     }
     myself.self.toc_presentation(query);
-    // utils.setUrlInBrowser(href);
     return true;
 }
 
