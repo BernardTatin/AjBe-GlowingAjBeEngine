@@ -23,17 +23,15 @@ Module("MyAjax", function (m) {
 		};
 	})();
 
-	Class("Ajax", {
+	Class("AjaxGet", {
 		has: {
 			url: {is: 'n/a', init: null},
-			http_request: {is: 'n/a', init: null},
+			http_request: {is: 'ro', init: 'GET'},
 			request: {is: 'n/a', init: null}
 		},
 		methods: {
-			initialize: function (url, http_request) {
+			initialize: function (url) {
 				this.url = url;
-				this.http_request = http_request;
-				this.request = null;
 				return this;
 			},
 			createRequest: function() {
@@ -62,15 +60,6 @@ Module("MyAjax", function (m) {
 				} else {
 					this.request.send(data);
 				}
-			}
-		}
-	});
-
-	Class("AjaxGet", {
-		isa: MyAjax.Ajax,
-		override: {
-			initialize: function (url) {
-				this.SUPER(url, 'GET');
 			}
 		}
 	});

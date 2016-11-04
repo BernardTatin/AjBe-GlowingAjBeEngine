@@ -33,7 +33,7 @@ var marcel_kernel = (function () {
         app_loader: function () {
             // TODO : must be elsewhere
             appVariables.navigator = navigator.appName + ' ' + navigator.appCodeName + ' ' + navigator.appVersion;
-            // two step loader
+            // three steps loader
             LazyLoad.js(appVariables.beforelibs.map(normalize_libname), function () {
                 LazyLoad.js(appVariables.libs.map(normalize_libname), function () {
                     LazyLoad.js(normalize_libname(appVariables.main_code), function () {
