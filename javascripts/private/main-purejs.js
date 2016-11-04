@@ -15,7 +15,7 @@ var PAGESCTS = (function () {
 
 var allPages = null;
 
-Class("Query", {
+Class("HTMLQuery", {
     has: {
         root: {is: 'ro', init: null},
         pageName: {is: 'ro', init: null},
@@ -222,10 +222,10 @@ Class("PageArticle", {
     }
 });
 
-Class("PageContent", {
+Class("PageNavigation", {
     isa: Page,
     has: {
-        mainQuery: {is: 'n/a', init: null},
+        mainHTMLQuery: {is: 'n/a', init: null},
         hasTitle: {is: 'n/a', init: false}
     },
     methods: {
@@ -237,7 +237,7 @@ Class("PageContent", {
             this.forEachElementById('p',
                 function (element) {
                     var href = element.getAttribute('href');
-                    var query = new Query(href);
+                    var query = new HTMLQuery(href);
 
                     element.className = 'normal-node';
                     if (query.getPageName() === currentPage &&
@@ -263,17 +263,17 @@ Class("PageContent", {
                     element.session = session;
                     purejsLib.addEvent(element, 'click', clickdEventListener);
                 });
-            this.toc_presentation(this.mainQuery);
+            this.toc_presentation(this.mainHTMLQuery);
         }
     },
     override: {
-        initialize: function (query, place, session, mainQuery, hasTitle) {
+        initialize: function (query, place, session, mainHTMLQuery, hasTitle) {
             this.SUPER(query, place, session);
-            this.mainQuery = mainQuery;
+            this.mainHTMLQuery = mainHTMLQuery;
             this.hasTitle = hasTitle;
         },
         after_on_success: function () {
-            this.toc_presentation(this.mainQuery);
+            this.toc_presentation(this.mainHTMLQuery);
             this.SUPER();
         },
         before_on_success: function (result) {
@@ -286,8 +286,7 @@ Class("PageContent", {
             if (!jprint.isInPrint()) {
                 this.SUPER(result);
             } else {
-                var place = this.getPlace();
-                utils.getElementById(place).style.display = 'none';
+                utils.getElementById(this.getPlace()).style.display = 'none';
             }
         }
     }
@@ -298,15 +297,15 @@ var clickdEventListener = function (e) {
     e = e || window.event;
     var myself = e.target || e.srcElement;
     var href = myself.href;
-    var query = new Query(href);
+    var query = new HTMLQuery(href);
     var lroot = query.getRoot();
 
     myself.self.query = query;
-    myself.self.mainQuery = query;
+    myself.self.mainHTMLQuery = query;
     if (lroot !== myself.currentRoot) {
-        allPages.reloadAll(new PageContent(new Query('content', lroot), 'toc', myself.session, query, true),
-            new PageContent(new Query('navigation', lroot), 'navigation', myself.session, query),
-            new Page(new Query('footer', lroot), 'footer', myself.session, true),
+        allPages.reloadAll(new PageNavigation(new HTMLQuery('content', lroot), 'toc', myself.session, query, true),
+            new PageNavigation(new HTMLQuery('navigation', lroot), 'navigation', myself.session, query),
+            new Page(new HTMLQuery('footer', lroot), 'footer', myself.session, true),
             new PageArticle(query, 'article', myself.session));
     } else {
         allPages.reloadArticle(new PageArticle(query, 'article', myself.session));
@@ -321,13 +320,13 @@ Class("Session", {
     },
     methods: {
         initialize: function () {
-            this.query = new Query();
+            this.query = new HTMLQuery();
         },
         load: function () {
             var broot = this.query.getRoot();
-            allPages = new PagesCollection(new PageContent(new Query('content', broot), 'toc', this, this.query, true),
-                new PageContent(new Query('navigation', broot), 'navigation', this, this.query),
-                new Page(new Query('footer', broot), 'footer', this, true),
+            allPages = new PagesCollection(new PageNavigation(new HTMLQuery('content', broot), 'toc', this, this.query, true),
+                new PageNavigation(new HTMLQuery('navigation', broot), 'navigation', this, this.query),
+                new Page(new HTMLQuery('footer', broot), 'footer', this, true),
                 new PageArticle(this.query, 'article', this));
 
             utils.getElementById('site-name').innerHTML = config.SITE_NAME;
