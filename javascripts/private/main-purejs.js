@@ -222,7 +222,7 @@ Class("PageArticle", {
     }
 });
 
-Class("PageContent", {
+Class("PageNavigation", {
     isa: Page,
     has: {
         mainHTMLQuery: {is: 'n/a', init: null},
@@ -303,8 +303,8 @@ var clickdEventListener = function (e) {
     myself.self.query = query;
     myself.self.mainHTMLQuery = query;
     if (lroot !== myself.currentRoot) {
-        allPages.reloadAll(new PageContent(new HTMLQuery('content', lroot), 'toc', myself.session, query, true),
-            new PageContent(new HTMLQuery('navigation', lroot), 'navigation', myself.session, query),
+        allPages.reloadAll(new PageNavigation(new HTMLQuery('content', lroot), 'toc', myself.session, query, true),
+            new PageNavigation(new HTMLQuery('navigation', lroot), 'navigation', myself.session, query),
             new Page(new HTMLQuery('footer', lroot), 'footer', myself.session, true),
             new PageArticle(query, 'article', myself.session));
     } else {
@@ -324,8 +324,8 @@ Class("Session", {
         },
         load: function () {
             var broot = this.query.getRoot();
-            allPages = new PagesCollection(new PageContent(new HTMLQuery('content', broot), 'toc', this, this.query, true),
-                new PageContent(new HTMLQuery('navigation', broot), 'navigation', this, this.query),
+            allPages = new PagesCollection(new PageNavigation(new HTMLQuery('content', broot), 'toc', this, this.query, true),
+                new PageNavigation(new HTMLQuery('navigation', broot), 'navigation', this, this.query),
                 new Page(new HTMLQuery('footer', broot), 'footer', this, true),
                 new PageArticle(this.query, 'article', this));
 
