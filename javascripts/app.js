@@ -10,8 +10,10 @@ var marcel_kernel = (function () {
     appVariables = {
         // code entry point
         main_code: 'private/main-purejs.js',
+        // first libs to load
+        beforelibs: ['public/joose.min.js', 'private/utils.js'],
         // all libs
-        libs: ['public/joose.min.js', 'private/utils.js', 'private/myajax.js', 'private/purejs-lib.js', 'private/jprint.js'],
+        libs: ['private/myajax.js', 'private/purejs-lib.js', 'private/jprint.js'],
         // library name
         libname: 'pure Javascript 0.2.0',
         // navigator name
@@ -32,8 +34,10 @@ var marcel_kernel = (function () {
             // TODO : must be elsewhere
             appVariables.navigator = navigator.appName + ' ' + navigator.appCodeName + ' ' + navigator.appVersion;
             // two step loader
-            LazyLoad.js(appVariables.libs.map(normalize_libname), function () {
-                LazyLoad.js(normalize_libname(appVariables.main_code), function () {
+            LazyLoad.js(appVariables.beforelibs.map(normalize_libname), function () {
+                LazyLoad.js(appVariables.libs.map(normalize_libname), function () {
+                    LazyLoad.js(normalize_libname(appVariables.main_code), function () {
+                    });
                 });
             });
         }
