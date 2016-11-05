@@ -54,9 +54,9 @@ Class("BasePage", {
         },
         setHTMLByClassName: function (className, html) {
             var nodes = document.getElementsByClassName(className);
-            for (var i = 0, nl = nodes.length; i < nl; i++) {
-                nodes[i].innerHTML = html;
-            }
+            Array.from(nodes).forEach(function(node) {
+                node.innerHTML = html;
+            });
         },
         set: function () {
             this.isItLoaded = true;
@@ -69,9 +69,7 @@ Class("BasePage", {
         },
         forEachElementById: function (id, onElement) {
             var elements = utils.getElementById(this.getPlace()).getElementsByTagName(id);
-            for (var i = 0, el = elements.length; i < el; i++) {
-                onElement(elements[i]);
-            }
+            Array.from(elements).forEach(onElement);
         },
     }
 });
@@ -140,26 +138,6 @@ Class("Page", {
     }
 });
 
-Class("AjaxGetPage", {
-    isa: MyAjax.AjaxGet,
-    has: {
-        page: {is: 'n/a', init: null}
-    },
-    override: {
-        initialize: function (page) {
-            this.SUPER(page.fileName());
-            this.page = page;
-        }
-    },
-    methods: {
-        on_receive: function (data) {
-            this.page.on_success(data);
-        },
-        on_failure: function (data) {
-            this.page.on_failure(data);
-        }
-    }
-});
 
 Class("PagesCollection", {
     has: {
@@ -170,14 +148,9 @@ Class("PagesCollection", {
             this.reloadAll(content, navigation, footer, article);
         },
         doload: function () {
-            this.pages.map(function (page) {
+            this.pages.forEach(function (page) {
                 if (!page.amILoaded()) {
-                    return new AjaxGetPage(page);
-                } else {
-                    return null;
-                }
-            }).forEach(function (req) {
-                if (req) {
+                    var req = new MyAjax.AjaxGetPage(page);
                     req.send();
                 }
             });
@@ -253,6 +226,7 @@ Class("PageNavigation", {
         main_on_sucess: function (result) {
             var session = this.getSession();
             var currentRoot = this.query.getRoot();
+            // f**k this !
             var self = this;
 
             this.forEachElementById('p',
