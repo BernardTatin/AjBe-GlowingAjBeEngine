@@ -47,6 +47,7 @@ Module("MyAjax", function (m) {
 						if (this.status == HttpStatus.OK) {
 							this.self.on_receive(this.responseText);
 						} else {
+							// TODO : afficher l'erreur
 							this.self.on_failure("<h1>ERREUR!!!!</h1><h2>Cette page n'existe pas!</h2><p>Vérifiez l'URL!</p>");
 						}
 					}
@@ -62,5 +63,26 @@ Module("MyAjax", function (m) {
 				}
 			}
 		}
+	});
+
+	Class("AjaxGetPage", {
+	    isa: MyAjax.AjaxGet,
+	    has: {
+	        page: {is: 'n/a', init: null}
+	    },
+	    override: {
+	        initialize: function (page) {
+	            this.SUPER(page.fileName());
+	            this.page = page;
+	        }
+	    },
+	    methods: {
+	        on_receive: function (data) {
+	            this.page.on_success(data);
+	        },
+	        on_failure: function (data) {
+	            this.page.on_failure(data);
+	        }
+	    }
 	});
 });
