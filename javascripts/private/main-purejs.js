@@ -92,7 +92,7 @@ Class("Page", {
         getPageName: function () {
             return this.query.getPageName();
         },
-        fileName: function () {
+        urlName: function () {
             if (!this.file_name) {
                 this.file_name = config.SITE_BASE + '/' +
                     this.query.getRoot() + '/' + this.getPageName() + '.html';
@@ -222,6 +222,13 @@ Class("PageNavigation", {
                         element.className = 'current-node';
                     }
                 });
+        }
+    },
+    override: {
+        initialize: function (query, place, session, mainHTMLQuery, hasTitle) {
+            this.SUPER(query, place, session);
+            this.mainHTMLQuery = mainHTMLQuery;
+            this.hasTitle = hasTitle;
         },
         main_on_sucess: function (result) {
             var session = this.getSession();
@@ -238,13 +245,6 @@ Class("PageNavigation", {
                     purejsLib.addEvent(element, 'click', clickdEventListener);
                 });
             this.toc_presentation(this.mainHTMLQuery);
-        }
-    },
-    override: {
-        initialize: function (query, place, session, mainHTMLQuery, hasTitle) {
-            this.SUPER(query, place, session);
-            this.mainHTMLQuery = mainHTMLQuery;
-            this.hasTitle = hasTitle;
         },
         after_on_success: function () {
             this.toc_presentation(this.mainHTMLQuery);
