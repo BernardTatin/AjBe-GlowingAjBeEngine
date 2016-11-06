@@ -72,7 +72,7 @@ Module("MyAjax", function (m) {
 	    },
 	    override: {
 	        initialize: function (page) {
-	            this.SUPER(page.fileName());
+	            this.SUPER(page.urlName());
 	            this.page = page;
 	        }
 	    },
