@@ -5,7 +5,7 @@
  */
 "use strict";
 
-Module("MyAjax", function (m) {
+Module('MyAjax', function (m) {
 	var AjaxStates = (function () {
 		return {
 			IDLE: 0,
@@ -23,7 +23,7 @@ Module("MyAjax", function (m) {
 		};
 	})();
 
-	Class("AjaxGet", {
+	Class('AjaxGet', {
 		has: {
 			url: {is: 'n/a', init: null},
 			http_request: {is: 'ro', init: 'GET'},
@@ -65,28 +65,19 @@ Module("MyAjax", function (m) {
 		}
 	});
 
-	Class("AjaxLoadable", {
-		has: {
-			url: {is: 'n/a', init: null}
-		},
+	Role('AjaxLoadable', {
+		requires: ['urlName', 'on_success', 'on_failure'],
 		methods: {
-			initialize: function(url) {
-				this.url = url;
-			},
 			urlName: function() {
-				return this.url;
 			},
 			on_success: function(data) {
-
 			},
 			on_failure: function(data) {
-
 			}
 		}
-
 	});
 
-	Class("AjaxGetPage", {
+	Class('AjaxGetPage', {
 	    isa: MyAjax.AjaxGet,
 	    has: {
 	        ajax_loadable: {is: 'n/a', init: null}

@@ -34,8 +34,8 @@ Class("HTMLQuery", {
                 } else {
                     this.url = window.location.href;
                 }
-                this.root = this.urlParam('root', config.DEFAULT_ROOT);
-                this.pageName = this.urlParam('page', config.DEFAULT_PAGE);
+                this.root = utils.urlParam('root', this.url, config.DEFAULT_ROOT);
+                this.pageName = utils.urlParam('page', this.url, config.DEFAULT_PAGE);
             }
         },
         urlParam: function (name, default_value) {
@@ -45,7 +45,6 @@ Class("HTMLQuery", {
 });
 
 Class("BasePage", {
-    isa: MyAjax.AjaxLoadable,
     has: {
         isItLoaded: {is: 'ro', init: false}
     },
@@ -76,6 +75,7 @@ Class("BasePage", {
 });
 
 Class("Page", {
+    does: MyAjax.AjaxLoadable,
     isa: BasePage,
     has: {
         query: {is: 'n/a', init: null},
@@ -103,10 +103,6 @@ Class("Page", {
             var metaPattern = /<meta.+\/?>/g;
             return str.replace(metaPattern, '');
         },
-        before_on_success: function (result) {
-            var place = this.getPlace();
-            utils.getElementById(place).innerHTML = this.supressMetaTags(result);
-        },
         main_on_sucess: function (result) {
 
         },
@@ -116,9 +112,7 @@ Class("Page", {
                 this.authors();
             }
             utils.app_string();
-        }
-    },
-    override: {
+        },
         urlName: function () {
             if (!this.file_name) {
                 this.file_name = config.SITE_BASE + '/' +
@@ -133,42 +127,20 @@ Class("Page", {
         on_success: function (result) {
             var place = this.getPlace();
             utils.getElementById(place).style.display = 'block';
-            this.before_on_success(result);
+            // this.before_on_success(result);
             this.main_on_sucess(result);
             this.after_on_success();
             this.set();
         },
-    }
-});
-
-
-Class("PagesCollection", {
-    has: {
-        pages: {is: 'n/a', init: null}
     },
-    methods: {
-        initialize: function (content, navigation, footer, article) {
-            this.reloadAll(content, navigation, footer, article);
+    before: {
+        on_success: function (result) {
+            var place = this.getPlace();
+            utils.getElementById(place).innerHTML = this.supressMetaTags(result);
         },
-        doload: function () {
-            this.pages.forEach(function (page) {
-                if (!page.amILoaded()) {
-                    var req = new MyAjax.AjaxGetPage(page);
-                    req.send();
-                }
-            });
-        },
-        reloadAll: function (content, navigation, footer, article) {
-            this.pages = [content, navigation, footer, article];
-            this.doload();
-        },
-        reloadArticle: function (article) {
-            article.reset();
-            this.pages[PAGESCTS.ARTICLE] = article;
-            this.doload();
-        }
-    }
+    },
 });
+
 
 Class("PageArticle", {
     isa: Page,
@@ -253,18 +225,51 @@ Class("PageNavigation", {
             this.toc_presentation(this.mainHTMLQuery);
             this.SUPER();
         },
-        before_on_success: function (result) {
-            if (this.hasTitle && config.TOC_TITLE) {
-                result = '<h2>' + config.TOC_TITLE + '</h2>' + result;
-            }
-            this.SUPER(result);
-        },
         on_success: function (result) {
             if (!jprint.isInPrint()) {
                 this.SUPER(result);
             } else {
                 utils.getElementById(this.getPlace()).style.display = 'none';
             }
+        }
+    },
+    before: {
+        on_success: function (result) {
+            if (this.hasTitle && config.TOC_TITLE) {
+                result = '<h2>' + config.TOC_TITLE + '</h2>' + result;
+            }
+            // this.SUPER(result);
+            var place = this.getPlace();
+            utils.getElementById(place).innerHTML = this.supressMetaTags(result);
+        },
+
+    }
+});
+
+Class("PagesCollection", {
+    has: {
+        pages: {is: 'n/a', init: null}
+    },
+    methods: {
+        initialize: function (content, navigation, footer, article) {
+            this.reloadAll(content, navigation, footer, article);
+        },
+        doload: function () {
+            this.pages.forEach(function (page) {
+                if (!page.amILoaded()) {
+                    var req = new MyAjax.AjaxGetPage(page);
+                    req.send();
+                }
+            });
+        },
+        reloadAll: function (content, navigation, footer, article) {
+            this.pages = [content, navigation, footer, article];
+            this.doload();
+        },
+        reloadArticle: function (article) {
+            article.reset();
+            this.pages[PAGESCTS.ARTICLE] = article;
+            this.doload();
         }
     }
 });
