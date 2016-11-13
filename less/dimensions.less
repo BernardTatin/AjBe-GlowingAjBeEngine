@@ -24,7 +24,7 @@
 
 
 @menu-width: 33%;
-@menu-max-width: 200px;
+@menu-max-width: 240px;
 @menu-min-width: 120px;
 
 .positionRelative {
@@ -41,6 +41,7 @@
 }
 
 @little-screen-width: 800px;
+@big-screen-width: 1200px;
 
 @media (max-width: @little-screen-width) {
     #shell {
@@ -97,7 +98,7 @@
     }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: @big-screen-width) {
     #shell {
         width: 95%;
     }
@@ -115,9 +116,13 @@
     }
     #main_content {
         width: 85%;
+    }
+    .csscolumns #main_content {
         -webkit-column-count: 2;
         -moz-column-count: 2;
         column-count: 2;
+    }
+    .csscolumns-gap #main_content {
         -webkit-column-gap: 35px;
         -moz-column-gap: 35px;
         column-gap: 35px;
