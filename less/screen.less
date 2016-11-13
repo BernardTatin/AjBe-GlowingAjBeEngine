@@ -1,4 +1,4 @@
-/* 
+/*
     screen.less
     Created on : 3 juin 2015, 14:00:29
     Author     : bernard
@@ -15,7 +15,10 @@ body {
 }
 
 
-#shell {
+.no-js #shell, .js #no-js-shell {
+    display: none;
+}
+.js #shell, .no-js #no-js-shell {
     background: @shell-back-color;
     color: @shell-color;
     display: block;
@@ -97,15 +100,15 @@ a {
     p {
         margin: .7em 0;
     }
-	.dialog {
-		p {
-			margin: 0 1.7em;
-			text-indent: -0.7em;
-		}
-		p:before {
-			content: "- ";
-		}
-	}
+    .dialog {
+        p {
+            margin: 0 1.7em;
+            text-indent: -0.7em;
+        }
+        p:before {
+            content: "- ";
+        }
+    }
 
 
     ul {
@@ -124,7 +127,7 @@ a {
         margin: 20px 0;
         color: #8b786f;
         padding-left: 1.35em;
-	}
+    }
     img {
         border: 2px solid @shadow-color;
     }

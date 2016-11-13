@@ -9,7 +9,7 @@
 
 var purejsLib = (function () {
     return {
-        // add event cross browser
+        // add event cross browser, cf modernizer.js
         addEvent: function (elem, event, fn) {
             if (elem.addEventListener) {
                 elem.addEventListener(event, fn, false);

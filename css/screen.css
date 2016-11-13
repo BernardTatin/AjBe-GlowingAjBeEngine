@@ -1,10 +1,10 @@
-/* 
+/*
     screen.less
     Created on : 3 juin 2015, 14:00:29
     Author     : bernard
 */
 /* variables */
-/* 
+/*
     screen-variables.less
     Created on : 3 juin 2015, 21:25:47
     Author     : bernard
@@ -155,7 +155,7 @@ p.current-node,
 #main_content p.current-node {
   font-family: 'Helvetica', Verdana, Arial, sans-serif;
 }
-/* 
+/*
     dimensions.less
     Created on : 10 juin 2015, 23:10:20
     Author     : bernard
@@ -251,7 +251,12 @@ p.current-node,
 body {
   background-color: #444;
 }
-#shell {
+.no-js #shell,
+.js #no-js-shell {
+  display: none;
+}
+.js #shell,
+.no-js #no-js-shell {
   background: white;
   color: #544943;
   display: block;
