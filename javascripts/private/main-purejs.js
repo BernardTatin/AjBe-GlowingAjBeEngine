@@ -282,6 +282,10 @@ var clickdEventListener = function (e) {
     var query = new HTMLQuery(href);
     var lroot = query.getRoot();
 
+    // mais pourquoi donc ? et pas sur toutes les pages!!!
+    if (!myself.self) {
+        myself.self = myself;
+    }
     myself.self.query = query;
     myself.self.mainHTMLQuery = query;
     if (lroot !== myself.currentRoot) {
