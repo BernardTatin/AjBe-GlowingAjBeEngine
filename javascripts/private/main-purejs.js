@@ -106,13 +106,6 @@ Class("Page", {
         main_on_sucess: function (result) {
 
         },
-        after_on_success: function () {
-            if (this.hasCopyright) {
-                this.copyright();
-                this.authors();
-            }
-            utils.app_string();
-        },
         urlName: function () {
             if (!this.file_name) {
                 this.file_name = config.SITE_BASE + '/' +
@@ -124,14 +117,25 @@ Class("Page", {
             var place = this.getPlace();
             utils.getElementById(place).style.display = 'none';
         },
+        base_after: function (result) {
+            if (this.hasCopyright) {
+                this.copyright();
+                this.authors();
+            }
+            utils.app_string();
+            this.set();
+        },
         on_success: function (result) {
             var place = this.getPlace();
             utils.getElementById(place).style.display = 'block';
-            // this.before_on_success(result);
             this.main_on_sucess(result);
-            this.after_on_success();
-            this.set();
         },
+    },
+    after: {
+        on_success: function (result) {
+            this.base_after(result);
+        },
+
     },
     before: {
         on_success: function (result) {
@@ -158,11 +162,13 @@ Class("PageArticle", {
                 });
         }
     },
-    override: {
-        after_on_success: function () {
+    after: {
+        on_success: function (result) {
             this.resizeSVG();
-            this.SUPER();
+            this.base_after(result)
         },
+    },
+    override: {
         initialize: function (query, place, session, hasCopyright) {
             this.SUPER(query, place, session, hasCopyright);
             window.article = this;
@@ -221,10 +227,6 @@ Class("PageNavigation", {
                 });
             this.toc_presentation(this.mainHTMLQuery);
         },
-        after_on_success: function () {
-            this.toc_presentation(this.mainHTMLQuery);
-            this.SUPER();
-        },
         on_success: function (result) {
             if (!jprint.isInPrint()) {
                 this.SUPER(result);
@@ -232,6 +234,12 @@ Class("PageNavigation", {
                 utils.getElementById(this.getPlace()).style.display = 'none';
             }
         }
+    },
+    after: {
+        on_success: function (result) {
+            this.toc_presentation(this.mainHTMLQuery);
+            this.base_after(result);
+        },
     },
     before: {
         on_success: function (result) {
