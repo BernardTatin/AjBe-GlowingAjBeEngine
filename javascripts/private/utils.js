@@ -37,8 +37,8 @@ var utils = (function () {
     }
 
     return {
-        urlParam: function (name, url, default_value) {
-            var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(url);
+        urlParam: function (paramName, url, default_value) {
+            var results = new RegExp('[\\?&]' + paramName + '=([^&#]*)').exec(url);
             if (!results) {
                 return default_value;
             } else {
@@ -50,18 +50,8 @@ var utils = (function () {
                 window.history.pushState(document.title, document.title, url);
             }
         },
-        getElementById: function (id) {
-            if (document.getElementById) {
-                return document.getElementById(id);
-            } else if (document.all) {
-                return document.all[id];
-            } else {
-                console.log('getElementById does not exist!');
-                return null;
-            }
-        },
         app_string: function () {
-            var element = this.getElementById('appname');
+            var element = document.getElementById('appname');
             if (element) {
                 if (!vername) {
                     vername = 'using ' + marcel_kernel.app_type() + ' on ' + getEnv().name + ' engine';

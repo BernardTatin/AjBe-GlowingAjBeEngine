@@ -161,3 +161,9 @@ if (!document.getElementsByClassName) {
     };
     Element.prototype.getElementsByClassName = document.getElementsByClassName;
 }
+
+if (!document.getElementById && document.all) {
+    document.getElementById = function(id) {
+        return document.all[id];
+    }
+}

@@ -68,7 +68,7 @@ Class("BasePage", {
             return this.isItLoaded;
         },
         forEachElementById: function (id, onElement) {
-            var elements = utils.getElementById(this.getPlace()).getElementsByTagName(id);
+            var elements = document.getElementById(this.getPlace()).getElementsByTagName(id);
             Array.from(elements).forEach(onElement);
         },
     }
@@ -115,7 +115,7 @@ Class("Page", {
         },
         on_failure: function (result) {
             var place = this.getPlace();
-            utils.getElementById(place).style.display = 'none';
+            document.getElementById(place).style.display = 'none';
         },
         base_after: function (result) {
             if (this.hasCopyright) {
@@ -127,7 +127,7 @@ Class("Page", {
         },
         on_success: function (result) {
             var place = this.getPlace();
-            utils.getElementById(place).style.display = 'block';
+            document.getElementById(place).style.display = 'block';
             this.main_on_sucess(result);
         },
     },
@@ -140,7 +140,7 @@ Class("Page", {
     before: {
         on_success: function (result) {
             var place = this.getPlace();
-            utils.getElementById(place).innerHTML = this.supressMetaTags(result);
+            document.getElementById(place).innerHTML = this.supressMetaTags(result);
         },
     },
 });
@@ -150,7 +150,7 @@ Class("PageArticle", {
     isa: Page,
     methods: {
         resizeSVG: function () {
-            var maxWidth = utils.getElementById(this.getPlace()).clientWidth;
+            var maxWidth = document.getElementById(this.getPlace()).clientWidth;
 
             this.forEachElementById('svg',
                 function (element) {
@@ -197,7 +197,7 @@ Class("PageNavigation", {
                     if (query.getPageName() === currentPage &&
                         query.getRoot() === currentRoot) {
                         var title = element.innerHTML;
-                        utils.getElementById('main_title').innerHTML = title;
+                        document.getElementById('main_title').innerHTML = title;
                         utils.setUrlInBrowser(url);
                         document.title = title;
                         element.className = 'current-node';
@@ -231,7 +231,7 @@ Class("PageNavigation", {
             if (!jprint.isInPrint()) {
                 this.SUPER(result);
             } else {
-                utils.getElementById(this.getPlace()).style.display = 'none';
+                document.getElementById(this.getPlace()).style.display = 'none';
             }
         }
     },
@@ -248,7 +248,7 @@ Class("PageNavigation", {
             }
             // this.SUPER(result);
             var place = this.getPlace();
-            utils.getElementById(place).innerHTML = this.supressMetaTags(result);
+            document.getElementById(place).innerHTML = this.supressMetaTags(result);
         },
 
     }
@@ -323,8 +323,8 @@ Class("Session", {
                 new Page(new HTMLQuery('footer', broot), 'footer', this, true),
                 new PageArticle(this.query, 'article', this));
 
-            utils.getElementById('site-name').innerHTML = config.SITE_NAME;
-            utils.getElementById('site-description').innerHTML = config.SITE_DESCRIPTION;
+            document.getElementById('site-name').innerHTML = config.SITE_NAME;
+            document.getElementById('site-description').innerHTML = config.SITE_DESCRIPTION;
             return this;
         }
     }
