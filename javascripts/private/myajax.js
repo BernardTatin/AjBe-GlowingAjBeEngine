@@ -65,23 +65,44 @@ Module("MyAjax", function (m) {
 		}
 	});
 
+	Class("AjaxLoadable", {
+		has: {
+			url: {is: 'n/a', init: null}
+		},
+		methods: {
+			initialize: function(url) {
+				this.url = url;
+			},
+			urlName: function() {
+				return this.url;
+			},
+			on_success: function(data) {
+
+			},
+			on_failure: function(data) {
+
+			}
+		}
+
+	});
+
 	Class("AjaxGetPage", {
 	    isa: MyAjax.AjaxGet,
 	    has: {
-	        page: {is: 'n/a', init: null}
+	        ajax_loadable: {is: 'n/a', init: null}
 	    },
 	    override: {
-	        initialize: function (page) {
-	            this.SUPER(page.urlName());
-	            this.page = page;
+	        initialize: function (ajax_loadable) {
+	            this.SUPER(ajax_loadable.urlName());
+	            this.ajax_loadable = ajax_loadable;
 	        }
 	    },
 	    methods: {
 	        on_receive: function (data) {
-	            this.page.on_success(data);
+	            this.ajax_loadable.on_success(data);
 	        },
 	        on_failure: function (data) {
-	            this.page.on_failure(data);
+	            this.ajax_loadable.on_failure(data);
 	        }
 	    }
 	});

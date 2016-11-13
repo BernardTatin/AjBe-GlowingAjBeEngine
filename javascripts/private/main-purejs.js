@@ -45,6 +45,7 @@ Class("HTMLQuery", {
 });
 
 Class("BasePage", {
+    isa: MyAjax.AjaxLoadable,
     has: {
         isItLoaded: {is: 'ro', init: false}
     },
@@ -92,13 +93,6 @@ Class("Page", {
         getPageName: function () {
             return this.query.getPageName();
         },
-        urlName: function () {
-            if (!this.file_name) {
-                this.file_name = config.SITE_BASE + '/' +
-                    this.query.getRoot() + '/' + this.getPageName() + '.html';
-            }
-            return this.file_name;
-        },
         copyright: function () {
             this.setHTMLByClassName('copyright', config.COPYRIGHT);
         },
@@ -122,6 +116,15 @@ Class("Page", {
                 this.authors();
             }
             utils.app_string();
+        }
+    },
+    override: {
+        urlName: function () {
+            if (!this.file_name) {
+                this.file_name = config.SITE_BASE + '/' +
+                    this.query.getRoot() + '/' + this.getPageName() + '.html';
+            }
+            return this.file_name;
         },
         on_failure: function (result) {
             var place = this.getPlace();
