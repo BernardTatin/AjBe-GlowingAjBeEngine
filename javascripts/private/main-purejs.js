@@ -290,10 +290,12 @@ var clickdEventListener = function (e) {
     var query = new HTMLQuery(href);
     var lroot = query.getRoot();
 
-    // mais pourquoi donc ? et pas sur toutes les pages!!!
+    // mais pourquoi donc ? et pas sur toutes les pages!!! et pas tout le temps?
+    /*
     if (!myself.self) {
         myself.self = myself;
     }
+    */
     myself.self.query = query;
     myself.self.mainHTMLQuery = query;
     if (lroot !== myself.currentRoot) {
@@ -339,9 +341,8 @@ function start() {
     purejsLib.addEvent(window, 'resize', function (e) {
         // cf http://www.sitepoint.com/javascript-this-event-handlers/
         e = e || window.event;
-        var myself = e.target || e.srcElement;
-
         var article = window.article;
+
         if (article) {
             article.resizeSVG();
         }
