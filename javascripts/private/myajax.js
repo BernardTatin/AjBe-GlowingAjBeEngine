@@ -23,13 +23,23 @@ Module('MyAjax', function (m) {
 		};
 	})();
 
-	Role('AjaxLoadable', {
-		requires: ['urlName', 'on_success', 'on_failure'],
+	Class('AjaxLoadable', {
+		// requires: ['urlName', 'on_success', 'on_failure'],
 		has: {
-			isLoaded: {init: false},
+			isItLoaded: {is: 'rw', init: false},
 		},
 		methods: {
+	        set: function () {
+	            this.isItLoaded = true;
+	        },
+	        reset: function () {
+	            this.isItLoaded = false;
+	        },
+	        amILoaded: function () {
+	            return this.isItLoaded;
+	        },
 			urlName: function() {
+				return null;
 			},
 			on_success: function(data) {
 			},
@@ -49,7 +59,6 @@ Module('MyAjax', function (m) {
 				this.url = ajax_loadable.urlName();
 				var req = this.prepareRequest();
 				req.ajax_loadable = ajax_loadable;
-				this.createRequest();
 				return this;
 			},
 			prepareRequest: function() {
@@ -66,7 +75,7 @@ Module('MyAjax', function (m) {
 				this.request = req;
 				return req;
 			},
-			createRequest: function() {
+			openRequest: function() {
 				var req = this.request;
 				req.open(this.http_request, this.url, true);
 				req.onreadystatechange = function (aEvt) {
@@ -83,6 +92,7 @@ Module('MyAjax', function (m) {
 				};
 			},
 			send: function (data) {
+				this.openRequest();
 				if (utils.isUndefined(data)) {
 					this.request.send(null);
 				} else {

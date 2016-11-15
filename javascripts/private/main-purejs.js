@@ -45,9 +45,7 @@ Class("HTMLQuery", {
 });
 
 Class("BasePage", {
-    has: {
-        isItLoaded: {is: 'ro', init: false}
-    },
+    isa: MyAjax.AjaxLoadable,
     methods: {
         initialize: function () {
             this.isItLoaded = false;
@@ -58,15 +56,6 @@ Class("BasePage", {
                 node.innerHTML = html;
             });
         },
-        set: function () {
-            this.isItLoaded = true;
-        },
-        reset: function () {
-            this.isItLoaded = false;
-        },
-        amILoaded: function () {
-            return this.isItLoaded;
-        },
         forEachElementById: function (id, onElement) {
             var elements = document.getElementById(this.getPlace()).getElementsByTagName(id);
             Array.from(elements).forEach(onElement);
@@ -75,7 +64,6 @@ Class("BasePage", {
 });
 
 Class("Page", {
-    does: MyAjax.AjaxLoadable,
     isa: BasePage,
     has: {
         query: {is: 'n/a', init: null},
