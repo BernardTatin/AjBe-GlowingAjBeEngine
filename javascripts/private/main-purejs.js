@@ -15,6 +15,7 @@ var PAGESCTS = (function () {
 
 var allPages = null;
 
+
 Class("HTMLQuery", {
     has: {
         root: {is: 'ro', init: null},
@@ -38,9 +39,6 @@ Class("HTMLQuery", {
                 this.pageName = utils.urlParam('page', this.url, config.DEFAULT_PAGE);
             }
         },
-        urlParam: function (name, default_value) {
-            return utils.urlParam(name, this.url, default_value);
-        }
     }
 });
 
@@ -262,10 +260,8 @@ Class("PagesCollection", {
             this.pages = [content, navigation, footer, article];
             this.doload();
         },
-        reloadArticle: function (article) {
-            article.reset();
+        changeArticle: function (article) {
             this.pages[PAGESCTS.ARTICLE] = article;
-            this.doload();
         }
     }
 });
@@ -278,12 +274,6 @@ var clickdEventListener = function (e) {
     var query = new HTMLQuery(href);
     var lroot = query.getRoot();
 
-    // mais pourquoi donc ? et pas sur toutes les pages!!! et pas tout le temps?
-    /*
-    if (!myself.self) {
-        myself.self = myself;
-    }
-    */
     myself.self.query = query;
     myself.self.mainHTMLQuery = query;
     if (lroot !== myself.currentRoot) {
@@ -292,7 +282,12 @@ var clickdEventListener = function (e) {
             new Page(new HTMLQuery('footer', lroot), 'footer', myself.session, true),
             new PageArticle(query, 'article', myself.session));
     } else {
-        allPages.reloadArticle(new PageArticle(query, 'article', myself.session));
+        var article = new PageArticle(query, 'article', myself.session);
+        var req = new MyAjax.AjaxGetPage(article);
+
+        // article.reset();
+        req.send();
+        allPages.changeArticle(article);
     }
     myself.self.toc_presentation(query);
     return true;
@@ -328,7 +323,7 @@ function start() {
     window.article = null;
     purejsLib.addEvent(window, 'resize', function (e) {
         // cf http://www.sitepoint.com/javascript-this-event-handlers/
-        e = e || window.event;
+        // e = e || window.event;
         var article = window.article;
 
         if (article) {
