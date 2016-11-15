@@ -14,7 +14,7 @@ var PAGESCTS = (function () {
 })();
 
 var allPages = null;
-
+var linkTag = 'p';
 
 Class("HTMLQuery", {
     has: {
@@ -174,12 +174,11 @@ Class("PageNavigation", {
             var currentRoot = query.getRoot();
             var url = query.url;
 
-            this.forEachElementById('p',
+            this.forEachElementById(linkTag,
                 function (element) {
                     var href = element.getAttribute('href');
                     var query = new HTMLQuery(href);
 
-                    element.className = 'normal-node';
                     if (query.getPageName() === currentPage &&
                         query.getRoot() === currentRoot) {
                         var title = element.innerHTML;
@@ -187,6 +186,8 @@ Class("PageNavigation", {
                         utils.setUrlInBrowser(url);
                         document.title = title;
                         element.className = 'current-node';
+                    } else {
+                        element.className = 'normal-node';
                     }
                 });
         }
@@ -203,7 +204,7 @@ Class("PageNavigation", {
             // f**k this !
             var self = this;
 
-            this.forEachElementById('p',
+            this.forEachElementById(linkTag,
                 function (element) {
                     element.self = self;
                     element.href = element.getAttribute('href');
@@ -270,9 +271,9 @@ var clickdEventListener = function (e) {
     // cf http://www.sitepoint.com/javascript-this-event-handlers/
     e = e || window.event;
     var myself = e.target || e.srcElement;
-    var href = myself.href;
-    var query = new HTMLQuery(href);
+    var query = new HTMLQuery(myself.href);
     var lroot = query.getRoot();
+    var article = new PageArticle(query, 'article', myself.session);
 
     myself.self.query = query;
     myself.self.mainHTMLQuery = query;
@@ -280,12 +281,10 @@ var clickdEventListener = function (e) {
         allPages.reloadAll(new PageNavigation(new HTMLQuery('content', lroot), 'toc', myself.session, query, true),
             new PageNavigation(new HTMLQuery('navigation', lroot), 'navigation', myself.session, query),
             new Page(new HTMLQuery('footer', lroot), 'footer', myself.session, true),
-            new PageArticle(query, 'article', myself.session));
+            article);
     } else {
-        var article = new PageArticle(query, 'article', myself.session);
         var req = new MyAjax.AjaxGetPage(article);
 
-        // article.reset();
         req.send();
         allPages.changeArticle(article);
     }
