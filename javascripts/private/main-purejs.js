@@ -34,8 +34,8 @@ Class("HTMLQuery", {
                 } else {
                     this.url = window.location.href;
                 }
-                this.root = this.urlParam('root', config.DEFAULT_ROOT);
-                this.pageName = this.urlParam('page', config.DEFAULT_PAGE);
+                this.root = utils.urlParam('root', this.url, config.DEFAULT_ROOT);
+                this.pageName = utils.urlParam('page', this.url, config.DEFAULT_PAGE);
             }
         },
         urlParam: function (name, default_value) {
@@ -45,9 +45,7 @@ Class("HTMLQuery", {
 });
 
 Class("BasePage", {
-    has: {
-        isItLoaded: {is: 'ro', init: false}
-    },
+    isa: MyAjax.AjaxLoadable,
     methods: {
         initialize: function () {
             this.isItLoaded = false;
@@ -58,17 +56,8 @@ Class("BasePage", {
                 node.innerHTML = html;
             });
         },
-        set: function () {
-            this.isItLoaded = true;
-        },
-        reset: function () {
-            this.isItLoaded = false;
-        },
-        amILoaded: function () {
-            return this.isItLoaded;
-        },
         forEachElementById: function (id, onElement) {
-            var elements = utils.getElementById(this.getPlace()).getElementsByTagName(id);
+            var elements = document.getElementById(this.getPlace()).getElementsByTagName(id);
             Array.from(elements).forEach(onElement);
         },
     }
@@ -92,13 +81,6 @@ Class("Page", {
         getPageName: function () {
             return this.query.getPageName();
         },
-        urlName: function () {
-            if (!this.file_name) {
-                this.file_name = config.SITE_BASE + '/' +
-                    this.query.getRoot() + '/' + this.getPageName() + '.html';
-            }
-            return this.file_name;
-        },
         copyright: function () {
             this.setHTMLByClassName('copyright', config.COPYRIGHT);
         },
@@ -109,69 +91,54 @@ Class("Page", {
             var metaPattern = /<meta.+\/?>/g;
             return str.replace(metaPattern, '');
         },
-        before_on_success: function (result) {
-            var place = this.getPlace();
-            utils.getElementById(place).innerHTML = this.supressMetaTags(result);
-        },
         main_on_sucess: function (result) {
 
         },
-        after_on_success: function () {
+        urlName: function () {
+            if (!this.file_name) {
+                this.file_name = config.SITE_BASE + '/' +
+                    this.query.getRoot() + '/' + this.getPageName() + '.html';
+            }
+            return this.file_name;
+        },
+        on_failure: function (result) {
+            var place = this.getPlace();
+            document.getElementById(place).style.display = 'none';
+        },
+        base_after: function (result) {
             if (this.hasCopyright) {
                 this.copyright();
                 this.authors();
             }
             utils.app_string();
-        },
-        on_failure: function (result) {
-            var place = this.getPlace();
-            utils.getElementById(place).style.display = 'none';
+            this.set();
         },
         on_success: function (result) {
             var place = this.getPlace();
-            utils.getElementById(place).style.display = 'block';
-            this.before_on_success(result);
+            document.getElementById(place).style.display = 'block';
             this.main_on_sucess(result);
-            this.after_on_success();
-            this.set();
         },
-    }
-});
-
-
-Class("PagesCollection", {
-    has: {
-        pages: {is: 'n/a', init: null}
     },
-    methods: {
-        initialize: function (content, navigation, footer, article) {
-            this.reloadAll(content, navigation, footer, article);
+    after: {
+        on_success: function (result) {
+            this.base_after(result);
         },
-        doload: function () {
-            this.pages.forEach(function (page) {
-                if (!page.amILoaded()) {
-                    var req = new MyAjax.AjaxGetPage(page);
-                    req.send();
-                }
-            });
+
+    },
+    before: {
+        on_success: function (result) {
+            var place = this.getPlace();
+            document.getElementById(place).innerHTML = this.supressMetaTags(result);
         },
-        reloadAll: function (content, navigation, footer, article) {
-            this.pages = [content, navigation, footer, article];
-            this.doload();
-        },
-        reloadArticle: function (article) {
-            article.reset();
-            this.pages[PAGESCTS.ARTICLE] = article;
-            this.doload();
-        }
-    }
+    },
 });
+
 
 Class("PageArticle", {
     isa: Page,
     methods: {
         resizeSVG: function () {
-            var maxWidth = utils.getElementById(this.getPlace()).clientWidth;
+            var maxWidth = document.getElementById(this.getPlace()).clientWidth;
 
             this.forEachElementById('svg',
                 function (element) {
@@ -183,11 +150,13 @@ Class("PageArticle", {
                 });
         }
     },
-    override: {
-        after_on_success: function () {
+    after: {
+        on_success: function (result) {
             this.resizeSVG();
-            this.SUPER();
+            this.base_after(result)
         },
+    },
+    override: {
         initialize: function (query, place, session, hasCopyright) {
             this.SUPER(query, place, session, hasCopyright);
             window.article = this;
@@ -216,7 +185,7 @@ Class("PageNavigation", {
                     if (query.getPageName() === currentPage &&
                         query.getRoot() === currentRoot) {
                         var title = element.innerHTML;
-                        utils.getElementById('main_title').innerHTML = title;
+                        document.getElementById('main_title').innerHTML = title;
                         utils.setUrlInBrowser(url);
                         document.title = title;
                         element.className = 'current-node';
@@ -246,22 +215,57 @@ Class("PageNavigation", {
                 });
             this.toc_presentation(this.mainHTMLQuery);
         },
-        after_on_success: function () {
-            this.toc_presentation(this.mainHTMLQuery);
-            this.SUPER();
-        },
-        before_on_success: function (result) {
-            if (this.hasTitle && config.TOC_TITLE) {
-                result = '<h2>' + config.TOC_TITLE + '</h2>' + result;
-            }
-            this.SUPER(result);
-        },
         on_success: function (result) {
             if (!jprint.isInPrint()) {
                 this.SUPER(result);
             } else {
-                utils.getElementById(this.getPlace()).style.display = 'none';
+                document.getElementById(this.getPlace()).style.display = 'none';
             }
+        }
+    },
+    after: {
+        on_success: function (result) {
+            this.toc_presentation(this.mainHTMLQuery);
+            this.base_after(result);
+        },
+    },
+    before: {
+        on_success: function (result) {
+            if (this.hasTitle && config.TOC_TITLE) {
+                result = '<h2>' + config.TOC_TITLE + '</h2>' + result;
+            }
+            // this.SUPER(result);
+            var place = this.getPlace();
+            document.getElementById(place).innerHTML = this.supressMetaTags(result);
+        },
+
+    }
+});
+
+Class("PagesCollection", {
+    has: {
+        pages: {is: 'n/a', init: null}
+    },
+    methods: {
+        initialize: function (content, navigation, footer, article) {
+            this.reloadAll(content, navigation, footer, article);
+        },
+        doload: function () {
+            this.pages.forEach(function (page) {
+                if (!page.amILoaded()) {
+                    var req = new MyAjax.AjaxGetPage(page);
+                    req.send();
+                }
+            });
+        },
+        reloadAll: function (content, navigation, footer, article) {
+            this.pages = [content, navigation, footer, article];
+            this.doload();
+        },
+        reloadArticle: function (article) {
+            article.reset();
+            this.pages[PAGESCTS.ARTICLE] = article;
+            this.doload();
         }
     }
 });
@@ -274,6 +278,12 @@ var clickdEventListener = function (e) {
     var query = new HTMLQuery(href);
     var lroot = query.getRoot();
 
+    // mais pourquoi donc ? et pas sur toutes les pages!!! et pas tout le temps?
+    /*
+    if (!myself.self) {
+        myself.self = myself;
+    }
+    */
     myself.self.query = query;
     myself.self.mainHTMLQuery = query;
     if (lroot !== myself.currentRoot) {
@@ -303,8 +313,8 @@ Class("Session", {
                 new Page(new HTMLQuery('footer', broot), 'footer', this, true),
                 new PageArticle(this.query, 'article', this));
 
-            utils.getElementById('site-name').innerHTML = config.SITE_NAME;
-            utils.getElementById('site-description').innerHTML = config.SITE_DESCRIPTION;
+            document.getElementById('site-name').innerHTML = config.SITE_NAME;
+            document.getElementById('site-description').innerHTML = config.SITE_DESCRIPTION;
             return this;
         }
     }
@@ -319,9 +329,8 @@ function start() {
     purejsLib.addEvent(window, 'resize', function (e) {
         // cf http://www.sitepoint.com/javascript-this-event-handlers/
         e = e || window.event;
-        var myself = e.target || e.srcElement;
-
         var article = window.article;
+
         if (article) {
             article.resizeSVG();
         }

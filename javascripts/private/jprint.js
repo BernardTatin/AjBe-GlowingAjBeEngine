@@ -12,15 +12,15 @@ var jprint = (function () {
 
     var beforePrint = function () {
         inPrint = true;
-        oldTocDisplay = utils.getElementById('toc').style.display;
-        oldNavDisplay = utils.getElementById('navigation').style.display;
-        utils.getElementById('toc').style.display = 'none';
-        utils.getElementById('navigation').style.display = 'none';
+        oldTocDisplay = document.getElementById('toc').style.display;
+        oldNavDisplay = document.getElementById('navigation').style.display;
+        document.getElementById('toc').style.display = 'none';
+        document.getElementById('navigation').style.display = 'none';
     };
     var afterPrint = function () {
         inPrint = false;
-        utils.getElementById('toc').style.display = oldTocDisplay;
-        utils.getElementById('navigation').style.display = oldNavDisplay;
+        document.getElementById('toc').style.display = oldTocDisplay;
+        document.getElementById('navigation').style.display = oldNavDisplay;
     };
     return {
         initialize: function () {
