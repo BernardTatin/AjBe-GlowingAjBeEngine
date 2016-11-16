@@ -100,7 +100,6 @@ Class("Page", {
 				this.authors();
 			}
 			utils.app_string();
-			this.set();
 		},
 		on_success: function (result) {
 			var place = this.getPlace();
@@ -201,9 +200,11 @@ Class("PageNavigation", {
 					element.href = element.getAttribute('href');
 					element.currentRoot = currentRoot;
 					element.session = session;
-					purejsLib.addEvent(element, 'click', clickdEventListener);
+					if (!element.hasClickEvent) {
+						purejsLib.addEvent(element, 'click', clickdEventListener);
+						element.hasClickEvent = true;
+					}
 				});
-			this.toc_presentation(this.mainHTMLQuery);
 		},
 		on_success: function (result) {
 			if (!jprint.isInPrint()) {

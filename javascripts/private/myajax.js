@@ -24,20 +24,7 @@ Module('MyAjax', function (m) {
 	})();
 
 	Class('AjaxLoadable', {
-		// requires: ['urlName', 'on_success', 'on_failure'],
-		has: {
-			isItLoaded: {is: 'rw', init: false},
-		},
 		methods: {
-	        set: function () {
-	            this.isItLoaded = true;
-	        },
-	        reset: function () {
-	            this.isItLoaded = false;
-	        },
-	        amILoaded: function () {
-	            return this.isItLoaded;
-	        },
 			urlName: function() {
 				return null;
 			},
