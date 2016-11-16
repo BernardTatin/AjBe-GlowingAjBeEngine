@@ -221,11 +221,10 @@ Class("PageNavigation", {
 	},
 	before: {
 		on_success: function (result) {
+			var place = this.getPlace();
 			if (this.hasTitle && config.TOC_TITLE) {
 				result = '<h2>' + config.TOC_TITLE + '</h2>' + result;
 			}
-			// this.SUPER(result);
-			var place = this.getPlace();
 			document.getElementById(place).innerHTML = this.supressMetaTags(result);
 		},
 
@@ -239,7 +238,7 @@ Class("PagesCollection", {
 		},
 		doload: function (pages) {
 			pages.forEach(function (page) {
-				if (page && !page.amILoaded()) {
+				if (page) {
 					var req = new MyAjax.AjaxGetPage(page);
 					req.send();
 				}
@@ -253,20 +252,16 @@ var clickdEventListener = function (e) {
 	e = e || window.event;
 	var myself = e.target || e.srcElement;
 	var query = new HTMLQuery(myself.href);
-	var lroot = query.getRoot();
+	var newRoot = query.getRoot();
 	var article = new PageArticle(query, 'article', myself.session);
+	var content = null;
 
 	myself.self.query = query;
 	myself.self.mainHTMLQuery = query;
-	if (lroot !== myself.currentRoot) {
-		allPages.doload([
-			new PageNavigation(new HTMLQuery('content', lroot), 'toc', myself.session, query, true),
-			article
-		]);
-	} else {
-		var req = new MyAjax.AjaxGetPage(article);
-		req.send();
+	if (newRoot !== myself.currentRoot) {
+		content = new PageNavigation(new HTMLQuery('content', newRoot), 'toc', myself.session, query, true);
 	}
+	allPages.doload([content, article]);
 	myself.self.toc_presentation(query);
 	return true;
 }
