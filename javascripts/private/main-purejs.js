@@ -169,6 +169,8 @@ Class("PageNavigation", {
 					var href = element.getAttribute('href');
 					var query = new HTMLQuery(href);
 
+                    element.currentRoot = currentRoot;
+                    element.currentPage = currentPage;
 					if (query.getPageName() === currentPage &&
 						query.getRoot() === currentRoot) {
 							var title = element.innerHTML;
@@ -191,6 +193,7 @@ Class("PageNavigation", {
 		main_on_sucess: function (result) {
 			var session = this.getSession();
 			var currentRoot = this.query.getRoot();
+            var currentPage = this.query.getPageName();
 			// f**k this !
 			var self = this;
 
@@ -199,6 +202,11 @@ Class("PageNavigation", {
 					element.self = self;
 					element.href = element.getAttribute('href');
 					element.currentRoot = currentRoot;
+                    if (window.page) {
+                        element.currentPage = window.page.getPageName();
+                    } else {
+                        element.currentPage = null;
+                    }
 					element.session = session;
 					if (!element.hasClickEvent) {
 						purejsLib.addEvent(element, 'click', clickdEventListener);
@@ -239,10 +247,10 @@ Class("PagesCollection", {
 		},
 		doload: function (pages) {
 			pages.forEach(function (page) {
-				if (page) {
-					var req = new MyAjax.AjaxGetPage(page);
-					req.send();
-				}
+				if (page && !page.req) {
+                    page.req = new MyAjax.AjaxGetPage(page);
+                    page.req.send();
+                }
 			});
 		},
 	}
@@ -254,16 +262,26 @@ var clickdEventListener = function (e) {
 	var myself = e.target || e.srcElement;
 	var query = new HTMLQuery(myself.href);
 	var newRoot = query.getRoot();
-	var article = new PageArticle(query, 'article', myself.session);
-	var content = null;
+    var newPage = query.getPageName();
+    var content = null;
+    var article = window.article;
+    var changed = false;
 
-	myself.self.query = query;
-	myself.self.mainHTMLQuery = query;
 	if (newRoot !== myself.currentRoot) {
 		content = new PageNavigation(new HTMLQuery('content', newRoot), 'toc', myself.session, query, true);
-	}
-	allPages.doload([content, article]);
-	myself.self.toc_presentation(query);
+        changed = true;
+    }
+    if (changed || newPage !== myself.currentPage) {
+        article = new PageArticle(query, 'article', myself.session);
+        window.article = article;
+        changed = true;
+    }
+    if (changed) {
+        myself.self.query = query;
+        myself.self.mainHTMLQuery = query;
+        allPages.doload([content, article]);
+        myself.self.toc_presentation(query);
+    }
 	return true;
 }
 
