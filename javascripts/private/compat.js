@@ -6,6 +6,8 @@
  */
 
 
+/* global Element */
+
 // Production steps of ECMA-262, Edition 5, 15.4.4.18
 // Reference: http://es5.github.io/#x15.4.4.18
 if (!Array.prototype.forEach) {
@@ -163,18 +165,18 @@ if (!document.getElementsByClassName) {
 }
 
 if (!document.getElementById && document.all) {
-    document.getElementById = function(id) {
+    document.getElementById = function (id) {
         return document.all[id];
-    }
+    };
 }
 
 
 if (window.XMLHttpRequest) {
-    window.getNewHttpRequest = function() {
+    window.getNewHttpRequest = function () {
         return new XMLHttpRequest();
     };
 } else {
-    window.getNewHttpRequest = function() {
+    window.getNewHttpRequest = function () {
         return new ActiveXObject("Microsoft.XMLHTTP");
     };
 }

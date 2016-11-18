@@ -1,3 +1,5 @@
+/* global marcel_kernel */
+
 "use strict";
 
 var utils = (function () {
@@ -19,10 +21,10 @@ var utils = (function () {
             };
 
             (env.webkit = /AppleWebKit\//.test(ua))
-                || (env.ie = /MSIE|Trident/.test(ua))
-                || (env.opera = /Opera/.test(ua))
-                || (env.gecko = /Gecko\//.test(ua))
-                || (env.unknown = true);
+                    || (env.ie = /MSIE|Trident/.test(ua))
+                    || (env.opera = /Opera/.test(ua))
+                    || (env.gecko = /Gecko\//.test(ua))
+                    || (env.unknown = true);
             if (env.webkit) {
                 env.name = 'Webkit';
             } else if (env.ie) {
@@ -59,7 +61,7 @@ var utils = (function () {
                 element.innerHTML = vername;
             }
         },
-        isUndefined: function(v) {
+        isUndefined: function (v) {
             var undefined;
             return v === undefined;
         }

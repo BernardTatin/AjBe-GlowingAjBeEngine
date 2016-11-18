@@ -1,3 +1,5 @@
+/* global LazyLoad */
+
 "use strict";
 
 var marcel_kernel = (function () {
@@ -5,17 +7,17 @@ var marcel_kernel = (function () {
     var appConstants = {
         // javascript source base directory
         jsRoot: 'bright-marcel-kernel/javascripts'
-    },
+    };
     // can be modified by program in a future release
-    appVariables = {
-        // code entry point
-        main_code: 'private/main-purejs.js',
+    var appVariables = {
         // first libs to load
-        beforelibs: ['public/joose.js', 'private/utils.js'],
+        beforelibs: ['public/joose.js', 'private/utils.js', 'private/html-query.js'],
         // all libs
         libs: ['private/myajax.js', 'private/purejs-lib.js', 'private/jprint.js'],
+        // code entry point
+        main_code: 'private/main-purejs.js',
         // library name
-        libname: 'pure Javascript 0.2.1',
+        libname: 'pure Javascript 0.2.2',
         // navigator name
         navigator: null
     };
