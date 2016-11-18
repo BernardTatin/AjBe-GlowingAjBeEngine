@@ -63,7 +63,7 @@ Class("Page", {
         urlName: function () {
             if (!this.file_name) {
                 this.file_name = config.SITE_BASE + '/' +
-                        this.query.getRoot() + '/' + this.getPageName() + '.html';
+                        this.query.getRootName() + '/' + this.getPageName() + '.html';
             }
             return this.file_name;
         },
@@ -138,7 +138,7 @@ Class("PageNavigation", {
     methods: {
         toc_presentation: function (query) {
             var currentPage = query.getPageName();
-            var currentRoot = query.getRoot();
+            var currentRoot = query.getRootName();
             var url = query.url;
 
             this.forEachElementById(linkTag,
@@ -149,7 +149,7 @@ Class("PageNavigation", {
                         element.currentRoot = currentRoot;
                         element.currentPage = currentPage;
                         if (query.getPageName() === currentPage &&
-                                query.getRoot() === currentRoot) {
+                                query.getRootName() === currentRoot) {
                             var title = element.innerHTML;
                             document.getElementById('main_title').innerHTML = title;
                             utils.setUrlInBrowser(url);
@@ -169,7 +169,7 @@ Class("PageNavigation", {
         },
         main_on_sucess: function (result) {
             var session = this.getSession();
-            var currentRoot = this.query.getRoot();
+            var currentRoot = this.query.getRootName();
             var currentPage = this.query.getPageName();
             // f**k this !
             var self = this;
@@ -217,28 +217,24 @@ Class("PageNavigation", {
     }
 });
 
-Class("PagesCollection", {
-    methods: {
-        initialize: function (newPages) {
-            this.doload(newPages);
-        },
-        doload: function (pages) {
-            pages.forEach(function (page) {
-                if (page && !page.req) {
-                    page.req = new MyAjax.AjaxGetPage(page);
-                    page.req.send();
-                }
-            });
-        }
-    }
-});
+var PagesCollection = function (newPages) {
+    this.doload = function (pages) {
+        pages.forEach(function (page) {
+            if (page && !page.req) {
+                page.req = new MyAjax.AjaxGetPage(page);
+                page.req.send();
+            }
+        });
+    };
+    this.doload(newPages);
+};
 
 var clickdEventListener = function (e) {
     // cf http://www.sitepoint.com/javascript-this-event-handlers/
     e = e || window.event;
     var myself = e.target || e.srcElement;
     var query = new HTMLQuery(myself.href);
-    var newRoot = query.getRoot();
+    var newRoot = query.getRootName();
     var newPage = query.getPageName();
     var content = null;
     var article = window.article;
@@ -264,31 +260,24 @@ var clickdEventListener = function (e) {
     return true;
 };
 
-Class("Session", {
-    has: {
-        query: {is: 'n/a', init: null}
-    },
-    methods: {
-        initialize: function () {
-            this.query = new HTMLQuery();
-        },
-        load: function () {
-            var broot = this.query.getRoot();
-            allPages = new PagesCollection(
-                    [
-                        new PageNavigation(new HTMLQuery('content', broot), 'toc', this, this.query, true),
-                        new PageNavigation(new HTMLQuery('navigation', broot), 'navigation', this, this.query),
-                        new Page(new HTMLQuery('footer', broot), 'footer', this, true),
-                        new PageArticle(this.query, 'article', this)
-                    ]);
+var Session = function () {
+    this.query = new HTMLQuery();
 
-            document.getElementById('site-name').innerHTML = config.SITE_NAME;
-            document.getElementById('site-description').innerHTML = config.SITE_DESCRIPTION;
-            return this;
-        }
-    }
+    this.load = function () {
+        var broot = this.query.getRootName();
+        allPages = new PagesCollection(
+                [
+                    new PageNavigation(new HTMLQuery('content', broot), 'toc', this, this.query, true),
+                    new PageNavigation(new HTMLQuery('navigation', broot), 'navigation', this, this.query),
+                    new Page(new HTMLQuery('footer', broot), 'footer', this, true),
+                    new PageArticle(this.query, 'article', this)
+                ]);
 
-});
+        document.getElementById('site-name').innerHTML = config.SITE_NAME;
+        document.getElementById('site-description').innerHTML = config.SITE_DESCRIPTION;
+        return this;
+    };
+};
 
 
 function start() {

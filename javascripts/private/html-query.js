@@ -27,24 +27,22 @@
 var HTMLQuery = function (location, root) {
     this.root = null;
     this.pageName = null;
-    this.url = null;
 
     if (!utils.isUndefined(location) && !utils.isUndefined(root)) {
         this.root = root;
         this.pageName = location;
     } else {
-        if (utils.isUndefined(location) && utils.isUndefined(root)) {
-            this.url = window.location.href;
-        } else if (!utils.isUndefined(location)) {
-            this.url = location;
+        var url;
+        if (!utils.isUndefined(location)) {
+            url = location;
         } else {
-            this.url = window.location.href;
+            url = window.location.href;
         }
-        this.root = utils.urlParam('root', this.url, config.DEFAULT_ROOT);
-        this.pageName = utils.urlParam('page', this.url, config.DEFAULT_PAGE);
+        this.root = utils.urlParam('root', url, config.DEFAULT_ROOT);
+        this.pageName = utils.urlParam('page', url, config.DEFAULT_PAGE);
     }
 
-    this.getRoot = function () {
+    this.getRootName = function () {
         return this.root;
     };
     this.getPageName = function () {
