@@ -24,29 +24,39 @@
 
 /* global utils, config */
 
-var HTMLQuery = function (location, root) {
-    this.root = null;
-    this.pageName = null;
+var HTMLQuery = function (location, newroot) {
+    var root = null;
+    var pageName = null;
 
-    if (!utils.isUndefined(location) && !utils.isUndefined(root)) {
-        this.root = root;
-        this.pageName = location;
-    } else {
-        var url;
-        if (!utils.isUndefined(location)) {
-            url = location;
+    var getURLParam = function (paramName, url, default_value) {
+        var results = new RegExp('[\\?&]' + paramName + '=([^&#]*)').exec(url);
+        if (!results) {
+            return default_value;
         } else {
-            url = window.location.href;
+            return results[1] || default_value;
         }
-        this.root = utils.urlParam('root', url, config.DEFAULT_ROOT);
-        this.pageName = utils.urlParam('page', url, config.DEFAULT_PAGE);
+    };
+
+    var fromURLtoVars = function (url) {
+        root = getURLParam('root', url, config.DEFAULT_ROOT);
+        pageName = getURLParam('page', url, config.DEFAULT_PAGE);
+    };
+
+
+    if (!utils.isUndefined(location) && !utils.isUndefined(newroot)) {
+        root = newroot;
+        pageName = location;
+    } else if (!utils.isUndefined(location)) {
+        fromURLtoVars(location);
+    } else {
+        fromURLtoVars(window.location.href);
     }
 
     this.getRootName = function () {
-        return this.root;
+        return root;
     };
     this.getPageName = function () {
-        return this.pageName;
+        return pageName;
     };
 
 };

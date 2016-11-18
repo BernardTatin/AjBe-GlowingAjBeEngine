@@ -7,23 +7,27 @@
 
 "use strict";
 
-Module('MyAjax', function (m) {
-    var AjaxStates = (function () {
-        return {
-            IDLE: 0,
-            OPENED: 1,
-            HEADERS_RECEIVED: 2,
-            LOADING: 3,
-            DONE: 4
-        };
-    })();
+var PureAjax = (function () {
+    return {
+        AjaxStates: (function () {
+            return {
+                IDLE: 0,
+                OPENED: 1,
+                HEADERS_RECEIVED: 2,
+                LOADING: 3,
+                DONE: 4
+            };
+        })(),
+        HttpStatus: (function () {
+            return {
+                OK: 200,
+                NOTFOUND: 404
+            };
+        })()
+    };
+})();
 
-    var HttpStatus = (function () {
-        return {
-            OK: 200,
-            NOTFOUND: 404
-        };
-    })();
+Module('MyAjax', function (m) {
 
     Class('AjaxLoadable', {
         methods: {
@@ -64,8 +68,8 @@ Module('MyAjax', function (m) {
                 var req = this.request;
                 req.open(this.http_request, this.url, true);
                 req.onreadystatechange = function (aEvt) {
-                    if (this.readyState == AjaxStates.DONE) {
-                        if (this.status == HttpStatus.OK) {
+                    if (this.readyState === PureAjax.AjaxStates.DONE) {
+                        if (this.status === PureAjax.HttpStatus.OK) {
                             this.ajax_loadable.on_success(this.responseText);
                         } else {
                             // TODO : afficher l'erreur

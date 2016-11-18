@@ -39,14 +39,6 @@ var utils = (function () {
     }
 
     return {
-        urlParam: function (paramName, url, default_value) {
-            var results = new RegExp('[\\?&]' + paramName + '=([^&#]*)').exec(url);
-            if (!results) {
-                return default_value;
-            } else {
-                return results[1] || default_value;
-            }
-        },
         setUrlInBrowser: function (url) {
             if (window.history && window.history.pushState) {
                 window.history.pushState(document.title, document.title, url);
