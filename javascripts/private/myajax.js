@@ -49,12 +49,8 @@ Module('MyAjax', function (m) {
 				return this;
 			},
 			prepareRequest: function() {
-				var req = null;
-	            if (window.XMLHttpRequest) {
-	                req = new XMLHttpRequest();
-	            } else {
-	                req = new ActiveXObject("Microsoft.XMLHTTP");
-	            }
+				var req = window.getNewHttpRequest();
+
 				req.self = this;
 				if (req.timeout) {
 					req.timeout = 9000;

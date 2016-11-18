@@ -167,3 +167,14 @@ if (!document.getElementById && document.all) {
         return document.all[id];
     }
 }
+
+
+if (window.XMLHttpRequest) {
+    window.getNewHttpRequest = function() {
+        return new XMLHttpRequest();
+    };
+} else {
+    window.getNewHttpRequest = function() {
+        return new ActiveXObject("Microsoft.XMLHTTP");
+    };
+}

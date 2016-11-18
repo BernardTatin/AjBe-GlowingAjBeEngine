@@ -202,11 +202,11 @@ Class("PageNavigation", {
 					element.self = self;
 					element.href = element.getAttribute('href');
 					element.currentRoot = currentRoot;
-                    if (window.page) {
+                    /* if (window.page) {
                         element.currentPage = window.page.getPageName();
                     } else {
                         element.currentPage = null;
-                    }
+                    } */
 					element.session = session;
 					if (!element.hasClickEvent) {
 						purejsLib.addEvent(element, 'click', clickdEventListener);
