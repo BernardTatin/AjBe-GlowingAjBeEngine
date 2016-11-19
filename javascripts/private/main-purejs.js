@@ -11,7 +11,7 @@ var linkTag = 'p';
 
 
 Class("BasePage", {
-    isa: MyAjax.AjaxLoadable,
+//    isa: MyAjax.AjaxLoadable,
     methods: {
         initialize: function () {
             this.isItLoaded = false;

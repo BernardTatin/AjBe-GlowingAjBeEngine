@@ -7,7 +7,7 @@
 
 "use strict";
 
-var PureAjax = (function () {
+var PrivateAjax = (function () {
     return {
         AjaxStates: (function () {
             return {
@@ -27,49 +27,39 @@ var PureAjax = (function () {
     };
 })();
 
-Module('MyAjax', function (m) {
+var MyAjax = (function () {
 
-    Class('AjaxLoadable', {
-        methods: {
-            urlName: function () {
+    return {
+        AjaxLoadable: function () {
+            this.urlName = function () {
                 return null;
-            },
-            on_success: function (data) {
-            },
-            on_failure: function (data) {
-            }
-        }
-    });
-
-    Class('AjaxGetPage', {
-        has: {
-            url: {is: 'n/a', init: null},
-            http_request: {is: 'ro', init: 'GET'},
-            request: {is: 'n/a', init: null}
+            };
+            this.on_success = function (data) {
+            };
+            this.on_failure = function (data) {
+            };
         },
-        methods: {
-            initialize: function (ajax_loadable) {
-                this.url = ajax_loadable.urlName();
-                var req = this.prepareRequest();
-                req.ajax_loadable = ajax_loadable;
-                return this;
-            },
-            prepareRequest: function () {
+        AjaxGetPage: function (ajax_loadable) {
+            var url = ajax_loadable.urlName();
+            var http_request = 'GET';
+            var request = null;
+
+            this.prepareRequest = function () {
                 var req = window.getNewHttpRequest();
 
                 req.self = this;
                 if (req.timeout) {
                     req.timeout = 9000;
                 }
-                this.request = req;
+                request = req;
                 return req;
-            },
-            openRequest: function () {
-                var req = this.request;
-                req.open(this.http_request, this.url, true);
+            };
+            this.openRequest = function () {
+                var req = request;
+                req.open(http_request, url, true);
                 req.onreadystatechange = function (aEvt) {
-                    if (this.readyState === PureAjax.AjaxStates.DONE) {
-                        if (this.status === PureAjax.HttpStatus.OK) {
+                    if (this.readyState === PrivateAjax.AjaxStates.DONE) {
+                        if (this.status === PrivateAjax.HttpStatus.OK) {
                             this.ajax_loadable.on_success(this.responseText);
                         } else {
                             // TODO : afficher l'erreur
@@ -79,16 +69,22 @@ Module('MyAjax', function (m) {
                         }
                     }
                 };
-            },
-            send: function (data) {
+            };
+
+            this.send = function (data) {
                 this.openRequest();
                 if (utils.isUndefined(data)) {
-                    this.request.send(null);
+                    request.send(null);
                 } else {
-                    this.request.send(data);
+                    request.send(data);
                 }
-            }
-        }
-    });
+            };
 
-});
+            var req = this.prepareRequest();
+            req.ajax_loadable = ajax_loadable;
+
+
+        }
+    };
+
+})();

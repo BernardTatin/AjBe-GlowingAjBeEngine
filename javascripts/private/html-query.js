@@ -25,7 +25,7 @@
 /* global utils, config */
 
 var HTMLQuery = function (location, newroot) {
-    var root = null;
+    var rootName = null;
     var pageName = null;
 
     var getURLParam = function (paramName, url, default_value) {
@@ -38,13 +38,13 @@ var HTMLQuery = function (location, newroot) {
     };
 
     var fromURLtoVars = function (url) {
-        root = getURLParam('root', url, config.DEFAULT_ROOT);
+        rootName = getURLParam('root', url, config.DEFAULT_ROOT);
         pageName = getURLParam('page', url, config.DEFAULT_PAGE);
     };
 
-
+    // we can have 0, 1 or 2 positional parameters
     if (!utils.isUndefined(location) && !utils.isUndefined(newroot)) {
-        root = newroot;
+        rootName = newroot;
         pageName = location;
     } else if (!utils.isUndefined(location)) {
         fromURLtoVars(location);
@@ -53,7 +53,7 @@ var HTMLQuery = function (location, newroot) {
     }
 
     this.getRootName = function () {
-        return root;
+        return rootName;
     };
     this.getPageName = function () {
         return pageName;
