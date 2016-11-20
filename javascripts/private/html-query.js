@@ -46,6 +46,7 @@ var HTMLQuery = function (location, newroot) {
     if (!utils.isUndefined(location) && !utils.isUndefined(newroot)) {
         rootName = newroot;
         pageName = location;
+
     } else if (!utils.isUndefined(location)) {
         fromURLtoVars(location);
     } else {

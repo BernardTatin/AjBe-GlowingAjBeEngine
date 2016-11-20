@@ -57,8 +57,8 @@ var BasePage = function (query, place) {
             node.innerHTML = html;
         });
     };
-    this.forEachElementById = function (id, onElement) {
-        var elements = document.getElementById(place).getElementsByTagName(id);
+    this.forEachElementById = function (tag, onElement) {
+        var elements = document.getElementById(place).getElementsByTagName(tag);
         Array.from(elements).forEach(onElement);
     };
 };
@@ -103,7 +103,8 @@ var PageArticle = function (query, place) {
     Page.call(this, query, place, false);
     window.article = this;
     this.resizeSVG = function () {
-        var maxWidth = document.getElementById(this.getPlace()).clientWidth;
+        var place = this.getPlace();
+        var maxWidth = document.getElementById(place).clientWidth;
         this.forEachElementById('svg',
                 function (element) {
                     var width = element.clientWidth;
@@ -132,10 +133,15 @@ var PageNavigation = function (query, place, mainHTMLQuery, hasTitle) {
         var currentPage = query.getPageName();
         var currentRoot = query.getRootName();
         var url = query.url;
+
+        this.setQuery(query);
+        this.setMainHTMLQuery(query);
         this.forEachElementById(linkTag,
                 function (element) {
                     var href = element.getAttribute('href');
                     var query = new HTMLQuery(href);
+                    //console.log('toc_presentation : currentRoot = <' + currentRoot + '> currentPage : <' + currentPage + '>');
+                    //console.log('toc_presentation : query.Root = <' + query.getRootName() + '> query.Page : <' + query.getPageName() + '>');
                     element.currentRoot = currentRoot;
                     element.currentPage = currentPage;
                     if (query.getPageName() === currentPage &&
@@ -158,22 +164,27 @@ var PageNavigation = function (query, place, mainHTMLQuery, hasTitle) {
         document.getElementById(place).innerHTML = this.supressMetaTags(result);
     };
     this.after_on_success = function (result) {
-        this.toc_presentation(mainHTMLQuery);
+        console.log('after_on_success');
         this.base_after(result);
+        this.toc_presentation(mainHTMLQuery);
     };
     this.main_on_success = function (result) {
         if (!jprint.isInPrint()) {
             // f**k this !
             var self = this;
+            var currentPage = query.getPageName();
+            var currentRoot = query.getRootName();
 
             this.forEachElementById(linkTag,
                     function (element) {
+                        element.currentRoot = currentRoot;
+                        element.currentPage = currentPage;
                         element.myNavPage = self;
                         element.href = element.getAttribute('href');
-                        if (!element.hasClickEvent) {
-                            purejsLib.addEvent(element, 'click', clickdEventListener);
-                            element.hasClickEvent = true;
-                        }
+                        //if (!element.hasClickEvent) {
+                        purejsLib.addEvent(element, 'click', clickdEventListener);
+                        element.hasClickEvent = true;
+                        //}
                     });
         } else {
             document.getElementById(this.getPlace()).style.display = 'none';
@@ -205,9 +216,13 @@ var clickdEventListener = function (e) {
     var changed = false;
     // buggy test ?
     // buggy init of these values ?
+    console.log("clickdEventListener -> newRoot : <" + newRoot + '> myself.currentRoot : <' + myself.currentRoot + '>');
     if (newRoot !== myself.currentRoot) {
-        content = new PageNavigation(new HTMLQuery('content', newRoot), 'toc', query, true);
+        var cQuery = new HTMLQuery('content', newRoot);
+        content = new PageNavigation(cQuery, 'toc', query, true);
         changed = true;
+        content.setQuery(cQuery);
+        content.setMainHTMLQuery(cQuery);
     }
     if (changed || newPage !== myself.currentPage) {
         article = new PageArticle(query, 'article');
@@ -216,9 +231,9 @@ var clickdEventListener = function (e) {
     }
     if (changed) {
         allPages.doload([content, article]);
-        myself.myNavPage.setQuery(query);
-        myself.myNavPage.setMainHTMLQuery(query);
-        myself.myNavPage.toc_presentation(query);
+        if (!content) {
+            myself.myNavPage.toc_presentation(query);
+        }
     }
     return true;
 };
