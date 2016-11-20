@@ -18,6 +18,9 @@ var BasePage = function (query, place) {
     var place = place;
     var file_name = null;
 
+    this.setQuery = function (newquery) {
+        query = newquery;
+    };
     this.getPlace = function () {
         return place;
     };
@@ -121,6 +124,10 @@ var PageNavigation = function (query, place, mainHTMLQuery, hasTitle) {
     var hasTitle = hasTitle;
     // BasePage.call(this, query, place);
     Page.call(this, query, place, false);
+
+    this.setMainHTMLQuery = function (newQuery) {
+        mainHTMLQuery = newQuery;
+    };
     this.toc_presentation = function (query) {
         var currentPage = query.getPageName();
         var currentRoot = query.getRootName();
@@ -161,7 +168,7 @@ var PageNavigation = function (query, place, mainHTMLQuery, hasTitle) {
 
             this.forEachElementById(linkTag,
                     function (element) {
-                        element.self = self;
+                        element.myNavPage = self;
                         element.href = element.getAttribute('href');
                         if (!element.hasClickEvent) {
                             purejsLib.addEvent(element, 'click', clickdEventListener);
@@ -209,9 +216,9 @@ var clickdEventListener = function (e) {
     }
     if (changed) {
         allPages.doload([content, article]);
-        myself.self.query = query;
-        myself.self.mainHTMLQuery = query;
-        myself.self.toc_presentation(query);
+        myself.myNavPage.setQuery(query);
+        myself.myNavPage.setMainHTMLQuery(query);
+        myself.myNavPage.toc_presentation(query);
     }
     return true;
 };
