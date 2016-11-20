@@ -21,16 +21,7 @@ var BasePage = function (query, place) {
     this.getPlace = function () {
         return place;
     };
-    this.getQuery = function () {
-        return query;
-    };
     this.getRootName = function () {
-        if (!query) {
-            console.log('query est null !!');
-        }
-        if (!query.getRootName) {
-            console.log('query.getRootName est null !!');
-        }
         return query.getRootName();
     };
     this.getPageName = function () {
@@ -55,7 +46,6 @@ var BasePage = function (query, place) {
         }
     };
     this.on_failure = function (data) {
-        var place = this.getPlace();
         document.getElementById(place).style.display = 'none';
     };
     this.setHTMLByClassName = function (className, html) {
@@ -65,7 +55,7 @@ var BasePage = function (query, place) {
         });
     };
     this.forEachElementById = function (id, onElement) {
-        var elements = document.getElementById(this.getPlace()).getElementsByTagName(id);
+        var elements = document.getElementById(place).getElementsByTagName(id);
         Array.from(elements).forEach(onElement);
     };
 };
@@ -106,7 +96,7 @@ var Page = function (query, place, hasCopyright) {
 makeParentOf(BasePage, Page);
 
 var PageArticle = function (query, place) {
-    BasePage.call(this, query, place);
+    // BasePage.call(this, query, place);
     Page.call(this, query, place, false);
     window.article = this;
     this.resizeSVG = function () {
@@ -129,7 +119,7 @@ makeParentOf(Page, PageArticle);
 var PageNavigation = function (query, place, mainHTMLQuery, hasTitle) {
     var mainHTMLQuery = mainHTMLQuery;
     var hasTitle = hasTitle;
-    BasePage.call(this, query, place);
+    // BasePage.call(this, query, place);
     Page.call(this, query, place, false);
     this.toc_presentation = function (query) {
         var currentPage = query.getPageName();
@@ -165,7 +155,6 @@ var PageNavigation = function (query, place, mainHTMLQuery, hasTitle) {
         this.base_after(result);
     };
     this.main_on_success = function (result) {
-        console.log('main_on_success');
         if (!jprint.isInPrint()) {
             // f**k this !
             var self = this;
@@ -174,7 +163,6 @@ var PageNavigation = function (query, place, mainHTMLQuery, hasTitle) {
                     function (element) {
                         element.self = self;
                         element.href = element.getAttribute('href');
-                        console.log('set event for <' + element.href + '>');
                         if (!element.hasClickEvent) {
                             purejsLib.addEvent(element, 'click', clickdEventListener);
                             element.hasClickEvent = true;
@@ -191,9 +179,6 @@ var PagesCollection = function (newPages) {
     this.doload = function (pages) {
         pages.forEach(function (page) {
             if (page && !page.req) {
-                if (!page.urlName) {
-                    console.log('page.urlName est null...')
-                }
                 page.req = new MyAjax.AjaxGetPage(page);
                 page.req.send();
             }

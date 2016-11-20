@@ -30,47 +30,31 @@ var PrivateAjax = (function () {
 var MyAjax = (function () {
 
     return {
-        AjaxLoadable: function () {
-            this.urlName = function () {
-                return null;
-            };
-            this.on_success = function (data) {
-            };
-            this.on_failure = function (data) {
-            };
-        },
         AjaxGetPage: function (ajax_loadable) {
-            if (!ajax_loadable) {
-                console.log("ajax_loadable est null");
-            }
-            if (!ajax_loadable.urlName) {
-                console.log("ajax_loadable.urlName est null");
-            }
             var url = ajax_loadable.urlName();
             var http_request = 'GET';
             var request = null;
 
             this.prepareRequest = function () {
-                var req = window.getNewHttpRequest();
+                request = window.getNewHttpRequest();
+                request.ajax_loadable = ajax_loadable;
 
-                req.self = this;
-                if (req.timeout) {
-                    req.timeout = 9000;
+                if (request.timeout) {
+                    request.timeout = 9000;
                 }
-                request = req;
-                return req;
+                return request;
             };
-            this.openRequest = function () {
-                var req = request;
-                req.open(http_request, url, true);
-                req.onreadystatechange = function (aEvt) {
-                    if (this.readyState === PrivateAjax.AjaxStates.DONE) {
-                        if (this.status === PrivateAjax.HttpStatus.OK) {
-                            this.ajax_loadable.on_success(this.responseText);
+
+            var openRequest = function () {
+                request.open(http_request, url, true);
+                request.onreadystatechange = function () {
+                    if (request.readyState === PrivateAjax.AjaxStates.DONE) {
+                        if (request.status === PrivateAjax.HttpStatus.OK) {
+                            request.ajax_loadable.on_success(request.responseText);
                         } else {
                             // TODO : afficher l'erreur
-                            this.ajax_loadable.on_failure("<h1>ERREUR " +
-                                    this.status +
+                            request.ajax_loadable.on_failure("<h1>ERREUR " +
+                                    request.status +
                                     " !!!!</h1><h2>Cette page n'existe pas!</h2><p>Vérifiez l'URL!</p>");
                         }
                     }
@@ -78,7 +62,7 @@ var MyAjax = (function () {
             };
 
             this.send = function (data) {
-                this.openRequest();
+                openRequest();
                 if (utils.isUndefined(data)) {
                     request.send(null);
                 } else {
@@ -86,8 +70,11 @@ var MyAjax = (function () {
                 }
             };
 
-            var req = this.prepareRequest();
-            req.ajax_loadable = ajax_loadable;
+            try {
+                request = this.prepareRequest();
+            } catch (e) {
+                ajax_loadable.on_failure("<p>Prepare Request failed</p>");
+            }
         }
     };
 
