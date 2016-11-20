@@ -91,7 +91,7 @@ var Page = function (query, place, hasCopyright) {
         }
         utils.app_string();
     };
-    this.main_on_sucess = function (data) {
+    this.main_on_success = function (data) {
         var place = this.getPlace();
         document.getElementById(place).style.display = 'block';
     };
@@ -164,16 +164,17 @@ var PageNavigation = function (query, place, mainHTMLQuery, hasTitle) {
         this.toc_presentation(mainHTMLQuery);
         this.base_after(result);
     };
-    this.main_on_sucess = function (result) {
+    this.main_on_success = function (result) {
+        console.log('main_on_success');
         if (!jprint.isInPrint()) {
-            var currentRoot = this.query.getRootName();
-            var currentPage = this.query.getPageName();
             // f**k this !
             var self = this;
+
             this.forEachElementById(linkTag,
                     function (element) {
                         element.self = self;
                         element.href = element.getAttribute('href');
+                        console.log('set event for <' + element.href + '>');
                         if (!element.hasClickEvent) {
                             purejsLib.addEvent(element, 'click', clickdEventListener);
                             element.hasClickEvent = true;
