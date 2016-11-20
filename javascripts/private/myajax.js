@@ -40,6 +40,12 @@ var MyAjax = (function () {
             };
         },
         AjaxGetPage: function (ajax_loadable) {
+            if (!ajax_loadable) {
+                console.log("ajax_loadable est null");
+            }
+            if (!ajax_loadable.urlName) {
+                console.log("ajax_loadable.urlName est null");
+            }
             var url = ajax_loadable.urlName();
             var http_request = 'GET';
             var request = null;
@@ -82,8 +88,6 @@ var MyAjax = (function () {
 
             var req = this.prepareRequest();
             req.ajax_loadable = ajax_loadable;
-
-
         }
     };
 

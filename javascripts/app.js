@@ -11,7 +11,7 @@ var marcel_kernel = (function () {
     // can be modified by program in a future release
     var appVariables = {
         // first libs to load
-        beforelibs: ['public/joose.js', 'private/utils.js', 'private/html-query.js'],
+        beforelibs: ['private/utils.js', 'private/html-query.js'],
         // all libs
         libs: ['private/myajax.js', 'private/purejs-lib.js', 'private/jprint.js'],
         // code entry point
