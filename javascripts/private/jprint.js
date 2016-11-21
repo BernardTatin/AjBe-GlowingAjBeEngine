@@ -47,28 +47,31 @@ var jprint = (function () {
         document.getElementById('toc').style.display = oldTocDisplay;
         document.getElementById('navigation').style.display = oldNavDisplay;
     };
-    return {
-        initialize: function () {
-            inPrint = false;
-            oldNavDisplay = false;
-            oldTocDisplay = false;
-            if (window.matchMedia) {
-                var mediaQueryList = window.matchMedia('print');
-                mediaQueryList.addListener(function (mql) {
-                    if (mql.matches) {
-                        beforePrint();
-                    } else {
-                        afterPrint();
-                    }
-                });
-            }
-            window.onbeforeprint = beforePrint;
-            window.onafterprint = afterPrint;
-        },
-        isInPrint: function () {
-            return inPrint;
+
+    var self = {};
+
+    self.initialize = function () {
+        inPrint = false;
+        oldNavDisplay = false;
+        oldTocDisplay = false;
+        if (window.matchMedia) {
+            var mediaQueryList = window.matchMedia('print');
+            mediaQueryList.addListener(function (mql) {
+                if (mql.matches) {
+                    beforePrint();
+                } else {
+                    afterPrint();
+                }
+            });
         }
+        window.onbeforeprint = beforePrint;
+        window.onafterprint = afterPrint;
     };
+    self.isInPrint = function () {
+        return inPrint;
+    };
+
+    return self;
 })();
 
 jprint.initialize();
