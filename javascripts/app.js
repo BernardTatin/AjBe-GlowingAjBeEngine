@@ -13,7 +13,7 @@ var marcel_kernel = (function () {
         // first libs to load
         beforelibs: ['private/utils.js', 'private/html-query.js'],
         // all libs
-        libs: ['private/myajax.js', 'private/purejs-lib.js', 'private/jprint.js', 'private/main-purejs.js'],
+        libs: ['private/myajax.js', 'private/purejs-lib.js', 'private/jprint.js', 'private/pages.js'],
         // code entry point
         main_code: 'private/session.js',
         // library name
