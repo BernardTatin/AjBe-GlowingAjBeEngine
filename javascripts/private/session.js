@@ -1,4 +1,8 @@
 /*
+ *
+ * session.js
+ */
+/*
  * The MIT License
  *
  * Copyright 2016 bernard.
