@@ -1,4 +1,4 @@
-/* global LazyLoad */
+/* global LazyLoad, purejsLib */
 
 "use strict";
 
@@ -13,7 +13,7 @@ var marcel_kernel = (function () {
         // first libs to load
         beforelibs: ['private/utils.js', 'private/html-query.js'],
         // all libs
-        libs: ['private/myajax.js', 'private/purejs-lib.js', 'private/jprint.js'],
+        libs: ['private/myajax.js', 'private/purejs-lib.js', 'private/jprint.js', 'private/session.js'],
         // code entry point
         main_code: 'private/main-purejs.js',
         // library name
@@ -24,6 +24,11 @@ var marcel_kernel = (function () {
     // normalize library name
     function normalize_libname(libname) {
         return appConstants.jsRoot + '/' + libname;
+    }
+
+    function start() {
+        var session = new Session();
+        session.load();
     }
 
     var self = {};
@@ -40,6 +45,7 @@ var marcel_kernel = (function () {
         LazyLoad.js(appVariables.beforelibs.map(normalize_libname), function () {
             LazyLoad.js(appVariables.libs.map(normalize_libname), function () {
                 LazyLoad.js(normalize_libname(appVariables.main_code), function () {
+                    docReady(start);
                 });
             });
         });
