@@ -8,36 +8,41 @@
 "use strict";
 
 var PrivateAjax = (function () {
-    return {
-        AjaxStates: (function () {
-            return {
-                IDLE: 0,
-                OPENED: 1,
-                HEADERS_RECEIVED: 2,
-                LOADING: 3,
-                DONE: 4
-            };
-        })(),
-        HttpStatus: (function () {
-            return {
-                OK: 200,
-                NOTFOUND: 404
-            };
-        })()
-    };
+    // this module pattern is described here
+    //cf https://zestedesavoir.com/tutoriels/358/module-pattern-en-javascript/
+    var self = {};
+
+    self.AjaxStates = (function () {
+        return {
+            IDLE: 0,
+            OPENED: 1,
+            HEADERS_RECEIVED: 2,
+            LOADING: 3,
+            DONE: 4
+        };
+    })();
+
+    self.HttpStatus = (function () {
+        return {
+            OK: 200,
+            NOTFOUND: 404
+        };
+    })();
+
+    return self;
 })();
 
 var MyAjax = (function () {
 
     return {
-        AjaxGetPage: function (ajax_loadable) {
-            var url = ajax_loadable.urlName();
+        AjaxGetPage: function (ajax_listener) {
+            var url = ajax_listener.urlName();
             var http_request = 'GET';
             var request = null;
 
-            this.prepareRequest = function () {
+            var prepareRequest = function () {
                 request = window.getNewHttpRequest();
-                request.ajax_loadable = ajax_loadable;
+                request.ajax_listener = ajax_listener;
 
                 if (request.timeout) {
                     request.timeout = 9000;
@@ -50,10 +55,10 @@ var MyAjax = (function () {
                 request.onreadystatechange = function () {
                     if (request.readyState === PrivateAjax.AjaxStates.DONE) {
                         if (request.status === PrivateAjax.HttpStatus.OK) {
-                            request.ajax_loadable.on_success(request.responseText);
+                            request.ajax_listener.on_success(request.responseText);
                         } else {
                             // TODO : afficher l'erreur
-                            request.ajax_loadable.on_failure("<h1>ERREUR " +
+                            request.ajax_listener.on_failure("<h1>ERREUR " +
                                     request.status +
                                     " !!!!</h1><h2>Cette page n'existe pas!</h2><p>Vérifiez l'URL!</p>");
                         }
@@ -71,9 +76,9 @@ var MyAjax = (function () {
             };
 
             try {
-                request = this.prepareRequest();
+                request = prepareRequest();
             } catch (e) {
-                ajax_loadable.on_failure("<p>Prepare Request failed</p>");
+                ajax_listener.on_failure("<p>Prepare Request failed</p>");
             }
         }
     };
