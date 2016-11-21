@@ -26,24 +26,26 @@ var marcel_kernel = (function () {
         return appConstants.jsRoot + '/' + libname;
     }
 
-    return {
-        // return only library name
-        app_type: function () {
-            return appVariables.libname;
-        },
-        // load all necessary code
-        app_loader: function () {
-            // TODO : must be elsewhere
-            appVariables.navigator = navigator.appName + ' ' + navigator.appCodeName + ' ' + navigator.appVersion;
-            // three steps loader
-            LazyLoad.js(appVariables.beforelibs.map(normalize_libname), function () {
-                LazyLoad.js(appVariables.libs.map(normalize_libname), function () {
-                    LazyLoad.js(normalize_libname(appVariables.main_code), function () {
-                    });
+    var self = {};
+
+    // return only library name
+    self.app_type = function () {
+        return appVariables.libname;
+    };
+    // load all necessary code
+    self.app_loader = function () {
+        // TODO : must be elsewhere
+        appVariables.navigator = navigator.appName + ' ' + navigator.appCodeName + ' ' + navigator.appVersion;
+        // three steps loader
+        LazyLoad.js(appVariables.beforelibs.map(normalize_libname), function () {
+            LazyLoad.js(appVariables.libs.map(normalize_libname), function () {
+                LazyLoad.js(normalize_libname(appVariables.main_code), function () {
                 });
             });
-        }
+        });
     };
+
+    return self;
 })();
 
 // what to do on load
