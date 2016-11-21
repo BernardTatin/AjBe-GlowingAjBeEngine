@@ -23,7 +23,7 @@
  */
 
 
-/* global purejsLib, config */
+/* global purejsLib, config, Pages */
 
 var Session = function () {
     window.article = null;
@@ -37,14 +37,14 @@ var Session = function () {
     });
 
     this.query = new HTMLQuery();
-    this.load = function () {
+    this.run = function () {
         var broot = this.query.getRootName();
-        allPages = new PagesCollection(
+        allPages = new Pages.PagesCollection(
                 [
-                    new Page(new HTMLQuery('footer', broot), 'footer', true),
-                    new PageNavigation(new HTMLQuery('content', broot), 'toc', this.query, true),
-                    new PageNavigation(new HTMLQuery('navigation', broot), 'navigation', this.query, false),
-                    new PageArticle(this.query, 'article')
+                    new Pages.Page(new HTMLQuery('footer', broot), 'footer', true),
+                    new Pages.PageNavigation(new HTMLQuery('content', broot), 'toc', this.query, true),
+                    new Pages.PageNavigation(new HTMLQuery('navigation', broot), 'navigation', this.query, false),
+                    new Pages.PageArticle(this.query, 'article')
                 ]);
         document.getElementById('site-name').innerHTML = config.SITE_NAME;
         document.getElementById('site-description').innerHTML = config.SITE_DESCRIPTION;

@@ -13,9 +13,9 @@ var marcel_kernel = (function () {
         // first libs to load
         beforelibs: ['private/utils.js', 'private/html-query.js'],
         // all libs
-        libs: ['private/myajax.js', 'private/purejs-lib.js', 'private/jprint.js', 'private/session.js'],
+        libs: ['private/myajax.js', 'private/purejs-lib.js', 'private/jprint.js', 'private/main-purejs.js'],
         // code entry point
-        main_code: 'private/main-purejs.js',
+        main_code: 'private/session.js',
         // library name
         libname: 'pure Javascript 0.2.2',
         // navigator name
@@ -28,7 +28,7 @@ var marcel_kernel = (function () {
 
     function start() {
         var session = new Session();
-        session.load();
+        session.run();
     }
 
     var self = {};
