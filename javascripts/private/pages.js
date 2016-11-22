@@ -25,20 +25,32 @@
  * THE SOFTWARE.
  */
 
-
+// bad JavaScript Stuff, see :
+// http://alistapart.com/article/prototypal-object-oriented-programming-using-javascript
 
 /* global utils, config, MyAjax, BasePage, purejsLib, jprint, Page */
 
 "use strict";
-var allPages = null;
-var linkTag = 'p';
 
+// TODO : must be elsewhere
+var allPages = null;
+
+// TODO : must be elsewhere
 var makeParentOf = function (parent, child) {
     child.prototype = Object.create(parent.prototype);
     child.prototype.constructor = child;
+    if (!child.prototype.parent) {
+        child.prototype.parent = [parent.prototype];
+        console.log("first parent");
+    } else {
+        child.prototype.parent.push(parent.prototype);
+        console.log("!first parent" + child.prototype.parent.length);
+    }
 };
 
 var Pages = (function () {
+    // TODO : bad idea
+    var linkTag = 'p';
     var self = {};
 
     var BasePage = function (query, place) {
@@ -124,6 +136,7 @@ var Pages = (function () {
             document.getElementById(place).innerHTML = this.supressMetaTags(data);
         };
     };
+    // TODO: not sure it's a good place for this
     makeParentOf(BasePage, self.Page);
 
     self.PageArticle = function (query, place) {
@@ -189,7 +202,15 @@ var Pages = (function () {
             if (hasTitle && config.TOC_TITLE) {
                 result = '<h2>' + config.TOC_TITLE + '</h2>' + result;
             }
-            document.getElementById(place).innerHTML = this.supressMetaTags(result);
+            // document.getElementById(place).innerHTML = this.supressMetaTags(result);
+            for (var i = 0; i < this.parent.length; i++) {
+                if (this.parent[i].before_on_success) {
+                    this.parent[0].before_on_success.call(this, result);
+                    console.log("parent[" + i + "]");
+                } else {
+                    console.log("! parent[" + i + "]");
+                }
+            }
         };
         this.after_on_success = function (result) {
             console.log('after_on_success');
