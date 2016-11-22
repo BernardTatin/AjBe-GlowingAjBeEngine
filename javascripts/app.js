@@ -27,7 +27,7 @@
  */
 
 
-/* global LazyLoad, purejsLib */
+/* global LazyLoad, purejsLib, Session */
 
 "use strict";
 
@@ -55,10 +55,6 @@ var marcel_kernel = (function () {
         return appConstants.jsRoot + '/' + libname;
     }
 
-    function start() {
-        var session = new Session();
-        session.run();
-    }
 
     var self = {};
 
@@ -74,6 +70,10 @@ var marcel_kernel = (function () {
         LazyLoad.js(appVariables.beforelibs.map(normalize_libname), function () {
             LazyLoad.js(appVariables.libs.map(normalize_libname), function () {
                 LazyLoad.js(normalize_libname(appVariables.main_code), function () {
+                    function start() {
+                        var session = new Session();
+                        session.run();
+                    }
                     docReady(start);
                 });
             });
