@@ -59,53 +59,50 @@ var PrivateAjax = (function () {
 
 var MyAjax = (function () {
 
-    return {
-        AjaxGetPage: function (ajax_listener) {
-            var url = ajax_listener.urlName();
-            var http_request = 'GET';
-            var request = null;
+    // not very clever but I'm testing JavaScript
+    var AjaxData = function (ajax_listener) {
+        this.url = ajax_listener.urlName();
+        this.http_request = 'GET';
+        this.request = window.getNewHttpRequest();
+        this.request.ajax_listener = ajax_listener;
 
-            var prepareRequest = function () {
-                request = window.getNewHttpRequest();
-                request.ajax_listener = ajax_listener;
-
-                if (request.timeout) {
-                    request.timeout = 9000;
-                }
-                return request;
-            };
-
-            var openRequest = function () {
-                request.open(http_request, url, true);
-                request.onreadystatechange = function () {
-                    if (request.readyState === PrivateAjax.AjaxStates.DONE) {
-                        if (request.status === PrivateAjax.HttpStatus.OK) {
-                            request.ajax_listener.on_success(request.responseText);
-                        } else {
-                            // TODO : afficher l'erreur
-                            request.ajax_listener.on_failure("<h1>ERREUR " +
-                                    request.status +
-                                    " !!!!</h1><h2>Cette page n'existe pas!</h2><p>Vérifiez l'URL!</p>");
-                        }
-                    }
-                };
-            };
-
-            this.send = function (data) {
-                openRequest();
-                if (utils.isUndefined(data)) {
-                    request.send(null);
-                } else {
-                    request.send(data);
-                }
-            };
-
-            try {
-                request = prepareRequest();
-            } catch (e) {
-                ajax_listener.on_failure("<p>Prepare Request failed</p>");
-            }
+        if (this.request.timeout) {
+            this.request.timeout = 9000;
         }
     };
+
+    var AjaxGetPage = function (ajax_listener) {
+        var ajax_data = new AjaxData(ajax_listener);
+
+        var openRequest = function () {
+            ajax_data.request.open(ajax_data.http_request, ajax_data.url, true);
+            ajax_data.request.onreadystatechange = function () {
+                var req = ajax_data.request;
+                if (req.readyState === PrivateAjax.AjaxStates.DONE) {
+                    if (req.status === PrivateAjax.HttpStatus.OK) {
+                        req.ajax_listener.on_success(req.responseText);
+                    } else {
+                        // TODO : afficher l'erreur
+                        req.ajax_listener.on_failure("<h1>ERREUR " +
+                                req.status +
+                                " !!!!</h1><h2>Cette page n'existe pas!</h2><p>Vérifiez l'URL!</p>");
+                    }
+                }
+            };
+        };
+
+        this.send = function (data) {
+            openRequest();
+            if (utils.isUndefined(data) || !data) {
+                ajax_data.request.send(null);
+            } else {
+                ajax_data.request.send(data);
+            }
+        };
+
+    };
+    var self = {};
+    self.AjaxGetPage = AjaxGetPage;
+    return self;
 
 })();
