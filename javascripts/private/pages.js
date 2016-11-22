@@ -39,13 +39,15 @@ var allPages = null;
 var makeParentOf = function (parent, child) {
     child.prototype = Object.create(parent.prototype);
     child.prototype.constructor = child;
-    if (!child.prototype.parent) {
-        child.prototype.parent = [parent.prototype];
-        console.log("first parent");
-    } else {
-        child.prototype.parent.push(parent.prototype);
-        console.log("!first parent" + child.prototype.parent.length);
-    }
+    /*
+     if (!child.prototype.parent) {
+     child.prototype.parent = [parent.prototype];
+     console.log("first parent");
+     } else {
+     child.prototype.parent.push(parent.prototype);
+     console.log("!first parent" + child.prototype.parent.length);
+     }
+     */
 };
 
 var Pages = (function () {
@@ -57,6 +59,9 @@ var Pages = (function () {
         var query = query;
         var place = place;
         var file_name = null;
+        // TODO: not very useful but funy! and stupid!
+        var before_on_success = [];
+        var after_on_success = [];
 
         this.setQuery = function (newquery) {
             query = newquery;
@@ -77,16 +82,22 @@ var Pages = (function () {
             }
             return file_name;
         };
+        this.addBefore = function (f) {
+            before_on_success.push(f);
+        };
+        this.addAfter = function (f) {
+            after_on_success.push(f);
+        };
         this.on_success = function (data) {
-            if (this.before_on_success) {
-                this.before_on_success(data);
-            }
+            before_on_success.forEach(function (f) {
+                f(data);
+            });
             if (this.main_on_success) {
                 this.main_on_success(data);
             }
-            if (this.after_on_success) {
-                this.after_on_success(data);
-            }
+            after_on_success.forEach(function (f) {
+                f(data);
+            });
         };
         this.on_failure = function (data) {
             document.getElementById(place).style.display = 'none';
@@ -106,6 +117,8 @@ var Pages = (function () {
 
     self.Page = function (query, place, hasCopyright) {
         var hasCopyright = hasCopyright;
+        var mySelf = this;
+
         BasePage.call(this, query, place);
         this.copyright = function () {
             this.setHTMLByClassName('copyright', config.COPYRIGHT);
@@ -117,30 +130,26 @@ var Pages = (function () {
             var metaPattern = /<meta.+\/?>/g;
             return str.replace(metaPattern, '');
         };
-        this.base_after = function (data) {
-            if (hasCopyright) {
-                this.copyright();
-                this.authors();
-            }
-            utils.app_string();
-        };
         this.main_on_success = function (data) {
             var place = this.getPlace();
             document.getElementById(place).style.display = 'block';
         };
-        this.after_on_success = function (data) {
-            this.base_after();
-        };
-        this.before_on_success = function (data) {
-            var place = this.getPlace();
-            document.getElementById(place).innerHTML = this.supressMetaTags(data);
-        };
+        this.addBefore(function (data) {
+            var place = mySelf.getPlace();
+            document.getElementById(place).innerHTML = mySelf.supressMetaTags(data);
+        });
+        this.addAfter(function (data) {
+            if (hasCopyright) {
+                mySelf.copyright();
+                mySelf.authors();
+            }
+            utils.app_string();
+        });
     };
     // TODO: not sure it's a good place for this
     makeParentOf(BasePage, self.Page);
 
     self.PageArticle = function (query, place) {
-        // BasePage.call(this, query, place);
         self.Page.call(this, query, place, false);
         window.article = this;
         this.resizeSVG = function () {
@@ -157,13 +166,13 @@ var Pages = (function () {
         };
         this.after_on_success = function (result) {
             this.resizeSVG();
-            this.base_after(result);
         };
     };
     makeParentOf(self.Page, self.PageArticle);
     self.PageNavigation = function (query, place, mainHTMLQuery, hasTitle) {
         var mainHTMLQuery = mainHTMLQuery;
         var hasTitle = hasTitle;
+        var myself = this;
         // BasePage.call(this, query, place);
         self.Page.call(this, query, place, false);
 
@@ -197,32 +206,22 @@ var Pages = (function () {
                         }
                     });
         };
-        this.before_on_success = function (result) {
-            var place = this.getPlace();
+        // TODO : does nothing !!
+        this.addBefore(function (result) {
             if (hasTitle && config.TOC_TITLE) {
                 result = '<h2>' + config.TOC_TITLE + '</h2>' + result;
             }
-            // document.getElementById(place).innerHTML = this.supressMetaTags(result);
-            for (var i = 0; i < this.parent.length; i++) {
-                if (this.parent[i].before_on_success) {
-                    this.parent[0].before_on_success.call(this, result);
-                    console.log("parent[" + i + "]");
-                } else {
-                    console.log("! parent[" + i + "]");
-                }
-            }
-        };
-        this.after_on_success = function (result) {
+        });
+        this.addAfter(function (result) {
             console.log('after_on_success');
-            this.base_after(result);
-            this.toc_presentation(mainHTMLQuery);
-        };
+            myself.toc_presentation(mainHTMLQuery);
+        });
         this.main_on_success = function (result) {
             if (!jprint.isInPrint()) {
                 // f**k this !
                 var self = this;
-                var currentPage = query.getPageName();
-                var currentRoot = query.getRootName();
+                var currentPage = this.getPageName();
+                var currentRoot = this.getRootName();
 
                 this.forEachElementById(linkTag,
                         function (element) {
