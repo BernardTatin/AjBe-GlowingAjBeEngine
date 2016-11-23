@@ -26,45 +26,17 @@
  */
 
 /* global utils, config */
-var config = (function() {
-    var self = {};
-    self.DEFAULT_ROOT = 'main';
-    self.DEFAULT_PAGE = 'index';
-    return self;
-})();
-
-var utils = (function() {
-    var self = {};
-    self.isUndefined = function(value) {
-        var undefined;
-        return value === undefined;
-    };
-    return self;
-})();
 
 var HTMLQuery = function (location, newroot) {
     var rootName = null;
     var pageName = null;
 
     var getURLParam = function (paramName, url, default_value) {
-        return new Just(new RegExp('[\\?&]' + paramName + '=([^&#]*)')).bind(function(regexRes) {
-            return new Just(regexRes.exec(url)).bind(function(results) {
-                if (!results) {
-                    return default_value;
-                } else {
-                    return results[1] || default_value;
-                };
-            });
+        return new Maybe(new RegExp('[\\?&]' + paramName + '=([^&#]*)')).bind(function(regexRes) {
+            return regexRes.exec(url);
+        }).maybe(default_value, function(results) {
+                return results[1] || default_value;
         });
-    };
-
-    var getURLParamClassic = function (paramName, url, default_value) {
-        var results = new RegExp('[\\?&]' + paramName + '=([^&#]*)').exec(url);
-        if (!results) {
-            return default_value;
-        } else {
-            return results[1] || default_value;
-        }
     };
 
     var fromURLtoVars = function (url) {
@@ -76,7 +48,6 @@ var HTMLQuery = function (location, newroot) {
     if (!utils.isUndefined(location) && !utils.isUndefined(newroot)) {
         rootName = newroot;
         pageName = location;
-
     } else if (!utils.isUndefined(location)) {
         fromURLtoVars(location);
     } else {
@@ -92,14 +63,3 @@ var HTMLQuery = function (location, newroot) {
 
 };
 
-var urls = [
-    '/index.html',
-    '/index.html?root=rootOnly',
-    'index.html?page=pageOnly',
-    '/ii/oo/index.html?root=fullRoot&page=fullPage'
-];
-
-for (var i=0; i<urls.length; i++) {
-    var query = new HTMLQuery(urls[i]);
-    print('url -> ', urls[i], ' root <', query.getRootName(), '> page <', query.getPageName(), '>');
-}
