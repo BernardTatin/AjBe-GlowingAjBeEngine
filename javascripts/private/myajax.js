@@ -75,6 +75,7 @@ var MyAjax = (function () {
         var ajax_data = new AjaxData(ajax_listener);
 
         var openRequest = function () {
+            ajax_data.request.lastState = PrivateAjax.AjaxStates.IDLE;
             ajax_data.request.open(ajax_data.http_request, ajax_data.url, true);
             ajax_data.request.onreadystatechange = function () {
                 var req = ajax_data.request;

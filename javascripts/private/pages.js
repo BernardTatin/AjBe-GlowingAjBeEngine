@@ -172,8 +172,7 @@ var Pages = (function () {
     self.PageNavigation = function (query, place, mainHTMLQuery, hasTitle) {
         var mainHTMLQuery = mainHTMLQuery;
         var hasTitle = hasTitle;
-        var myself = this;
-        // BasePage.call(this, query, place);
+
         self.Page.call(this, query, place, false);
 
         this.setMainHTMLQuery = function (newQuery) {
@@ -212,17 +211,13 @@ var Pages = (function () {
                 result = '<h2>' + config.TOC_TITLE + '</h2>' + result;
             }
         });
-        this.addAfter(function (result) {
-            console.log('after_on_success');
-            myself.toc_presentation(mainHTMLQuery);
-        });
         this.main_on_success = function (result) {
             console.log('main_on_success...');
             if (!jprint.isInPrint()) {
                 // f**k this !
                 var mySelf = this;
-                var currentPage = this.getPageName();
-                var currentRoot = this.getRootName();
+                var currentPage = mainHTMLQuery.getPageName();
+                var currentRoot = mainHTMLQuery.getRootName();
 
                 this.forEachElementById(linkTag,
                         function (element) {
@@ -237,6 +232,7 @@ var Pages = (function () {
                                 console.log('clickevent already there');
                             }
                         });
+                this.toc_presentation(mainHTMLQuery);
             } else {
                 document.getElementById(this.getPlace()).style.display = 'none';
             }
@@ -263,6 +259,8 @@ var Pages = (function () {
         e = e || window.event;
         var myself = e.target || e.srcElement;
         var query = new HTMLQuery(myself.href);
+        var currentRoot = window.article.getRootName();
+        var currentPage = window.article.getPageName();
         var newRoot = query.getRootName();
         var newPage = query.getPageName();
         var content = null;
@@ -270,24 +268,21 @@ var Pages = (function () {
         var changed = false;
         // buggy test ?
         // buggy init of these values ?
-        console.log("clickdEventListener -> newRoot : <" + newRoot + '> myself.currentRoot : <' + myself.currentRoot + '>');
-        if (newRoot !== myself.currentRoot) {
+        console.log("clickdEventListener -> newRoot : <" + newRoot + '> currentRoot : <' + currentRoot + '>');
+        if (newRoot !== currentRoot) {
             var cQuery = new HTMLQuery('content', newRoot);
             content = new self.PageNavigation(cQuery, 'toc', query, true);
             changed = true;
             content.setQuery(cQuery);
             content.setMainHTMLQuery(cQuery);
         }
-        if (changed || newPage !== myself.currentPage) {
+        if (changed || newPage !== currentPage) {
             article = new self.PageArticle(query, 'article');
             window.article = article;
             changed = true;
         }
         if (changed) {
-            allPages.doload([content, article]);
-            if (!content) {
-                myself.myNavPage.toc_presentation(query);
-            }
+            allPages.doload([article, content]);
         }
         return true;
     };
