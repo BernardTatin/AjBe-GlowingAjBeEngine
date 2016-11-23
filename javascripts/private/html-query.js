@@ -30,7 +30,7 @@
 var HTMLQuery = function (location, newroot) {
     this.rootName = null;
     this.pageName = null;
-    // f*ck this (we are lucky, they are all pointers !
+    // f*ck this (we are lucky, they are all pointers !)
     var self = this;
 
     var getURLParam = function (paramName, url, default_value) {
@@ -51,7 +51,6 @@ var HTMLQuery = function (location, newroot) {
     if (!utils.isUndefined(location) && !utils.isUndefined(newroot)) {
         this.rootName = newroot;
         this.pageName = location;
-
     } else if (!utils.isUndefined(location)) {
         fromURLtoVars(location);
     } else {

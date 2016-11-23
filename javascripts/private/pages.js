@@ -217,9 +217,10 @@ var Pages = (function () {
             myself.toc_presentation(mainHTMLQuery);
         });
         this.main_on_success = function (result) {
+            console.log('main_on_success...');
             if (!jprint.isInPrint()) {
                 // f**k this !
-                var self = this;
+                var mySelf = this;
                 var currentPage = this.getPageName();
                 var currentRoot = this.getRootName();
 
@@ -227,12 +228,14 @@ var Pages = (function () {
                         function (element) {
                             element.currentRoot = currentRoot;
                             element.currentPage = currentPage;
-                            element.myNavPage = self;
+                            element.myNavPage = mySelf;
                             element.href = element.getAttribute('href');
-                            //if (!element.hasClickEvent) {
                             purejsLib.addEvent(element, 'click', clickdEventListener);
-                            element.hasClickEvent = true;
-                            //}
+                            if (!element.hasClickEvent) {
+                                element.hasClickEvent = true;
+                            } else {
+                                console.log('clickevent already there');
+                            }
                         });
             } else {
                 document.getElementById(this.getPlace()).style.display = 'none';
@@ -244,14 +247,17 @@ var Pages = (function () {
     self.PagesCollection = function (newPages) {
         this.doload = function (pages) {
             pages.forEach(function (page) {
-                if (page && !page.req) {
-                    page.req = new MyAjax.AjaxGetPage(page);
+                if (page) {
+                    if (!page.req) {
+                        page.req = new MyAjax.AjaxGetPage(page);
+                    }
                     page.req.send();
                 }
             });
         };
         this.doload(newPages);
     };
+
     var clickdEventListener = function (e) {
         // cf http://www.sitepoint.com/javascript-this-event-handlers/
         e = e || window.event;
