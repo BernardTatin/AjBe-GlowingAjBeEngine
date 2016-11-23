@@ -50,9 +50,9 @@ Session.prototype.run = function () {
     var currentRoot = this.query.getRootName();
     allPages = new Pages.PagesCollection(
             [
-                new Pages.Page(new HTMLQuery('footer', currentRoot), 'footer', true),
-                new Pages.PageNavigation(new HTMLQuery('content', currentRoot), 'toc', this.query, true),
-                new Pages.PageNavigation(new HTMLQuery('navigation', currentRoot), 'navigation', this.query, false),
+                new Pages.Page(this.query.badClone('footer'), 'footer', true),
+                new Pages.PageNavigation(this.query.badClone('content'), 'toc', this.query, true),
+                new Pages.PageNavigation(this.query.badClone('navigation'), 'navigation', this.query, false),
                 new Pages.PageArticle(this.query, 'article')
             ]);
     document.getElementById('site-name').innerHTML = config.SITE_NAME;

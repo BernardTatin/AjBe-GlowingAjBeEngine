@@ -67,11 +67,7 @@ var Pages = (function () {
             return query.getPageName();
         };
         this.urlName = function () {
-            if (!file_name) {
-                file_name = config.SITE_BASE + '/' +
-                        query.getRootName() + '/' + this.getPageName() + '.html';
-            }
-            return file_name;
+            return query.urlName();
         };
         this.addBefore = function (f) {
             before_on_success.push(f);
@@ -194,16 +190,12 @@ var Pages = (function () {
                         }
                     });
         };
-        // TODO : does nothing !!
-        this.addBefore(function (result) {
-            if (hasTitle && config.TOC_TITLE) {
-                result = '<h2>' + config.TOC_TITLE + '</h2>' + result;
-            }
-            return result;
-        });
         this.main_on_success = function (result) {
             console.log('main_on_success...');
             if (!jprint.isInPrint()) {
+                if (hasTitle && config.TOC_TITLE) {
+                    result = '<h2>' + config.TOC_TITLE + '</h2>' + result;
+                }
                 this.forEachElementById(linkTag,
                         function (element) {
                             element.href = element.getAttribute('href');
@@ -247,9 +239,10 @@ var Pages = (function () {
         // buggy init of these values ?
         console.log("clickdEventListener -> newRoot : <" + newRoot + '> currentRoot : <' + currentRoot + '>');
         if (newRoot !== currentRoot) {
-            var cQuery = new HTMLQuery('content', newRoot);
+            var cQuery = query.badClone('content');
             content = new self.PageNavigation(cQuery, 'toc', query, true);
             changed = true;
+            // TODO : is it useful ?
             content.setQuery(cQuery);
             content.setMainHTMLQuery(cQuery);
         }

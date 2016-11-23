@@ -30,12 +30,13 @@
 var HTMLQuery = function (location, newroot) {
     var rootName = null;
     var pageName = null;
+    var ajaxUrlName = null;
 
     var getURLParam = function (paramName, url, default_value) {
-        return new Maybe(new RegExp('[\\?&]' + paramName + '=([^&#]*)')).bind(function(regexRes) {
+        return new Maybe(new RegExp('[\\?&]' + paramName + '=([^&#]*)')).bind(function (regexRes) {
             return regexRes.exec(url);
-        }).maybe(default_value, function(results) {
-                return results[1] || default_value;
+        }).maybe(default_value, function (results) {
+            return results[1] || default_value;
         });
     };
 
@@ -54,12 +55,23 @@ var HTMLQuery = function (location, newroot) {
         fromURLtoVars(window.location.href);
     }
 
+    this.urlName = function () {
+        if (!ajaxUrlName) {
+            ajaxUrlName = config.SITE_BASE + '/' +
+                    rootName + '/' + pageName + '.html';
+        }
+        return ajaxUrlName;
+    };
     this.getRootName = function () {
         return rootName;
     };
     this.getPageName = function () {
         return pageName;
     };
-
+    this.badClone = function(newPage) {
+        if (newPage === undefined) {
+            newPage = config.DEFAULT_PAGE;
+        }
+        return new HTMLQuery(newPage, rootName);
+    }
 };
-
