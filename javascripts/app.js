@@ -39,8 +39,9 @@ var marcel_kernel = (function () {
     };
     // can be modified by program in a future release
     var appVariables = {
+        monads: ['private/maybe.js'],
         // first libs to load
-        beforelibs: ['private/utils.js', 'private/html-query.js'],
+        beforelibs: ['private/utils.js', 'private/mon-query.js'],
         // all libs
         libs: ['private/myajax.js', 'private/purejs-lib.js', 'private/jprint.js', 'private/pages.js'],
         // code entry point
@@ -67,14 +68,16 @@ var marcel_kernel = (function () {
         // TODO : must be elsewhere
         appVariables.navigator = navigator.appName + ' ' + navigator.appCodeName + ' ' + navigator.appVersion;
         // three steps loader
-        LazyLoad.js(appVariables.beforelibs.map(normalize_libname), function () {
-            LazyLoad.js(appVariables.libs.map(normalize_libname), function () {
-                LazyLoad.js(normalize_libname(appVariables.main_code), function () {
-                    function start() {
-                        var session = new Session();
-                        session.run();
-                    }
-                    docReady(start);
+        LazyLoad.js(appVariables.monads.map(normalize_libname), function () {
+            LazyLoad.js(appVariables.beforelibs.map(normalize_libname), function () {
+                LazyLoad.js(appVariables.libs.map(normalize_libname), function () {
+                    LazyLoad.js(normalize_libname(appVariables.main_code), function () {
+                        function start() {
+                            var session = new Session();
+                            session.run();
+                        }
+                        docReady(start);
+                    });
                 });
             });
         });

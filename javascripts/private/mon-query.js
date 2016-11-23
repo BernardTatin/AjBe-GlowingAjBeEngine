@@ -28,39 +28,38 @@
 /* global utils, config */
 
 var HTMLQuery = function (location, newroot) {
-    this.rootName = null;
-    this.pageName = null;
-    // f*ck this (we are lucky, they are all pointers !)
-    var self = this;
+    var rootName = null;
+    var pageName = null;
 
     var getURLParam = function (paramName, url, default_value) {
-        var results = new RegExp('[\\?&]' + paramName + '=([^&#]*)').exec(url);
-        if (!results) {
-            return default_value;
-        } else {
-            return results[1] || default_value;
-        }
+        return new Maybe(new RegExp('[\\?&]' + paramName + '=([^&#]*)')).bind(function(regexRes) {
+            return regexRes.exec(url);
+        }).maybe(default_value, function(results) {
+                return results[1] || default_value;
+        });
     };
 
     var fromURLtoVars = function (url) {
-        self.rootName = getURLParam('root', url, config.DEFAULT_ROOT);
-        self.pageName = getURLParam('page', url, config.DEFAULT_PAGE);
+        rootName = getURLParam('root', url, config.DEFAULT_ROOT);
+        pageName = getURLParam('page', url, config.DEFAULT_PAGE);
     };
 
     // we can have 0, 1 or 2 positional parameters
     if (!utils.isUndefined(location) && !utils.isUndefined(newroot)) {
-        this.rootName = newroot;
-        this.pageName = location;
+        rootName = newroot;
+        pageName = location;
     } else if (!utils.isUndefined(location)) {
         fromURLtoVars(location);
     } else {
         fromURLtoVars(window.location.href);
     }
+
+    this.getRootName = function () {
+        return rootName;
+    };
+    this.getPageName = function () {
+        return pageName;
+    };
+
 };
 
-HTMLQuery.prototype.getRootName = function () {
-    return this.rootName;
-};
-HTMLQuery.prototype.getPageName = function () {
-    return this.pageName;
-};
