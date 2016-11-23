@@ -32,32 +32,32 @@
 
 "use strict";
 
-var PrivateAjax = (function () {
-    // this module pattern is described here
-    //cf https://zestedesavoir.com/tutoriels/358/module-pattern-en-javascript/
-    var self = {};
-
-    self.AjaxStates = (function () {
-        return {
-            IDLE: 0,
-            OPENED: 1,
-            HEADERS_RECEIVED: 2,
-            LOADING: 3,
-            DONE: 4
-        };
-    })();
-
-    self.HttpStatus = (function () {
-        return {
-            OK: 200,
-            NOTFOUND: 404
-        };
-    })();
-
-    return self;
-})();
-
 var MyAjax = (function () {
+    var PrivateAjax = (function () {
+        // this module pattern is described here
+        //cf https://zestedesavoir.com/tutoriels/358/module-pattern-en-javascript/
+        var self = {};
+
+        self.AjaxStates = (function () {
+            return {
+                IDLE: 0,
+                OPENED: 1,
+                HEADERS_RECEIVED: 2,
+                LOADING: 3,
+                DONE: 4
+            };
+        })();
+
+        self.HttpStatus = (function () {
+            return {
+                OK: 200,
+                NOTFOUND: 404
+            };
+        })();
+
+        return self;
+    })();
+
 
     // not very clever but I'm testing JavaScript
     var AjaxData = function (ajax_listener) {

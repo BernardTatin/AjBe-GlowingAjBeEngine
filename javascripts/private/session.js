@@ -43,21 +43,19 @@ Session = function () {
         }
     });
 
-    this.query = new HTMLQuery();
+    this.query = new HTMLQuery(window.location.href);
 };
+
 Session.prototype.run = function () {
-    var broot = this.query.getRootName();
+    var currentRoot = this.query.getRootName();
     allPages = new Pages.PagesCollection(
             [
-                new Pages.Page(new HTMLQuery('footer', broot), 'footer', true),
-                new Pages.PageNavigation(new HTMLQuery('content', broot), 'toc', this.query, true),
-                new Pages.PageNavigation(new HTMLQuery('navigation', broot), 'navigation', this.query, false),
+                new Pages.Page(new HTMLQuery('footer', currentRoot), 'footer', true),
+                new Pages.PageNavigation(new HTMLQuery('content', currentRoot), 'toc', this.query, true),
+                new Pages.PageNavigation(new HTMLQuery('navigation', currentRoot), 'navigation', this.query, false),
                 new Pages.PageArticle(this.query, 'article')
             ]);
     document.getElementById('site-name').innerHTML = config.SITE_NAME;
     document.getElementById('site-description').innerHTML = config.SITE_DESCRIPTION;
     return this;
 };
-// self.Session = Session;
-// return self;
-// });

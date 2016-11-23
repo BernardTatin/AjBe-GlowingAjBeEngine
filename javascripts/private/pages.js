@@ -25,7 +25,7 @@
  * THE SOFTWARE.
  */
 
-// bad JavaScript Stuff, see :
+// TODO: bad JavaScript Stuff, see :
 // http://alistapart.com/article/prototypal-object-oriented-programming-using-javascript
 
 /* global utils, config, MyAjax, BasePage, purejsLib, jprint, Page */
@@ -39,15 +39,6 @@ var allPages = null;
 var makeParentOf = function (parent, child) {
     child.prototype = Object.create(parent.prototype);
     child.prototype.constructor = child;
-    /*
-     if (!child.prototype.parent) {
-     child.prototype.parent = [parent.prototype];
-     console.log("first parent");
-     } else {
-     child.prototype.parent.push(parent.prototype);
-     console.log("!first parent" + child.prototype.parent.length);
-     }
-     */
 };
 
 var Pages = (function () {
@@ -90,7 +81,7 @@ var Pages = (function () {
         };
         this.on_success = function (data) {
             before_on_success.forEach(function (f) {
-                f(data);
+                data = f(data);
             });
             if (this.main_on_success) {
                 this.main_on_success(data);
@@ -137,6 +128,7 @@ var Pages = (function () {
         this.addBefore(function (data) {
             var place = mySelf.getPlace();
             document.getElementById(place).innerHTML = mySelf.supressMetaTags(data);
+            return data;
         });
         this.addAfter(function (data) {
             if (hasCopyright) {
@@ -146,7 +138,6 @@ var Pages = (function () {
             utils.app_string();
         });
     };
-    // TODO: not sure it's a good place for this
     makeParentOf(BasePage, self.Page);
 
     self.PageArticle = function (query, place) {
@@ -189,10 +180,8 @@ var Pages = (function () {
                     function (element) {
                         var href = element.getAttribute('href');
                         var query = new HTMLQuery(href);
-                        //console.log('toc_presentation : currentRoot = <' + currentRoot + '> currentPage : <' + currentPage + '>');
-                        //console.log('toc_presentation : query.Root = <' + query.getRootName() + '> query.Page : <' + query.getPageName() + '>');
-                        element.currentRoot = currentRoot;
-                        element.currentPage = currentPage;
+                        // element.currentRoot = currentRoot;
+                        // element.currentPage = currentPage;
                         if (query.getPageName() === currentPage &&
                                 query.getRootName() === currentRoot) {
                             var title = element.innerHTML;
@@ -210,27 +199,15 @@ var Pages = (function () {
             if (hasTitle && config.TOC_TITLE) {
                 result = '<h2>' + config.TOC_TITLE + '</h2>' + result;
             }
+            return result;
         });
         this.main_on_success = function (result) {
             console.log('main_on_success...');
             if (!jprint.isInPrint()) {
-                // f**k this !
-                var mySelf = this;
-                var currentPage = mainHTMLQuery.getPageName();
-                var currentRoot = mainHTMLQuery.getRootName();
-
                 this.forEachElementById(linkTag,
                         function (element) {
-                            element.currentRoot = currentRoot;
-                            element.currentPage = currentPage;
-                            element.myNavPage = mySelf;
                             element.href = element.getAttribute('href');
                             purejsLib.addEvent(element, 'click', clickdEventListener);
-                            if (!element.hasClickEvent) {
-                                element.hasClickEvent = true;
-                            } else {
-                                console.log('clickevent already there');
-                            }
                         });
                 this.toc_presentation(mainHTMLQuery);
             } else {
@@ -259,12 +236,12 @@ var Pages = (function () {
         e = e || window.event;
         var myself = e.target || e.srcElement;
         var query = new HTMLQuery(myself.href);
-        var currentRoot = window.article.getRootName();
-        var currentPage = window.article.getPageName();
+        var article = window.article;
+        var currentRoot = article.getRootName();
+        var currentPage = article.getPageName();
         var newRoot = query.getRootName();
         var newPage = query.getPageName();
         var content = null;
-        var article = window.article;
         var changed = false;
         // buggy test ?
         // buggy init of these values ?
