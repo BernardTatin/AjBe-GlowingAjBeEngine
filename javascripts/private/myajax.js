@@ -94,7 +94,7 @@ var MyAjax = (function () {
 
         this.send = function (data) {
             openRequest();
-            if (utils.isUndefined(data) || !data) {
+            if (data === undefined || !data) {
                 ajax_data.request.send(null);
             } else {
                 ajax_data.request.send(data);

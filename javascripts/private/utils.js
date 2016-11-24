@@ -83,10 +83,6 @@ var utils = (function () {
             element.innerHTML = vername;
         }
     };
-    self.isUndefined = function (v) {
-        var undefined;
-        return v === undefined;
-    };
 
     return self;
 })();
