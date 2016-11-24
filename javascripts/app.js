@@ -1,5 +1,4 @@
 /*
- *
  * app.js
  */
 /*
@@ -47,7 +46,7 @@ var marcel_kernel = (function () {
         // code entry point
         main_code: 'private/session.js',
         // library name
-        libname: 'pure Javascript 0.2.2',
+        libname: 'pure Javascript 0.2.3',
         // navigator name
         navigator: null
     };

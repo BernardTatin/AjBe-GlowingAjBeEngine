@@ -32,6 +32,8 @@ var HTMLQuery = function (location, newroot) {
     var pageName = null;
     var ajaxUrlName = null;
 
+    // Using the Maybe here is not the best idea I had,
+    // but it works and I'm happy with that.
     var getURLParam = function (paramName, url, default_value) {
         return new Maybe(new RegExp('[\\?&]' + paramName + '=([^&#]*)')).bind(function (regexRes) {
             return regexRes.exec(url);
@@ -68,10 +70,11 @@ var HTMLQuery = function (location, newroot) {
     this.getPageName = function () {
         return pageName;
     };
-    this.badClone = function(newPage) {
-        if (newPage === undefined) {
-            newPage = config.DEFAULT_PAGE;
-        }
-        return new HTMLQuery(newPage, rootName);
+};
+
+HTMLQuery.prototype.badClone = function(newPage) {
+    if (newPage === undefined) {
+        newPage = config.DEFAULT_PAGE;
     }
+    return new HTMLQuery(newPage, this.getRootName());
 };

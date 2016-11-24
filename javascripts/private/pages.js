@@ -46,11 +46,11 @@ var Pages = (function () {
     var linkTag = 'p';
     var self = {};
 
-    var BasePage = function (query, place) {
-        var query = query;
-        var place = place;
+    var BasePage = function (theQuery, thePlace) {
+        var query = theQuery;
+        var place = thePlace;
         var file_name = null;
-        // TODO: not very useful but funy! and stupid!
+        // TODO: not very useful but funy! and stupid! and it's a BUG!
         var before_on_success = [];
         var after_on_success = [];
 
@@ -252,6 +252,9 @@ var Pages = (function () {
             changed = true;
         }
         if (changed) {
+            // TODO : must create an environment with current query,
+            //        current pages and so on...
+            //        and here, I could redraw menus and titles
             allPages.doload([article, content]);
         }
         return true;

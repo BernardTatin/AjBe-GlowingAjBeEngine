@@ -13,7 +13,7 @@ var Maybe = function(value) {
       return true;
     },
     val: function() {
-      throw new Error("cannot call val() nothing");
+      throw new Error("cannot call val() of nothing");
     },
     maybe: function(def, fn) {
       return def;
