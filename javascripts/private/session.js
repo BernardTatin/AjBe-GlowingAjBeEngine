@@ -43,17 +43,17 @@ Session = function () {
         }
     });
 
-    this.query = new HTMLQuery(window.location.href);
 };
 
 Session.prototype.run = function () {
-    var currentRoot = this.query.getRootName();
+    var query = new MonQuery.HTMLQuery(window.location.href);
+    var currentRoot = query.getRootName();
     allPages = new Pages.PagesCollection(
             [
-                new Pages.Page(this.query.badClone('footer'), 'footer', true),
-                new Pages.PageNavigation(this.query.badClone('content'), 'toc', this.query, true),
-                new Pages.PageNavigation(this.query.badClone('navigation'), 'navigation', this.query, false),
-                new Pages.PageArticle(this.query, 'article')
+                new Pages.Page(query.badClone('footer'), 'footer', true),
+                new Pages.PageNavigation(query.badClone('content'), 'toc', query, true),
+                new Pages.PageNavigation(query.badClone('navigation'), 'navigation', query, false),
+                new Pages.PageArticle(query, 'article')
             ]);
     document.getElementById('site-name').innerHTML = config.SITE_NAME;
     document.getElementById('site-description').innerHTML = config.SITE_DESCRIPTION;

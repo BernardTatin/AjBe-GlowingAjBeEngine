@@ -175,7 +175,7 @@ var Pages = (function () {
             this.forEachElementById(linkTag,
                     function (element) {
                         var href = element.getAttribute('href');
-                        var query = new HTMLQuery(href);
+                        var query = new MonQuery.HTMLQuery(href);
                         // element.currentRoot = currentRoot;
                         // element.currentPage = currentPage;
                         if (query.getPageName() === currentPage &&
@@ -227,7 +227,7 @@ var Pages = (function () {
         // cf http://www.sitepoint.com/javascript-this-event-handlers/
         e = e || window.event;
         var myself = e.target || e.srcElement;
-        var query = new HTMLQuery(myself.href);
+        var query = new MonQuery.HTMLQuery(myself.href);
         var article = window.article;
         var currentRoot = article.getRootName();
         var currentPage = article.getPageName();
