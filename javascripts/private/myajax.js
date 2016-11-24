@@ -33,6 +33,20 @@
 "use strict";
 
 var MyAjax = (function () {
+    // how to make private variables :
+    //    https://developer.mozilla.org/en-US/Add-ons/SDK/Guides/Contributor_s_Guide/Private_Properties
+
+    // for private fields
+    // perhaps it's too heavy,
+    // anyway, I like it
+    let map = new WeakMap();
+
+    let internal = function (object) {
+        if (!map.has(object))
+            map.set(object, {});
+        return map.get(object);
+    };
+
     var PrivateAjax = (function () {
         // this module pattern is described here
         //cf https://zestedesavoir.com/tutoriels/358/module-pattern-en-javascript/
@@ -72,13 +86,15 @@ var MyAjax = (function () {
     };
 
     var AjaxGetPage = function (ajax_listener) {
-        var ajax_data = new AjaxData(ajax_listener);
+        var that = this;
+        internal(this).ajax_data = new AjaxData(ajax_listener);
 
-        var openRequest = function () {
-            ajax_data.request.lastState = PrivateAjax.AjaxStates.IDLE;
-            ajax_data.request.open(ajax_data.http_request, ajax_data.url, true);
-            ajax_data.request.onreadystatechange = function () {
-                var req = ajax_data.request;
+        // hmmmm... It works, but not sure it's a good thing
+        internal(this).openRequest = function () {
+            internal(that).ajax_data.request.lastState = PrivateAjax.AjaxStates.IDLE;
+            internal(that).ajax_data.request.open(internal(that).ajax_data.http_request, internal(that).ajax_data.url, true);
+            internal(that).ajax_data.request.onreadystatechange = function () {
+                var req = internal(that).ajax_data.request;
                 if (req.readyState === PrivateAjax.AjaxStates.DONE) {
                     if (req.status === PrivateAjax.HttpStatus.OK) {
                         req.ajax_listener.on_success(req.responseText);
@@ -91,19 +107,18 @@ var MyAjax = (function () {
                 }
             };
         };
-
-        this.send = function (data) {
-            openRequest();
-            if (data === undefined || !data) {
-                ajax_data.request.send(null);
-            } else {
-                ajax_data.request.send(data);
-            }
-        };
-
     };
+
+    AjaxGetPage.prototype.send = function (data) {
+        internal(this).openRequest();
+        if (data === undefined || !data) {
+            internal(this).ajax_data.request.send(null);
+        } else {
+            internal(this).ajax_data.request.send(data);
+        }
+    };
+
     var self = {};
     self.AjaxGetPage = AjaxGetPage;
     return self;
-
 })();

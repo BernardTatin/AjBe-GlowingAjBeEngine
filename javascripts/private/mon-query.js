@@ -28,11 +28,11 @@
 /* global config */
 
 
-// how to make private variables :
-//    https://developer.mozilla.org/en-US/Add-ons/SDK/Guides/Contributor_s_Guide/Private_Properties
-
 
 var MonQuery = (function () {
+    // how to make private variables :
+    //    https://developer.mozilla.org/en-US/Add-ons/SDK/Guides/Contributor_s_Guide/Private_Properties
+
     let map = new WeakMap();
 
     let internal = function (object) {
