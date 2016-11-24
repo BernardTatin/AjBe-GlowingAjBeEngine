@@ -29,33 +29,44 @@
 
 /* global purejsLib, config, Pages */
 
-// var Session = (function () {
-// var self = {};
+var Session = (function () {
+    var self = {};
 
-Session = function () {
-    window.article = null;
-    purejsLib.addEvent(window, 'resize', function (e) {
-        // cf http://www.sitepoint.com/javascript-this-event-handlers/
-        // e = e || window.event;
-        var article = window.article;
-        if (article) {
-            article.resizeSVG();
-        }
-    });
+    self.allPages = null;
 
-};
+    Session = function () {
+        window.article = null;
+        purejsLib.addEvent(window, 'resize', function (e) {
+            // cf http://www.sitepoint.com/javascript-this-event-handlers/
+            // e = e || window.event;
+            var article = window.article;
+            if (article) {
+                article.resizeSVG();
+            }
+        });
 
-Session.prototype.run = function () {
-    var query = new MonQuery.HTMLQuery(window.location.href);
-    var currentRoot = query.getRootName();
-    allPages = new Pages.PagesCollection(
+    };
+
+    Session.prototype.run = function () {
+        var query = new MonQuery.HTMLQuery(window.location.href);
+        var currentRoot = query.getRootName();
+        self.allPages = new Pages.PagesCollection(
             [
-                new Pages.Page(query.badClone('footer'), 'footer', true),
-                new Pages.PageNavigation(query.badClone('content'), 'toc', query, true),
-                new Pages.PageNavigation(query.badClone('navigation'), 'navigation', query, false),
+                new Pages.Page(query.badClone('footer'),
+                               'footer', true),
+                new Pages.PageNavigation(query.badClone('content'),
+                                         'toc', query, true),
+                new Pages.PageNavigation(query.badClone('navigation'),
+                                         'navigation', query, false),
                 new Pages.PageArticle(query, 'article')
             ]);
-    document.getElementById('site-name').innerHTML = config.SITE_NAME;
-    document.getElementById('site-description').innerHTML = config.SITE_DESCRIPTION;
-    return this;
-};
+        document.getElementById('site-name').innerHTML =
+            config.SITE_NAME;
+        document.getElementById('site-description').innerHTML =
+            config.SITE_DESCRIPTION;
+        return this;
+    };
+
+    self.Session = Session;
+    return self;
+})();

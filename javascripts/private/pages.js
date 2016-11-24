@@ -32,8 +32,6 @@
 
 "use strict";
 
-// TODO : must be elsewhere
-var allPages = null;
 
 // TODO : must be elsewhere
 var makeParentOf = function (parent, child) {
@@ -176,8 +174,6 @@ var Pages = (function () {
                     function (element) {
                         var href = element.getAttribute('href');
                         var query = new MonQuery.HTMLQuery(href);
-                        // element.currentRoot = currentRoot;
-                        // element.currentPage = currentPage;
                         if (query.getPageName() === currentPage &&
                                 query.getRootName() === currentRoot) {
                             var title = element.innerHTML;
@@ -237,7 +233,9 @@ var Pages = (function () {
         var changed = false;
         // buggy test ?
         // buggy init of these values ?
-        console.log("clickdEventListener -> newRoot : <" + newRoot + '> currentRoot : <' + currentRoot + '>');
+        console.log("clickdEventListener -> newRoot : <" +
+                    newRoot + '> currentRoot : <' +
+                    currentRoot + '>');
         if (newRoot !== currentRoot) {
             var cQuery = query.badClone('content');
             content = new self.PageNavigation(cQuery, 'toc', query, true);
@@ -255,7 +253,7 @@ var Pages = (function () {
             // TODO : must create an environment with current query,
             //        current pages and so on...
             //        and here, I could redraw menus and titles
-            allPages.doload([article, content]);
+            Session.allPages.doload([article, content]);
         }
         return true;
     };
