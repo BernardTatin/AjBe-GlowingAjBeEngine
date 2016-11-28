@@ -28,7 +28,7 @@
 // TODO: bad JavaScript Stuff, see :
 // http://alistapart.com/article/prototypal-object-oriented-programming-using-javascript
 
-/* global utils, config, MyAjax, BasePage, purejsLib, jprint, Page */
+/* global utils, config, MyAjax, BasePage, purejsLib, jprint, Page, Environment, Session, MonQuery */
 
 "use strict";
 
@@ -136,7 +136,7 @@ var Pages = (function () {
 
     self.PageArticle = function (query, place) {
         self.Page.call(this, query, place, false);
-        window.article = this;
+        Environment.article = this;
         this.resizeSVG = function () {
             var place = this.getPlace();
             var maxWidth = document.getElementById(place).clientWidth;
@@ -189,6 +189,11 @@ var Pages = (function () {
         this.main_on_success = function (result) {
             console.log('main_on_success...');
             if (!jprint.isInPrint()) {
+                var currentPage = mainHTMLQuery.getPageName();
+                var currentRoot = mainHTMLQuery.getRootName();
+                var url = mainHTMLQuery.url;
+
+                this.setQuery(mainHTMLQuery);
                 if (hasTitle && config.TOC_TITLE) {
                     result = '<h2>' + config.TOC_TITLE + '</h2>' + result;
                 }
@@ -196,8 +201,20 @@ var Pages = (function () {
                         function (element) {
                             element.href = element.getAttribute('href');
                             purejsLib.addEvent(element, 'click', clickdEventListener);
+                            var query = new MonQuery.HTMLQuery(element.href);
+                            if (query.getPageName() === currentPage &&
+                                    query.getRootName() === currentRoot) {
+                                console.log('selected query : <' + element.href + '>');
+                                var title = element.innerHTML;
+                                document.getElementById('main_title').innerHTML = title;
+                                utils.setUrlInBrowser(url);
+                                document.title = title;
+                                element.className = 'current-node';
+                            } else {
+                                element.className = 'normal-node';
+                            }
                         });
-                this.toc_presentation(mainHTMLQuery);
+                // this.toc_presentation(mainHTMLQuery);
             } else {
                 document.getElementById(this.getPlace()).style.display = 'none';
             }
@@ -224,7 +241,7 @@ var Pages = (function () {
         e = e || window.event;
         var myself = e.target || e.srcElement;
         var query = new MonQuery.HTMLQuery(myself.href);
-        var article = window.article;
+        var article = Environment.article;
         var currentRoot = article.getRootName();
         var currentPage = article.getPageName();
         var newRoot = query.getRootName();
@@ -234,8 +251,8 @@ var Pages = (function () {
         // buggy test ?
         // buggy init of these values ?
         console.log("clickdEventListener -> newRoot : <" +
-                    newRoot + '> currentRoot : <' +
-                    currentRoot + '>');
+                newRoot + '> currentRoot : <' +
+                currentRoot + '>');
         if (newRoot !== currentRoot) {
             var cQuery = query.badClone('content');
             content = new self.PageNavigation(cQuery, 'toc', query, true);
@@ -246,14 +263,17 @@ var Pages = (function () {
         }
         if (changed || newPage !== currentPage) {
             article = new self.PageArticle(query, 'article');
-            window.article = article;
+            Environment.article = article;
             changed = true;
+            if (content !== null) {
+                content.setMainHTMLQuery(query);
+            }
         }
         if (changed) {
             // TODO : must create an environment with current query,
             //        current pages and so on...
             //        and here, I could redraw menus and titles
-            Session.allPages.doload([article, content]);
+            Environment.allPages.doload([article, content]);
         }
         return true;
     };

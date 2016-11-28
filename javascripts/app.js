@@ -38,7 +38,7 @@ var marcel_kernel = (function () {
     };
     // can be modified by program in a future release
     var appVariables = {
-        monads: ['private/maybe.js'],
+        monads: ['private/maybe.js', 'private/environment.js'],
         // first libs to load
         beforelibs: ['private/utils.js', 'private/mon-query.js'],
         // all libs

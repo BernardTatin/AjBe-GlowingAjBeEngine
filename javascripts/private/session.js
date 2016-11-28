@@ -27,19 +27,17 @@
  */
 
 
-/* global purejsLib, config, Pages */
+/* global purejsLib, config, Pages, MonQuery, Environment */
 
 var Session = (function () {
     var self = {};
 
-    self.allPages = null;
-
     Session = function () {
-        window.article = null;
+        Environment.article = null;
         purejsLib.addEvent(window, 'resize', function (e) {
             // cf http://www.sitepoint.com/javascript-this-event-handlers/
             // e = e || window.event;
-            var article = window.article;
+            var article = Environment.article;
             if (article) {
                 article.resizeSVG();
             }
@@ -49,21 +47,21 @@ var Session = (function () {
 
     Session.prototype.run = function () {
         var query = new MonQuery.HTMLQuery(window.location.href);
-        var currentRoot = query.getRootName();
-        self.allPages = new Pages.PagesCollection(
-            [
-                new Pages.Page(query.badClone('footer'),
-                               'footer', true),
-                new Pages.PageNavigation(query.badClone('content'),
-                                         'toc', query, true),
-                new Pages.PageNavigation(query.badClone('navigation'),
-                                         'navigation', query, false),
-                new Pages.PageArticle(query, 'article')
-            ]);
+
+        Environment.allPages = new Pages.PagesCollection(
+                [
+                    new Pages.Page(query.badClone('footer'),
+                            'footer', true),
+                    new Pages.PageNavigation(query.badClone('content'),
+                            'toc', query, true),
+                    new Pages.PageNavigation(query.badClone('navigation'),
+                            'navigation', query, false),
+                    new Pages.PageArticle(query, 'article')
+                ]);
         document.getElementById('site-name').innerHTML =
-            config.SITE_NAME;
+                config.SITE_NAME;
         document.getElementById('site-description').innerHTML =
-            config.SITE_DESCRIPTION;
+                config.SITE_DESCRIPTION;
         return this;
     };
 
