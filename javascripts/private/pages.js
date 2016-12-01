@@ -47,10 +47,11 @@ var Pages = (function () {
     var BasePage = function (theQuery, thePlace) {
         var query = theQuery;
         var place = thePlace;
-        var file_name = null;
+
         // TODO: not very useful but funy! and stupid! and it's a BUG!
-        var before_on_success = [];
-        var after_on_success = [];
+        this.before_on_success = null;
+        this.after_on_success = null;
+        this.main_on_success = null;
 
         this.setQuery = function (newquery) {
             query = newquery;
@@ -67,26 +68,18 @@ var Pages = (function () {
         this.urlName = function () {
             return query.urlName();
         };
-        this.addBefore = function (f) {
-            before_on_success.push(f);
-        };
-        this.addAfter = function (f) {
-            after_on_success.push(f);
-        };
         this.on_success = function (data) {
-            before_on_success.forEach(function (f) {
-                data = f(data);
-            });
-            if (this.main_on_success) {
-                this.main_on_success(data);
+            if (this.before_on_success) {
+                data = this.before_on_success(data);
             }
-            after_on_success.forEach(function (f) {
-                f(data);
-            });
+            if (this.main_on_success) {
+                data = this.main_on_success(data);
+            }
+            if (this.after_on_success) {
+                this.after_on_success(data);
+            }
         };
-        this.on_failure = function (data) {
-            document.getElementById(place).style.display = 'none';
-        };
+        this.on_failure = null;
         this.setHTMLByClassName = function (className, html) {
             var nodes = document.getElementsByClassName(className);
             Array.from(nodes).forEach(function (node) {
@@ -118,19 +111,23 @@ var Pages = (function () {
         this.main_on_success = function (data) {
             var place = this.getPlace();
             document.getElementById(place).style.display = 'block';
+            return data;
         };
-        this.addBefore(function (data) {
+        this.before_on_success = function (data) {
             var place = mySelf.getPlace();
             document.getElementById(place).innerHTML = mySelf.supressMetaTags(data);
             return data;
-        });
-        this.addAfter(function (data) {
+        };
+        this.after_on_success = function (data) {
             if (hasCopyright) {
                 mySelf.copyright();
                 mySelf.authors();
             }
             utils.app_string();
-        });
+        };
+        this.on_failure = function (data) {
+            document.getElementById(place).style.display = 'none';
+        };
     };
     makeParentOf(BasePage, self.Page);
 
@@ -151,6 +148,9 @@ var Pages = (function () {
         };
         this.after_on_success = function (result) {
             this.resizeSVG();
+        };
+        this.on_failure = function (data) {
+            document.getElementById(place).innerHTML = data;
         };
     };
     makeParentOf(self.Page, self.PageArticle);
