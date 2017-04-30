@@ -52,87 +52,94 @@ var Pages = (function () {
         this.before_on_success = null;
         this.after_on_success = null;
         this.main_on_success = null;
+        this.on_failure = null;
 
+        this.getQuery = function () {
+            return query;
+        };
         this.setQuery = function (newquery) {
             query = newquery;
         };
         this.getPlace = function () {
             return place;
         };
-        this.getRootName = function () {
-            return query.getRootName();
-        };
-        this.getPageName = function () {
-            return query.getPageName();
-        };
-        this.urlName = function () {
-            return query.urlName();
-        };
-        this.on_success = function (data) {
-            if (this.before_on_success) {
-                data = this.before_on_success(data);
-            }
-            if (this.main_on_success) {
-                data = this.main_on_success(data);
-            }
-            if (this.after_on_success) {
-                this.after_on_success(data);
-            }
-        };
-        this.on_failure = null;
-        this.setHTMLByClassName = function (className, html) {
-            var nodes = document.getElementsByClassName(className);
-            Array.from(nodes).forEach(function (node) {
-                node.innerHTML = html;
-            });
-        };
-        this.forEachElementById = function (tag, onElement) {
-            var elements = document.getElementById(place).getElementsByTagName(tag);
-            Array.from(elements).forEach(onElement);
-        };
+    };
+    BasePage.prototype.on_success = function (data) {
+        if (this.before_on_success) {
+            data = this.before_on_success(data);
+        }
+        if (this.main_on_success) {
+            data = this.main_on_success(data);
+        }
+        if (this.after_on_success) {
+            this.after_on_success(data);
+        }
+    };
+    BasePage.prototype.setHTMLByClassName = function (className, html) {
+        var nodes = document.getElementsByClassName(className);
+        Array.from(nodes).forEach(function (node) {
+            node.innerHTML = html;
+        });
+    };
+    BasePage.prototype.forEachElementById = function (tag, onElement) {
+        var elements = document.getElementById(this.getPlace()).getElementsByTagName(tag);
+        Array.from(elements).forEach(onElement);
+    };
+    BasePage.prototype.getRootName = function () {
+        return this.getQuery().getRootName();
+    };
+    BasePage.prototype.getPageName = function () {
+        return this.getQuery().getPageName();
+    };
+    BasePage.prototype.urlName = function () {
+        return this.getQuery().urlName();
     };
 
+    // ======================================================================
 
-    self.Page = function (query, place, hasCopyright) {
-        var hasCopyright = hasCopyright;
-        var mySelf = this;
+    var Page = function (query, place, hasCopyright) {
+        this._hasCopyright = hasCopyright;
+        this._mySelf = this;
 
         BasePage.call(this, query, place);
-        this.copyright = function () {
+    };
+        Page.prototype.copyright = function () {
             this.setHTMLByClassName('copyright', config.COPYRIGHT);
         };
-        this.authors = function () {
+        Page.prototype.authors = function () {
             this.setHTMLByClassName('authors', config.AUTHORS);
         };
-        this.supressMetaTags = function (str) {
+        Page.prototype.supressMetaTags = function (str) {
             var metaPattern = /<meta.+\/?>/g;
             return str.replace(metaPattern, '');
         };
-        this.main_on_success = function (data) {
+        Page.prototype.main_on_success = function (data) {
             var place = this.getPlace();
             document.getElementById(place).style.display = 'block';
             return data;
         };
-        this.before_on_success = function (data) {
-            var place = mySelf.getPlace();
+        Page.prototype.before_on_success = function (data) {
+            var place = this._mySelf.getPlace();
             document.getElementById(place).innerHTML = mySelf.supressMetaTags(data);
             return data;
         };
-        this.after_on_success = function (data) {
-            if (hasCopyright) {
-                mySelf.copyright();
-                mySelf.authors();
+        Page.prototype.after_on_success = function (data) {
+            if (this._hasCopyright) {
+                this._mySelf.copyright();
+                this._mySelf.authors();
             }
             utils.app_string();
         };
-        this.on_failure = function (data) {
-            document.getElementById(place).style.display = 'none';
+        Page.prototype.on_failure = function (data) {
+            document.getElementById(this.getPlace()).style.display = 'none';
         };
-    };
-    makeParentOf(BasePage, self.Page);
+    makeParentOf(BasePage, Page);
 
-    self.PageArticle = function (query, place) {
-        self.Page.call(this, query, place, false);
+    // ======================================================================
+
+    var PageArticle = function (query, place) {
+
+        Page.call(this, query, place, false);
         Environment.article = this;
         this.resizeSVG = function () {
             var place = this.getPlace();
@@ -146,19 +153,20 @@ var Pages = (function () {
                         element.style.height = newHeight + 'px';
                     });
         };
-        this.after_on_success = function (result) {
-            this.resizeSVG();
-        };
-        this.on_failure = function (data) {
-            document.getElementById(place).innerHTML = data;
-        };
     };
-    makeParentOf(self.Page, self.PageArticle);
-    self.PageNavigation = function (query, place, mainHTMLQuery, hasTitle) {
+    PageArticle.prototype.after_on_success = function (result) {
+        this.resizeSVG();
+    };
+    PageArticle.prototype.on_failure = function (data) {
+        document.getElementById(this.getPlace()).innerHTML = data;
+    };
+    makeParentOf(Page, PageArticle);
+
+    var PageNavigation = function (query, place, mainHTMLQuery, hasTitle) {
         var mainHTMLQuery = mainHTMLQuery;
         var hasTitle = hasTitle;
 
-        self.Page.call(this, query, place, false);
+        Page.call(this, query, place, false);
 
         this.setMainHTMLQuery = function (newQuery) {
             mainHTMLQuery = newQuery;
@@ -220,9 +228,9 @@ var Pages = (function () {
             }
         };
     };
-    makeParentOf(self.Page, self.PageNavigation);
+    makeParentOf(Page, PageNavigation);
 
-    self.PagesCollection = function (newPages) {
+    var PagesCollection = function (newPages) {
         this.doload = function (pages) {
             pages.forEach(function (page) {
                 if (page) {
@@ -255,14 +263,14 @@ var Pages = (function () {
                 currentRoot + '>');
         if (newRoot !== currentRoot) {
             var cQuery = query.badClone('content');
-            content = new self.PageNavigation(cQuery, 'toc', query, true);
+            content = new PageNavigation(cQuery, 'toc', query, true);
             changed = true;
             // TODO : is it useful ?
             content.setQuery(cQuery);
             content.setMainHTMLQuery(cQuery);
         }
         if (changed || newPage !== currentPage) {
-            article = new self.PageArticle(query, 'article');
+            article = new PageArticle(query, 'article');
             Environment.article = article;
             changed = true;
             if (content !== null) {
@@ -278,5 +286,9 @@ var Pages = (function () {
         return true;
     };
 
+    self.Page = Page;
+    self.PageArticle = PageArticle;
+    self.PageNavigation = PageNavigation;
+    self.PagesCollection = PagesCollection;
     return self;
 })();
