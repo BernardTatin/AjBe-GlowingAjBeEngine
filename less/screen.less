@@ -274,7 +274,9 @@ a {
 @media not print {
     #toc {
         display: block;
-        padding: 8px;
+        // padding must be greater than margin
+        // for a better look when menu is cut
+        padding:18px;
         margin: 15px;
         word-break: break-all;
         letter-spacing: -1px;

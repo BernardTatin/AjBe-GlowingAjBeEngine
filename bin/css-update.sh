@@ -1,8 +1,8 @@
-#!/bin/bash
+#/usr/bin/env dash
 
-gitBase=~/git
-kernel=$gitBase/bright-marcel-kernel
-othersites=$gitBase/bright-marcel
+gitBase=
+kernel=
+othersites=
 
 case $# in
 	0)
@@ -21,23 +21,27 @@ case $# in
 		;;
 esac
 
+[ -z "$gitBase" ] && gitBase=~/git
+[ -z "$kernel" ] && kernel=$gitBase/bright-marcel-kernel
+[ -z "$othersites" ] && othersites=$gitBase/bright-marcel
+
 
 prepareKernel () {
-	cd $kernel
-	for f in screen print default-font
-	do
+	(cd $kernel
+	 for f in screen print default-font
+	 do
 		lessc less/$f.less > css/$f.css
-	done
+    done)
 }
 
 prepareSite () {
 	for site in $othersites
 	do
-		cd $site
-		for f in local-font local
-		do
+		(cd $site
+		 for f in local-font local
+		 do
 			lessc --include-path=$kernel/less less/$f.less > css/$f.css
-		done
+         done)
 	done
 }
 
