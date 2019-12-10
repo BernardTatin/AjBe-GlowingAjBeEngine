@@ -4,37 +4,12 @@
  *
  * Created on 5 Juin 2015, 12:28:05
  */
-/*
- * The MIT License
- *
- * Copyright 2016 bernard.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
-
 
 "use strict";
 
 var purejsLib = (function () {
     return {
-        // add event cross browser, cf modernizer.js
+        // add event cross browser
         addEvent: function (elem, event, fn) {
             if (elem.addEventListener) {
                 elem.addEventListener(event, fn, false);
@@ -50,7 +25,7 @@ var purejsLib = (function () {
 })();
 
 // cf https://github.com/jfriend00/docReady/blob/master/docready.js
-(function (funcName, baseObj) {
+(function(funcName, baseObj) {
     // The public function name defaults to window.docReady
     // but you can modify the last line of this function to pass in a different object or method name
     // if you want to put them in a different namespace and those will be used instead of
@@ -82,7 +57,7 @@ var purejsLib = (function () {
     }
 
     function readyStateChange() {
-        if (document.readyState === "complete") {
+        if ( document.readyState === "complete" ) {
             ready();
         }
     }
@@ -91,13 +66,11 @@ var purejsLib = (function () {
     // docReady(fn, context);
     // the context argument is optional - if present, it will be passed
     // as an argument to the callback
-    baseObj[funcName] = function (callback, context) {
+    baseObj[funcName] = function(callback, context) {
         // if ready has already fired, then just schedule the callback
         // to fire asynchronously, but right away
         if (readyFired) {
-            setTimeout(function () {
-                callback(context);
-            }, 1);
+            setTimeout(function() {callback(context);}, 1);
             return;
         } else {
             // add the function and context to the list

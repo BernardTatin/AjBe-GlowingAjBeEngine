@@ -1,4 +1,4 @@
-/*
+/* 
     dimensions.less
     Created on : 10 juin 2015, 23:10:20
     Author     : bernard
@@ -24,11 +24,8 @@
 
 
 @menu-width: 33%;
-@menu-max-width: 240px;
+@menu-max-width: 200px;
 @menu-min-width: 120px;
-
-@little-screen-width: 800px;
-@big-screen-width: 1200px;
 
 .positionRelative {
     position: relative;
@@ -42,6 +39,8 @@
 .floatLeft {
     float: left;
 }
+
+@little-screen-width: 800px;
 
 @media (max-width: @little-screen-width) {
     #shell {
@@ -98,7 +97,7 @@
     }
 }
 
-@media (min-width: @big-screen-width) {
+@media (min-width: 1200px) {
     #shell {
         width: 95%;
     }
@@ -116,13 +115,9 @@
     }
     #main_content {
         width: 85%;
-    }
-    .csscolumns #main_content {
         -webkit-column-count: 2;
         -moz-column-count: 2;
         column-count: 2;
-    }
-    .csscolumns-gap #main_content {
         -webkit-column-gap: 35px;
         -moz-column-gap: 35px;
         column-gap: 35px;

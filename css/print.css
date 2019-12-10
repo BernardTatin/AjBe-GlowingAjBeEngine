@@ -4,7 +4,7 @@
     Author     : bernard
 */
 /* variables */
-/*
+/* 
     screen-variables.less
     Created on : 3 juin 2015, 21:25:47
     Author     : bernard
@@ -155,7 +155,7 @@ p.current-node,
 #main_content p.current-node {
   font-family: 'Helvetica', Verdana, Arial, sans-serif;
 }
-/*
+/* 
     dimensions.less
     Created on : 10 juin 2015, 23:10:20
     Author     : bernard
@@ -217,7 +217,7 @@ p.current-node,
     z-index: 2;
     float: right;
     width: 33%;
-    max-width: 240px;
+    max-width: 200px;
     min-width: 120px;
   }
 }
@@ -239,13 +239,9 @@ p.current-node,
   }
   #main_content {
     width: 85%;
-  }
-  .csscolumns #main_content {
     -webkit-column-count: 2;
     -moz-column-count: 2;
     column-count: 2;
-  }
-  .csscolumns-gap #main_content {
     -webkit-column-gap: 35px;
     -moz-column-gap: 35px;
     column-gap: 35px;
