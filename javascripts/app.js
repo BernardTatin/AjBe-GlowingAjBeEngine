@@ -15,7 +15,7 @@ var marcel_kernel = (function () {
         // all libs
         libs: ['private/myajax.js', 'private/purejs-lib.js', 'private/jprint.js'],
         // library name
-        libname: 'pure Javascript 0.2.0',
+        libname: 'pure Javascript 0.2.1',
         // navigator name
         navigator: null
     };
