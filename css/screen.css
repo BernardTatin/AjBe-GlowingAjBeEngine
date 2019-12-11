@@ -326,16 +326,24 @@ a:hover {
 #article .dialog p:before {
   content: "- ";
 }
-#article ul {
+#article ul,
+#article ol {
+  list-style-type: square;
+  margin: 0.7em 0;
   padding-left: 1.35em;
 }
-#article ul li {
+#article ul ul,
+#article ol ul,
+#article ul ol,
+#article ol ol {
+  list-style-type: disc;
+}
+#article ul li,
+#article ol li {
   padding-left: 10px;
 }
 #article ol {
-  margin: 0.7em 0;
   list-style-type: decimal;
-  padding-left: 1.35em;
 }
 #article blockquote {
   margin: 20px 0;
