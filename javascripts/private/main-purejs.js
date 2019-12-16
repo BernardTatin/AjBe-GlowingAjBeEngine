@@ -197,6 +197,36 @@ Class("PagesCollection", {
 Class("PageArticle", {
     isa: Page,
     methods: {
+        resizeMainAndToc: function() {
+            var etoc = utils.getElementById("toc");
+            var emaincontent = utils.getElementById("main_content");
+            if (etoc && emaincontent) {
+                var htoc = parseInt(etoc.offsetHeight, 10);
+                var hmaincontent = parseInt(emaincontent.offsetHeight, 10);
+                hmaincontent = htoc + 48;
+                emaincontent.style.minHeight = '"' + hmaincontent.toString() + "px" + '"';
+                 htoc += 2;
+                 etoc.style.height = '"' + htoc.toString() + "px" + '"';
+                console.log("changement des hauteurs");
+                /*
+                if (hmaincontent < htoc) {
+                    hmaincontent += 32;
+                    htoc += 2;
+                    emaincontent.style.height = hmaincontent.toString() + "px";
+                    etoc.style.height = htoc.toString() + "px";
+                    console.log("changement des hauteurs");
+                } else {
+                    console.log("PAS de changement des hauteurs");
+                }
+                emaincontent.style.display = "none";
+                etoc.style.display = "none";
+                emaincontent.style.display = "block";
+                etoc.style.display = "block";
+                */
+            } else {
+                console.log("emaincontent ou etoc null");
+            }
+        },
         resizeSVG: function () {
             var maxWidth = utils.getElementById(this.getPlace()).clientWidth;
 
@@ -213,6 +243,7 @@ Class("PageArticle", {
     override: {
         after_on_success: function () {
             this.resizeSVG();
+            this.resizeMainAndToc();
             this.SUPER();
         },
         initialize: function (query, place, session, hasCopyright) {
@@ -341,6 +372,7 @@ Class("Session", {
 function start() {
     var session;
 
+    console.log('start...');
     window.article = null;
     purejsLib.addEvent(window, 'resize', function (e) {
         // cf http://www.sitepoint.com/javascript-this-event-handlers/
@@ -348,12 +380,21 @@ function start() {
         var myself = e.target || e.srcElement;
 
         var article = window.article;
+        console.log('Resize...');
         if (article) {
+            console.log('Resize: article modification');
             article.resizeSVG();
+            console.log('Resize: main and toc modification');
+            article.resizeMainAndToc();
+        } else {
+            console.log('Resize: article is null');
         }
+        console.log('Resize OK');
     });
+    console.log('start: create and load Session');
     session = new Session();
     session.load();
+    console.log('start: OK');
 }
 
 docReady(start);
