@@ -13,7 +13,7 @@ var marcel_kernel = (function () {
         // first libs to load
         beforelibs: ['public/joose.min.js', 'private/utils.js'],
         // all libs
-        libs: ['private/myajax.js', 'private/purejs-lib.js', 'private/jprint.js'],
+        libs: ['private/myajax.js', 'private/purejs-lib.js', 'private/jprint.js', 'private/session.js'],
         // library name
         libname: 'pure Javascript 0.2.1',
         // navigator name
