@@ -96,6 +96,7 @@ a {
     width: 100%;
     p {
         margin: .7em 0;
+        display: block;
     }
 	.dialog {
 		p {
@@ -277,6 +278,9 @@ a {
 
 @media not print {
     #toc {
+        -webkit-break-inside: avoid;
+        -moz-break-inside: avoid;
+        break-inside: avoid;
         display: block;
         // padding must be greater than margin
         // for a better look when menu is cut
@@ -291,6 +295,7 @@ a {
             color: @hx-color;
         }
         ul {
+            display: block;
             padding-left: 2em;
             list-style-type: square;
             li {
@@ -300,6 +305,7 @@ a {
             }
         }
         ul ul {
+            display: block;
             list-style-type: disc;
         }
     }

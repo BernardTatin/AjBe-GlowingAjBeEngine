@@ -243,7 +243,7 @@ Class("PageArticle", {
     override: {
         after_on_success: function () {
             this.resizeSVG();
-            this.resizeMainAndToc();
+            // this.resizeMainAndToc();
             this.SUPER();
         },
         initialize: function (query, place, session, hasCopyright) {
@@ -385,7 +385,7 @@ function start() {
             console.log('Resize: article modification');
             article.resizeSVG();
             console.log('Resize: main and toc modification');
-            article.resizeMainAndToc();
+            // article.resizeMainAndToc();
         } else {
             console.log('Resize: article is null');
         }
