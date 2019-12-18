@@ -81,14 +81,12 @@ Class("Page", {
     has: {
         query: {is: 'n/a', init: null},
         place: {is: 'ro', init: null},
-        session: {is: 'ro', init: null},
         hasCopyright: {is: 'ro', init: false}
     },
     methods: {
-        initialize: function (query, place, session, hasCopyright) {
+        initialize: function (query, place, hasCopyright) {
             this.query = query;
             this.place = place;
-            this.session = session;
             this.hasCopyright = hasCopyright;
         },
         getPageName: function () {
@@ -215,8 +213,8 @@ Class("PageArticle", {
             this.resizeSVG();
             this.SUPER();
         },
-        initialize: function (query, place, session, hasCopyright) {
-            this.SUPER(query, place, session, hasCopyright);
+        initialize: function (query, place, hasCopyright) {
+            this.SUPER(query, place, hasCopyright);
             window.article = this;
         }
     }
@@ -251,7 +249,6 @@ Class("PageNavigation", {
                 });
         },
         main_on_sucess: function (result) {
-            var session = this.getSession();
             var currentRoot = this.query.getRoot();
             var self = this;
 
@@ -260,15 +257,14 @@ Class("PageNavigation", {
                     element.self = self;
                     element.href = element.getAttribute('href');
                     element.currentRoot = currentRoot;
-                    element.session = session;
                     purejsLib.addEvent(element, 'click', clickdEventListener);
                 });
             this.toc_presentation(this.mainHTMLQuery);
         }
     },
     override: {
-        initialize: function (query, place, session, mainHTMLQuery, hasTitle) {
-            this.SUPER(query, place, session);
+        initialize: function (query, place, mainHTMLQuery, hasTitle) {
+            this.SUPER(query, place);
             this.mainHTMLQuery = mainHTMLQuery;
             this.hasTitle = hasTitle;
         },
@@ -303,12 +299,12 @@ var clickdEventListener = function (e) {
     myself.self.query = query;
     myself.self.mainHTMLQuery = query;
     if (lroot !== myself.currentRoot) {
-        allPages.reloadAll(new PageNavigation(new HTMLQuery('content', lroot), 'toc', myself.session, query, true),
-            new PageNavigation(new HTMLQuery('navigation', lroot), 'navigation', myself.session, query),
-            new Page(new HTMLQuery('footer', lroot), 'footer', myself.session, true),
-            new PageArticle(query, 'article', myself.session));
+        allPages.reloadAll(new PageNavigation(new HTMLQuery('content', lroot), 'toc', query, true),
+            new PageNavigation(new HTMLQuery('navigation', lroot), 'navigation', query),
+            new Page(new HTMLQuery('footer', lroot), 'footer', true),
+            new PageArticle(query, 'article'));
     } else {
-        allPages.reloadArticle(new PageArticle(query, 'article', myself.session));
+        allPages.reloadArticle(new PageArticle(query, 'article'));
     }
     myself.self.toc_presentation(query);
     return true;
@@ -324,10 +320,10 @@ var session = (function() {
         load: function () {
             initialize();
             var broot = query.getRoot();
-            allPages = new PagesCollection(new PageNavigation(new HTMLQuery('content', broot), 'toc', this, query, true),
-                new PageNavigation(new HTMLQuery('navigation', broot), 'navigation', this, query),
-                new Page(new HTMLQuery('footer', broot), 'footer', this, true),
-                new PageArticle(query, 'article', this));
+            allPages = new PagesCollection(new PageNavigation(new HTMLQuery('content', broot), 'toc', query, true),
+                new PageNavigation(new HTMLQuery('navigation', broot), 'navigation', query),
+                new Page(new HTMLQuery('footer', broot), 'footer', true),
+                new PageArticle(query, 'article'));
 
             utils.getElementById('site-name').innerHTML = config.SITE_NAME;
             utils.getElementById('site-description').innerHTML = config.SITE_DESCRIPTION;
