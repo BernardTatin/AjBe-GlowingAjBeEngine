@@ -197,36 +197,6 @@ Class("PagesCollection", {
 Class("PageArticle", {
     isa: Page,
     methods: {
-        resizeMainAndToc: function() {
-            var etoc = utils.getElementById("toc");
-            var emaincontent = utils.getElementById("main_content");
-            if (etoc && emaincontent) {
-                var htoc = parseInt(etoc.offsetHeight, 10);
-                var hmaincontent = parseInt(emaincontent.offsetHeight, 10);
-                hmaincontent = htoc + 48;
-                emaincontent.style.minHeight = '"' + hmaincontent.toString() + "px" + '"';
-                 htoc += 2;
-                 etoc.style.height = '"' + htoc.toString() + "px" + '"';
-                console.log("changement des hauteurs");
-                /*
-                if (hmaincontent < htoc) {
-                    hmaincontent += 32;
-                    htoc += 2;
-                    emaincontent.style.height = hmaincontent.toString() + "px";
-                    etoc.style.height = htoc.toString() + "px";
-                    console.log("changement des hauteurs");
-                } else {
-                    console.log("PAS de changement des hauteurs");
-                }
-                emaincontent.style.display = "none";
-                etoc.style.display = "none";
-                emaincontent.style.display = "block";
-                etoc.style.display = "block";
-                */
-            } else {
-                console.log("emaincontent ou etoc null");
-            }
-        },
         resizeSVG: function () {
             var maxWidth = utils.getElementById(this.getPlace()).clientWidth;
 
@@ -243,7 +213,6 @@ Class("PageArticle", {
     override: {
         after_on_success: function () {
             this.resizeSVG();
-            // this.resizeMainAndToc();
             this.SUPER();
         },
         initialize: function (query, place, session, hasCopyright) {
@@ -345,33 +314,29 @@ var clickdEventListener = function (e) {
     return true;
 }
 
-Class("Session", {
-    has: {
-        query: {is: 'n/a', init: null}
-    },
-    methods: {
-        initialize: function () {
-            this.query = new HTMLQuery();
-        },
+var session = (function() {
+    var query = null;
+    function initialize() {
+        query = new HTMLQuery();
+    }
+
+    return {
         load: function () {
-            var broot = this.query.getRoot();
-            allPages = new PagesCollection(new PageNavigation(new HTMLQuery('content', broot), 'toc', this, this.query, true),
-                new PageNavigation(new HTMLQuery('navigation', broot), 'navigation', this, this.query),
+            initialize();
+            var broot = query.getRoot();
+            allPages = new PagesCollection(new PageNavigation(new HTMLQuery('content', broot), 'toc', this, query, true),
+                new PageNavigation(new HTMLQuery('navigation', broot), 'navigation', this, query),
                 new Page(new HTMLQuery('footer', broot), 'footer', this, true),
-                new PageArticle(this.query, 'article', this));
+                new PageArticle(query, 'article', this));
 
             utils.getElementById('site-name').innerHTML = config.SITE_NAME;
             utils.getElementById('site-description').innerHTML = config.SITE_DESCRIPTION;
             return this;
         }
-    }
-
-});
-
+    };
+})();
 
 function start() {
-    var session;
-
     console.log('start...');
     window.article = null;
     purejsLib.addEvent(window, 'resize', function (e) {
@@ -384,15 +349,12 @@ function start() {
         if (article) {
             console.log('Resize: article modification');
             article.resizeSVG();
-            console.log('Resize: main and toc modification');
-            // article.resizeMainAndToc();
         } else {
             console.log('Resize: article is null');
         }
         console.log('Resize OK');
     });
     console.log('start: create and load Session');
-    session = new Session();
     session.load();
     console.log('start: OK');
 }
