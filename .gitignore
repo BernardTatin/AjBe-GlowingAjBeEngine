@@ -27,7 +27,9 @@ images/
 *.map
 
 core
+*.core
 /javascripts/app.min.js
+
 /javascripts/config.min.js
 /javascripts/joose.min.js
 /javascripts/main-jquery.min.js
