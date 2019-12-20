@@ -20,3 +20,6 @@ var dog = new Animal('dog');
 
 console.log('cat: <' + cat.getName() + '>');
 console.log('dog: <' + dog.getName() + '>');
+
+console.log('the cat constructor is: ' + cat.constructor);
+console.log('the dog constructor is: ' + dog.constructor);

@@ -15,34 +15,31 @@ var PAGESCTS = (function () {
 
 var allPages = null;
 
-Class("HTMLQuery", {
-    has: {
-        root: {is: 'ro', init: null},
-        pageName: {is: 'ro', init: null},
-        url: {is: 'n/a', init: null}
-    },
-    methods: {
-        initialize: function (location, root) {
-            if (!utils.isUndefined(location) && !utils.isUndefined(root)) {
-                this.root = root;
-                this.pageName = location;
-            } else {
-                if (utils.isUndefined(location) && utils.isUndefined(root)) {
-                    this.url = window.location.href;
-                } else if (!utils.isUndefined(location)) {
-                    this.url = location;
-                } else {
-                    this.url = window.location.href;
-                }
-                this.root = this.urlParam('root', config.DEFAULT_ROOT);
-                this.pageName = this.urlParam('page', config.DEFAULT_PAGE);
-            }
-        },
-        urlParam: function (name, default_value) {
-            return utils.urlParam(name, this.url, default_value);
+function HTMLQuery(location, root) {
+    if (!utils.isUndefined(location) && !utils.isUndefined(root)) {
+        this.root = root;
+        this.pageName = location;
+    } else {
+        if (utils.isUndefined(location) && utils.isUndefined(root)) {
+            this.url = window.location.href;
+        } else if (!utils.isUndefined(location)) {
+            this.url = location;
+        } else {
+            this.url = window.location.href;
         }
+        this.root = this.urlParam('root', config.DEFAULT_ROOT);
+        this.pageName = this.urlParam('page', config.DEFAULT_PAGE);
     }
-});
+}
+HTMLQuery.prototype.getPageName = function() {
+    return this.pageName;
+}
+HTMLQuery.prototype.getRoot = function() {
+    return this.root;
+}
+HTMLQuery.prototype.urlParam = function (name, default_value) {
+    return utils.urlParam(name, this.url, default_value);
+}
 
 Class("BasePage", {
     has: {
