@@ -156,38 +156,32 @@ Class("AjaxGetPage", {
     }
 });
 
-Class("PagesCollection", {
-    has: {
-        pages: {is: 'n/a', init: null}
-    },
-    methods: {
-        initialize: function (content, navigation, footer, article) {
-            this.reloadAll(content, navigation, footer, article);
-        },
-        doload: function () {
-            this.pages.map(function (page) {
-                if (!page.amILoaded()) {
-                    return new AjaxGetPage(page);
-                } else {
-                    return null;
-                }
-            }).forEach(function (req) {
-                if (req) {
-                    req.send();
-                }
-            });
-        },
-        reloadAll: function (content, navigation, footer, article) {
-            this.pages = [content, navigation, footer, article];
-            this.doload();
-        },
-        reloadArticle: function (article) {
-            article.reset();
-            this.pages[PAGESCTS.ARTICLE] = article;
-            this.doload();
+function PagesCollection (content, navigation, footer, article) {
+    this.reloadAll(content, navigation, footer, article);
+}
+PagesCollection.prototype.doload = function () {
+    this.pages.map(function (page) {
+        if (!page.amILoaded()) {
+            return new AjaxGetPage(page);
+        } else {
+            return null;
         }
-    }
-});
+    }).forEach(function (req) {
+        if (req) {
+            req.send();
+        }
+    });
+}
+PagesCollection.prototype.reloadAll = function (content, navigation, footer, article) {
+    this.pages = [content, navigation, footer, article];
+    this.doload();
+}
+PagesCollection.prototype.reloadArticle = function (article) {
+    article.reset();
+    this.pages[PAGESCTS.ARTICLE] = article;
+    this.doload();
+}
+
 
 Class("PageArticle", {
     isa: Page,
