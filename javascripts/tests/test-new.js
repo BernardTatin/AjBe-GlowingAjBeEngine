@@ -7,19 +7,43 @@
 
 "use strict";
 
-function Animal(theName) {
-    this.name = theName;
+function Animal(theSpecie) {
+    this.specie = theSpecie;
 }
 
-Animal.prototype.getName = function() {
-    return this.name;
+Animal.prototype.getSpecie = function() {
+    return this.specie;
 };
 
-var cat = new Animal('cat');
-var dog = new Animal('dog');
+function Cat(theName) {
+    this.Super = new Animal('Cat');
+    this.name = theName;
+}
+Cat.prototype.getSpecie = function() {
+    return this.Super.getSpecie();
+}
+Cat.prototype.getName = function() {
+    return this.name;
+}
 
-console.log('cat: <' + cat.getName() + '>');
-console.log('dog: <' + dog.getName() + '>');
+function Dog(theName) {
+    this.Super = new Animal('Dog');
+    this.name = theName;
+}
+Dog.prototype.getSpecie = function() {
+    return this.Super.getSpecie();
+}
+Dog.prototype.getName = function() {
+    return this.name;
+}
 
-console.log('the cat constructor is: ' + cat.constructor);
-console.log('the dog constructor is: ' + dog.constructor);
+let cat = new Cat('Plume');
+let dog = new Dog('Hailey');
+let friends = [cat, dog];
+
+for (var i=0, l=friends.length; i<l; i++) {
+    let f = friends[i];
+    console.log('-----------------------');
+    console.log(f.getSpecie() + ' ' + f.getName());
+    console.log('the constructor is: ' + f.constructor);
+}

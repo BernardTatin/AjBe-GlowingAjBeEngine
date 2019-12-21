@@ -12,6 +12,7 @@ var marcel_kernel = (function () {
         main_code: 'private/main-purejs.js',
         // first libs to load
         beforelibs: ['public/joose.min.js', 'private/utils.js'],
+        // beforelibs: ['private/utils.js'],
         // all libs
         libs: ['private/myajax.js', 'private/purejs-lib.js', 'private/jprint.js', 'private/session.js'],
         // library name

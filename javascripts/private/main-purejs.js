@@ -135,26 +135,27 @@ Class("Page", {
     }
 });
 
-Class("AjaxGetPage", {
-    isa: MyAjax.AjaxGet,
-    has: {
-        page: {is: 'n/a', init: null}
-    },
-    override: {
-        initialize: function (page) {
-            this.SUPER(page.fileName());
-            this.page = page;
-        }
-    },
-    methods: {
-        on_receive: function (data) {
-            this.page.on_success(data);
-        },
-        on_failure: function (data) {
-            this.page.on_failure(data);
-        }
-    }
-});
+function AjaxGetPage(page) {
+    this.Super = new AjaxGet(this, page.fileName());
+    this.page = page;
+    this.self = this;
+    this.name = 'AjaxGetPage';
+}
+AjaxGetPage.prototype.on_receive = function(data) {
+    console.log('AjaxGetPage.prototype.on_receive');
+    this.page.on_success(data);
+}
+AjaxGetPage.prototype.on_failure = function (data) {
+    console.log('AjaxGetPage.prototype.on_failure');
+    this.page.on_failure(data);
+}
+AjaxGetPage.prototype.createRequest = function () {
+    this.Super.createRequest();
+}
+AjaxGetPage.prototype.send = function (data) {
+    this.Super.send(data);
+}
+
 
 function PagesCollection (content, navigation, footer, article) {
     this.reloadAll(content, navigation, footer, article);
