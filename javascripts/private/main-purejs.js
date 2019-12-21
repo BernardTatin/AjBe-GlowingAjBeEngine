@@ -31,15 +31,17 @@ function HTMLQuery(location, root) {
         this.pageName = this.urlParam('page', config.DEFAULT_PAGE);
     }
 }
-HTMLQuery.prototype.getPageName = function() {
-    return this.pageName;
-}
-HTMLQuery.prototype.getRoot = function() {
-    return this.root;
-}
-HTMLQuery.prototype.urlParam = function (name, default_value) {
-    return utils.urlParam(name, this.url, default_value);
-}
+HTMLQuery.prototype = {
+    getPageName: function() {
+        return this.pageName;
+    },
+    getRoot: function() {
+        return this.root;
+    },
+    urlParam: function (name, default_value) {
+        return utils.urlParam(name, this.url, default_value);
+    }
+};
 
 Class("BasePage", {
     has: {
@@ -141,47 +143,51 @@ function AjaxGetPage(page) {
     this.self = this;
     this.name = 'AjaxGetPage';
 }
-AjaxGetPage.prototype.on_receive = function(data) {
-    console.log('AjaxGetPage.prototype.on_receive');
-    this.page.on_success(data);
-}
-AjaxGetPage.prototype.on_failure = function (data) {
-    console.log('AjaxGetPage.prototype.on_failure');
-    this.page.on_failure(data);
-}
-AjaxGetPage.prototype.createRequest = function () {
-    this.Super.createRequest();
-}
-AjaxGetPage.prototype.send = function (data) {
-    this.Super.send(data);
-}
+AjaxGetPage.prototype= {
+    on_receive: function(data) {
+        console.log('AjaxGetPage.prototype.on_receive');
+        this.page.on_success(data);
+    },
+    on_failure: function (data) {
+        console.log('AjaxGetPage.prototype.on_failure');
+        this.page.on_failure(data);
+    },
+    createRequest: function () {
+        this.Super.createRequest();
+    },
+    send: function (data) {
+        this.Super.send(data);
+    }
+};
 
 
 function PagesCollection (content, navigation, footer, article) {
     this.reloadAll(content, navigation, footer, article);
 }
-PagesCollection.prototype.doload = function () {
-    this.pages.map(function (page) {
-        if (!page.amILoaded()) {
-            return new AjaxGetPage(page);
-        } else {
-            return null;
-        }
-    }).forEach(function (req) {
-        if (req) {
-            req.send();
-        }
-    });
-}
-PagesCollection.prototype.reloadAll = function (content, navigation, footer, article) {
-    this.pages = [content, navigation, footer, article];
-    this.doload();
-}
-PagesCollection.prototype.reloadArticle = function (article) {
-    article.reset();
-    this.pages[PAGESCTS.ARTICLE] = article;
-    this.doload();
-}
+PagesCollection.prototype = {
+    doload: function () {
+        this.pages.map(function (page) {
+            if (!page.amILoaded()) {
+                return new AjaxGetPage(page);
+            } else {
+                return null;
+            }
+        }).forEach(function (req) {
+            if (req) {
+                req.send();
+            }
+        });
+    },
+    reloadAll: function (content, navigation, footer, article) {
+        this.pages = [content, navigation, footer, article];
+        this.doload();
+    },
+    reloadArticle: function (article) {
+        article.reset();
+        this.pages[PAGESCTS.ARTICLE] = article;
+        this.doload();
+    }
+};
 
 
 Class("PageArticle", {
