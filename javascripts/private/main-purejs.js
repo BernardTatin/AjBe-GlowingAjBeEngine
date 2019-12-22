@@ -75,6 +75,82 @@ Class("BasePage", {
     }
 });
 
+function Page(query, place, hasCopyright) {
+    this.Super = new BasePage();
+    this.query = query;
+    this.place = place;
+    this.hasCopyright = hasCopyright;
+}
+
+Page.prototype = {
+    getPageName: function () {
+        return this.query.getPageName();
+    },
+    fileName: function () {
+        if (!this.file_name) {
+            this.file_name = config.SITE_BASE + '/' +
+                this.query.getRoot() + '/' + this.getPageName() + '.html';
+        }
+        return this.file_name;
+    },
+    copyright: function () {
+        this.setHTMLByClassName('copyright', config.COPYRIGHT);
+    },
+    authors: function () {
+        this.setHTMLByClassName('authors', config.AUTHORS);
+    },
+    supressMetaTags: function (str) {
+        var metaPattern = /<meta.+\/?>/g;
+        return str.replace(metaPattern, '');
+    },
+    before_on_success: function (result) {
+        var place = this.getPlace();
+        utils.getElementById(place).innerHTML = this.supressMetaTags(result);
+    },
+    main_on_sucess: function (result) {
+
+    },
+    after_on_success: function () {
+        if (this.hasCopyright) {
+            this.copyright();
+            this.authors();
+        }
+        utils.app_string();
+    },
+    on_failure: function (result) {
+        var place = this.getPlace();
+        utils.getElementById(place).style.display = 'none';
+    },
+    on_success: function (result) {
+        var place = this.getPlace();
+        utils.getElementById(place).style.display = 'block';
+        this.before_on_success(result);
+        this.main_on_sucess(result);
+        this.after_on_success();
+        this.set();
+    },
+    // from base class BasePage
+    amILoaded: function () {
+        return this.Super.amILoaded();
+    },
+    getPlace: function() {
+        return this.place;
+    },
+    set: function () {
+        return this.Super.set();
+    },
+    reset: function () {
+        return this.Super.reset();
+    },
+    setHTMLByClassName: function (className, html) {
+        return this.Super.setHTMLByClassName(className, html);
+    },
+    forEachElementById: function (id, onElement) {
+        return this.Super.forEachElementById(id, onElement);
+    }
+};
+
+/*
 Class("Page", {
     isa: BasePage,
     has: {
@@ -136,6 +212,7 @@ Class("Page", {
         },
     }
 });
+*/
 
 function AjaxGetPage(page) {
     this.Super = new AjaxGet(this, page.fileName());
@@ -223,35 +300,6 @@ PageArticle.prototype = {
     }
 };
 
-/*
-Class("PageArticle", {
-    isa: Page,
-    methods: {
-        resizeSVG: function () {
-            var maxWidth = utils.getElementById(this.getPlace()).clientWidth;
-
-            this.forEachElementById('svg',
-                function (element) {
-                    var width = element.clientWidth;
-                    var height = element.clientHeight;
-                    var newHeight = height * maxWidth / width;
-                    element.style.width = maxWidth + 'px';
-                    element.style.height = newHeight + 'px';
-                });
-        }
-    },
-    override: {
-        after_on_success: function () {
-            this.resizeSVG();
-            this.SUPER();
-        },
-        initialize: function (query, place, hasCopyright) {
-            this.SUPER(query, place, hasCopyright);
-            window.article = this;
-        }
-    }
-});
-*/
 
 function PageNavigation (query, place, mainHTMLQuery, hasTitle) {
     this.Super = new Page(query, place);
