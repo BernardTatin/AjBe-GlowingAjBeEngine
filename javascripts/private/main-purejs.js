@@ -15,6 +15,8 @@ var PAGESCTS = (function () {
 
 var allPages = null;
 
+var pageModule = {};
+
 function HTMLQuery(location, root) {
     if (!utils.isUndefined(location) && !utils.isUndefined(root)) {
         this.root = root;
@@ -43,8 +45,10 @@ HTMLQuery.prototype = {
     }
 };
 
-function BasePage() {
+function BasePage(self, place) {
     this.isItLoaded = false;
+    this.place = place;
+    this.self = self;
 }
 BasePage.prototype = {
     setHTMLByClassName: function (className, html) {
@@ -63,18 +67,23 @@ BasePage.prototype = {
         return this.isItLoaded;
     },
     forEachElementById: function (id, onElement) {
-        var elements = utils.getElementById(this.getPlace()).getElementsByTagName(id);
+        var elements = utils.getElementById(this.self.getPlace()).getElementsByTagName(id);
         for (var i = 0, el = elements.length; i < el; i++) {
             onElement(elements[i]);
         }
     },
+    getPlace: function() {
+        return this.place;
+    },
+    getSelf: function() {
+        return this.self;
+    },
 };
 
 
-function Page(query, place, hasCopyright) {
-    this.Super = new BasePage();
+function Page(self, query, place, hasCopyright) {
+    this.Super = new BasePage(self, place);
     this.query = query;
-    this.place = place;
     this.hasCopyright = hasCopyright;
 }
 
@@ -104,7 +113,9 @@ Page.prototype = {
         utils.getElementById(place).innerHTML = this.supressMetaTags(result);
     },
     main_on_sucess: function (result) {
-
+        if (this.getSelf()) {
+            this.getSelf().main_on_sucess(result);
+        }
     },
     after_on_success: function () {
         if (this.hasCopyright) {
@@ -118,6 +129,7 @@ Page.prototype = {
         utils.getElementById(place).style.display = 'none';
     },
     on_success: function (result) {
+        console.log('Page.on_success');
         var place = this.getPlace();
         utils.getElementById(place).style.display = 'block';
         this.before_on_success(result);
@@ -128,9 +140,6 @@ Page.prototype = {
     // from base class BasePage
     amILoaded: function () {
         return this.Super.amILoaded();
-    },
-    getPlace: function() {
-        return this.place;
     },
     set: function () {
         return this.Super.set();
@@ -143,6 +152,12 @@ Page.prototype = {
     },
     forEachElementById: function (id, onElement) {
         return this.Super.forEachElementById(id, onElement);
+    },
+    getPlace: function() {
+        return this.Super.getPlace();
+    },
+    getSelf: function() {
+        return this.super.self;
     }
 };
 
@@ -200,7 +215,7 @@ PagesCollection.prototype = {
 };
 
 function PageArticle (query, place, hasCopyright) {
-    this.Super = new Page(query, place, hasCopyright);
+    this.Super = new Page(this, query, place, hasCopyright);
     window.article = this;
 }
 
@@ -222,6 +237,8 @@ PageArticle.prototype = {
         this.Super.after_on_success();
     },
     // from base class Page
+    main_on_sucess: function (result) {
+    },
     amILoaded: function () {
         return this.Super.amILoaded();
     },
@@ -229,13 +246,20 @@ PageArticle.prototype = {
         return this.Super.fileName();
     },
     on_success: function(result) {
+        console.log('PageArticle.on_success');
         return this.Super.on_success(result);
+    },
+    getPlace: function() {
+        return this.Super.getPlace();
+    },
+    getSelf: function() {
+        return this.super.self;
     }
 };
 
 
 function PageNavigation (query, place, mainHTMLQuery, hasTitle) {
-    this.Super = new Page(query, place);
+    this.Super = new Page(this, query, place, false);
     this.mainHTMLQuery = mainHTMLQuery;
     this.hasTitle = hasTitle;
 }
@@ -271,7 +295,8 @@ PageNavigation.prototype = {
                 element.self = self;
                 element.href = element.getAttribute('href');
                 element.currentRoot = currentRoot;
-                purejsLib.addEvent(element, 'click', clickdEventListener);
+                console.log('addEvent to ' + element.href.toString());
+                purejsLib.addEvent(element, 'click', pageModule.clickdEventListener);
             });
         this.toc_presentation(this.mainHTMLQuery);
     },
@@ -286,6 +311,7 @@ PageNavigation.prototype = {
         this.Super.before_on_success(result);
     },
     on_success: function (result) {
+        console.log('PageNavigation.on_success');
         if (!jprint.isInPrint()) {
             this.Super.on_success(result);
         } else {
@@ -298,7 +324,14 @@ PageNavigation.prototype = {
     },
     fileName: function() {
         return this.Super.fileName();
+    },
+    getPlace: function() {
+        return this.Super.getPlace();
+    },
+    getSelf: function() {
+        return this.super.self;
     }
+
 
 };
 
@@ -311,23 +344,28 @@ var clickdEventListener = function (e) {
     var query = new HTMLQuery(href);
     var lroot = query.getRoot();
 
+    console.log('clickdEventListener: start');
     myself.self.query = query;
     myself.self.mainHTMLQuery = query;
     if (lroot !== myself.currentRoot) {
+        console.log('clickdEventListener: reloadAll');
         allPages.reloadAll(new PageNavigation(new HTMLQuery('content', lroot), 'toc', query, true),
             new PageNavigation(new HTMLQuery('navigation', lroot), 'navigation', query),
-            new Page(new HTMLQuery('footer', lroot), 'footer', true),
+            new Page(false, new HTMLQuery('footer', lroot), 'footer', true),
             new PageArticle(query, 'article'));
     } else {
+        console.log('clickdEventListener: reloadArticle');
         allPages.reloadArticle(new PageArticle(query, 'article'));
     }
     myself.self.toc_presentation(query);
+    console.log('clickdEventListener: end');
     return true;
 }
 
 function start() {
     console.log('start...');
     window.article = null;
+    pageModule.clickdEventListener = clickdEventListener;
     purejsLib.addEvent(window, 'resize', function (e) {
         // cf http://www.sitepoint.com/javascript-this-event-handlers/
         e = e || window.event;
