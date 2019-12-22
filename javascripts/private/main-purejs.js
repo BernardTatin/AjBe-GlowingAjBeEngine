@@ -218,73 +218,74 @@ Class("PageArticle", {
     }
 });
 
-Class("PageNavigation", {
-    isa: Page,
-    has: {
-        mainHTMLQuery: {is: 'n/a', init: null},
-        hasTitle: {is: 'n/a', init: false}
+function PageNavigation (query, place, mainHTMLQuery, hasTitle) {
+    this.Super = new Page(query, place);
+    this.mainHTMLQuery = mainHTMLQuery;
+    this.hasTitle = hasTitle;
+}
+
+PageNavigation.prototype = {
+    toc_presentation: function (query) {
+        var currentPage = query.getPageName();
+        var currentRoot = query.getRoot();
+        var url = query.url;
+
+        this.forEachElementById('p',
+            function (element) {
+                var href = element.getAttribute('href');
+                var query = new HTMLQuery(href);
+
+                element.className = 'normal-node';
+                if (query.getPageName() === currentPage &&
+                    query.getRoot() === currentRoot) {
+                    var title = element.innerHTML;
+                    utils.getElementById('main_title').innerHTML = title;
+                    utils.setUrlInBrowser(url);
+                    document.title = title;
+                    element.className = 'current-node';
+                }
+            });
     },
-    methods: {
-        toc_presentation: function (query) {
-            var currentPage = query.getPageName();
-            var currentRoot = query.getRoot();
-            var url = query.url;
+    main_on_sucess: function (result) {
+        var currentRoot = this.query.getRoot();
+        var self = this;
 
-            this.forEachElementById('p',
-                function (element) {
-                    var href = element.getAttribute('href');
-                    var query = new HTMLQuery(href);
-
-                    element.className = 'normal-node';
-                    if (query.getPageName() === currentPage &&
-                        query.getRoot() === currentRoot) {
-                        var title = element.innerHTML;
-                        utils.getElementById('main_title').innerHTML = title;
-                        utils.setUrlInBrowser(url);
-                        document.title = title;
-                        element.className = 'current-node';
-                    }
-                });
-        },
-        main_on_sucess: function (result) {
-            var currentRoot = this.query.getRoot();
-            var self = this;
-
-            this.forEachElementById('p',
-                function (element) {
-                    element.self = self;
-                    element.href = element.getAttribute('href');
-                    element.currentRoot = currentRoot;
-                    purejsLib.addEvent(element, 'click', clickdEventListener);
-                });
-            this.toc_presentation(this.mainHTMLQuery);
+        this.forEachElementById('p',
+            function (element) {
+                element.self = self;
+                element.href = element.getAttribute('href');
+                element.currentRoot = currentRoot;
+                purejsLib.addEvent(element, 'click', clickdEventListener);
+            });
+        this.toc_presentation(this.mainHTMLQuery);
+    },
+    after_on_success: function () {
+        this.toc_presentation(this.mainHTMLQuery);
+        this.Super.after_on_success();
+    },
+    before_on_success: function (result) {
+        if (this.hasTitle && config.TOC_TITLE) {
+            result = '<h2>' + config.TOC_TITLE + '</h2>' + result;
+        }
+        this.Super.before_on_success(result);
+    },
+    on_success: function (result) {
+        if (!jprint.isInPrint()) {
+            this.Super.on_success(result);
+        } else {
+            utils.getElementById(this.getPlace()).style.display = 'none';
         }
     },
-    override: {
-        initialize: function (query, place, mainHTMLQuery, hasTitle) {
-            this.SUPER(query, place);
-            this.mainHTMLQuery = mainHTMLQuery;
-            this.hasTitle = hasTitle;
-        },
-        after_on_success: function () {
-            this.toc_presentation(this.mainHTMLQuery);
-            this.SUPER();
-        },
-        before_on_success: function (result) {
-            if (this.hasTitle && config.TOC_TITLE) {
-                result = '<h2>' + config.TOC_TITLE + '</h2>' + result;
-            }
-            this.SUPER(result);
-        },
-        on_success: function (result) {
-            if (!jprint.isInPrint()) {
-                this.SUPER(result);
-            } else {
-                utils.getElementById(this.getPlace()).style.display = 'none';
-            }
-        }
+    // from base class Page
+    amILoaded: function () {
+        return this.Super.amILoaded();
+    },
+    fileName: function() {
+        return this.Super.fileName();
     }
-});
+
+};
+
 
 var clickdEventListener = function (e) {
     // cf http://www.sitepoint.com/javascript-this-event-handlers/
