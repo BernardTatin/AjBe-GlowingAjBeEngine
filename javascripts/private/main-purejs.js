@@ -43,37 +43,33 @@ HTMLQuery.prototype = {
     }
 };
 
-Class("BasePage", {
-    has: {
-        isItLoaded: {is: 'ro', init: false}
+function BasePage() {
+    this.isItLoaded = false;
+}
+BasePage.prototype = {
+    setHTMLByClassName: function (className, html) {
+        var nodes = document.getElementsByClassName(className);
+        for (var i = 0, nl = nodes.length; i < nl; i++) {
+            nodes[i].innerHTML = html;
+        }
     },
-    methods: {
-        initialize: function () {
-            this.isItLoaded = false;
-        },
-        setHTMLByClassName: function (className, html) {
-            var nodes = document.getElementsByClassName(className);
-            for (var i = 0, nl = nodes.length; i < nl; i++) {
-                nodes[i].innerHTML = html;
-            }
-        },
-        set: function () {
-            this.isItLoaded = true;
-        },
-        reset: function () {
-            this.isItLoaded = false;
-        },
-        amILoaded: function () {
-            return this.isItLoaded;
-        },
-        forEachElementById: function (id, onElement) {
-            var elements = utils.getElementById(this.getPlace()).getElementsByTagName(id);
-            for (var i = 0, el = elements.length; i < el; i++) {
-                onElement(elements[i]);
-            }
-        },
-    }
-});
+    set: function () {
+        this.isItLoaded = true;
+    },
+    reset: function () {
+        this.isItLoaded = false;
+    },
+    amILoaded: function () {
+        return this.isItLoaded;
+    },
+    forEachElementById: function (id, onElement) {
+        var elements = utils.getElementById(this.getPlace()).getElementsByTagName(id);
+        for (var i = 0, el = elements.length; i < el; i++) {
+            onElement(elements[i]);
+        }
+    },
+};
+
 
 function Page(query, place, hasCopyright) {
     this.Super = new BasePage();
