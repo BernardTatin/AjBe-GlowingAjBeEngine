@@ -150,69 +150,6 @@ Page.prototype = {
     }
 };
 
-/*
-Class("Page", {
-    isa: BasePage,
-    has: {
-        query: {is: 'n/a', init: null},
-        place: {is: 'ro', init: null},
-        hasCopyright: {is: 'ro', init: false}
-    },
-    methods: {
-        initialize: function (query, place, hasCopyright) {
-            this.query = query;
-            this.place = place;
-            this.hasCopyright = hasCopyright;
-        },
-        getPageName: function () {
-            return this.query.getPageName();
-        },
-        fileName: function () {
-            if (!this.file_name) {
-                this.file_name = config.SITE_BASE + '/' +
-                    this.query.getRoot() + '/' + this.getPageName() + '.html';
-            }
-            return this.file_name;
-        },
-        copyright: function () {
-            this.setHTMLByClassName('copyright', config.COPYRIGHT);
-        },
-        authors: function () {
-            this.setHTMLByClassName('authors', config.AUTHORS);
-        },
-        supressMetaTags: function (str) {
-            var metaPattern = /<meta.+\/?>/g;
-            return str.replace(metaPattern, '');
-        },
-        before_on_success: function (result) {
-            var place = this.getPlace();
-            utils.getElementById(place).innerHTML = this.supressMetaTags(result);
-        },
-        main_on_sucess: function (result) {
-
-        },
-        after_on_success: function () {
-            if (this.hasCopyright) {
-                this.copyright();
-                this.authors();
-            }
-            utils.app_string();
-        },
-        on_failure: function (result) {
-            var place = this.getPlace();
-            utils.getElementById(place).style.display = 'none';
-        },
-        on_success: function (result) {
-            var place = this.getPlace();
-            utils.getElementById(place).style.display = 'block';
-            this.before_on_success(result);
-            this.main_on_sucess(result);
-            this.after_on_success();
-            this.set();
-        },
-    }
-});
-*/
 
 function AjaxGetPage(page) {
     this.Super = new AjaxGet(this, page.fileName());
