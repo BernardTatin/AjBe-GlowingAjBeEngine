@@ -189,7 +189,41 @@ PagesCollection.prototype = {
     }
 };
 
+function PageArticle (query, place, hasCopyright) {
+    this.Super = new Page(query, place, hasCopyright);
+    window.article = this;
+}
 
+PageArticle.prototype = {
+    resizeSVG: function () {
+        var maxWidth = utils.getElementById(this.getPlace()).clientWidth;
+
+        this.forEachElementById('svg',
+            function (element) {
+                var width = element.clientWidth;
+                var height = element.clientHeight;
+                var newHeight = height * maxWidth / width;
+                element.style.width = maxWidth + 'px';
+                element.style.height = newHeight + 'px';
+            });
+    },
+    after_on_success: function () {
+        this.resizeSVG();
+        this.Super.after_on_success();
+    },
+    // from base class Page
+    amILoaded: function () {
+        return this.Super.amILoaded();
+    },
+    fileName: function() {
+        return this.Super.fileName();
+    },
+    on_success: function(result) {
+        return this.Super.on_success(result);
+    }
+};
+
+/*
 Class("PageArticle", {
     isa: Page,
     methods: {
@@ -217,6 +251,7 @@ Class("PageArticle", {
         }
     }
 });
+*/
 
 function PageNavigation (query, place, mainHTMLQuery, hasTitle) {
     this.Super = new Page(query, place);
