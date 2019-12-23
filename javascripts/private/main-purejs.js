@@ -67,7 +67,7 @@ BasePage.prototype = {
         return this.isItLoaded;
     },
     forEachElementById: function (id, onElement) {
-        var elements = utils.getElementById(this.self.getPlace()).getElementsByTagName(id);
+        var elements = utils.getElementById(this.getPlace()).getElementsByTagName(id);
         for (var i = 0, el = elements.length; i < el; i++) {
             onElement(elements[i]);
         }
@@ -77,14 +77,19 @@ BasePage.prototype = {
     },
     getSelf: function() {
         return this.self;
-    },
+    }
 };
 
 
 function Page(self, query, place, hasCopyright) {
-    this.Super = new BasePage(self, place);
+    if (!self) {
+        this.Super = new BasePage(this, place);
+    } else {
+        this.Super = new BasePage(self, place);
+    }
     this.query = query;
     this.hasCopyright = hasCopyright;
+    this.file_name = false;
 }
 
 Page.prototype = {
@@ -92,9 +97,45 @@ Page.prototype = {
         return this.query.getPageName();
     },
     fileName: function () {
+        if (utils.isUndefined(this.query)) {
+            console.log('Page.fileName.query is  undefined');
+        }
+        if (this.query == null || this.query === null) {
+            console.log('Page.fileName.query is null');
+        }
+        console.log('Properties af Page.query...');
+        for (var item in this.query) {
+            console.log('-> ' + item);
+        }
+        console.log('Properties af Page.query end');
+        /*
+Here is the bug, a query with these properties!
+Properties af Page.query... main-purejs.js:106:17
+-> 0                        main-purejs.js:108:21
+-> 1                        main-purejs.js:108:21
+-> 2                        main-purejs.js:108:21
+-> 3                        main-purejs.js:108:21
+-> 4                        main-purejs.js:108:21
+-> 5                        main-purejs.js:108:21
+Properties af Page.query end
+instead of these:
+Properties af Page.query... main-purejs.js:106:17
+-> root                     main-purejs.js:108:21
+-> pageName                 main-purejs.js:108:21
+-> getPageName              main-purejs.js:108:21
+-> getRoot                  main-purejs.js:108:21
+-> urlParam                 main-purejs.js:108:21
+Properties af Page.query end
+         */
         if (!this.file_name) {
-            this.file_name = config.SITE_BASE + '/' +
-                this.query.getRoot() + '/' + this.getPageName() + '.html';
+            var p = this.getPageName();
+            var r = this.query.getRoot();
+            this.file_name = config.SITE_BASE
+                + '/'
+                + r     // this.query.getRoot()
+                + '/'
+                + p     // this.getPageName()
+                + '.html';
         }
         return this.file_name;
     },
@@ -157,7 +198,7 @@ Page.prototype = {
         return this.Super.getPlace();
     },
     getSelf: function() {
-        return this.super.self;
+        return this.Super.self;
     }
 };
 
@@ -182,11 +223,14 @@ AjaxGetPage.prototype= {
     },
     send: function (data) {
         this.Super.send(data);
+    },
+    getRoot: function() {
     }
 };
 
 
 function PagesCollection (content, navigation, footer, article) {
+    this.pages = [null, null, null, null];
     this.reloadAll(content, navigation, footer, article);
 }
 PagesCollection.prototype = {
@@ -253,7 +297,7 @@ PageArticle.prototype = {
         return this.Super.getPlace();
     },
     getSelf: function() {
-        return this.super.self;
+        return this.Super.self;
     }
 };
 
@@ -329,7 +373,7 @@ PageNavigation.prototype = {
         return this.Super.getPlace();
     },
     getSelf: function() {
-        return this.super.self;
+        return this.Super.self;
     }
 
 
