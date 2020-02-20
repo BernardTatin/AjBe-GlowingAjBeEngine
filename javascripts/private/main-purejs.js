@@ -97,45 +97,50 @@ Page.prototype = {
         return this.query.getPageName();
     },
     fileName: function () {
-        if (utils.isUndefined(this.query)) {
-            console.log('Page.fileName.query is  undefined');
-        }
-        if (this.query == null || this.query === null) {
-            console.log('Page.fileName.query is null');
-        }
-        console.log('Properties af Page.query...');
-        for (var item in this.query) {
-            console.log('-> ' + item);
-        }
-        console.log('Properties af Page.query end');
-        /*
-Here is the bug, a query with these properties!
-Properties af Page.query... main-purejs.js:106:17
--> 0                        main-purejs.js:108:21
--> 1                        main-purejs.js:108:21
--> 2                        main-purejs.js:108:21
--> 3                        main-purejs.js:108:21
--> 4                        main-purejs.js:108:21
--> 5                        main-purejs.js:108:21
-Properties af Page.query end
-instead of these:
-Properties af Page.query... main-purejs.js:106:17
--> root                     main-purejs.js:108:21
--> pageName                 main-purejs.js:108:21
--> getPageName              main-purejs.js:108:21
--> getRoot                  main-purejs.js:108:21
--> urlParam                 main-purejs.js:108:21
-Properties af Page.query end
-         */
-        if (!this.file_name) {
-            var p = this.getPageName();
-            var r = this.query.getRoot();
-            this.file_name = config.SITE_BASE
-                + '/'
-                + r     // this.query.getRoot()
-                + '/'
-                + p     // this.getPageName()
-                + '.html';
+        try {
+
+            if (utils.isUndefined(this.query)) {
+                console.log('Page.fileName.query is  undefined');
+            }
+            if (this.query == null || this.query === null) {
+                console.log('Page.fileName.query is null');
+            }
+            console.log('Properties af Page.query...');
+            for (var item in this.query) {
+                console.log('-> ' + item);
+            }
+            console.log('Properties af Page.query end');
+            /*
+    Here is the bug, a query with these properties!
+    Properties af Page.query... main-purejs.js:106:17
+    -> 0                        main-purejs.js:108:21
+    -> 1                        main-purejs.js:108:21
+    -> 2                        main-purejs.js:108:21
+    -> 3                        main-purejs.js:108:21
+    -> 4                        main-purejs.js:108:21
+    -> 5                        main-purejs.js:108:21
+    Properties af Page.query end
+    instead of these:
+    Properties af Page.query... main-purejs.js:106:17
+    -> root                     main-purejs.js:108:21
+    -> pageName                 main-purejs.js:108:21
+    -> getPageName              main-purejs.js:108:21
+    -> getRoot                  main-purejs.js:108:21
+    -> urlParam                 main-purejs.js:108:21
+    Properties af Page.query end
+             */
+            if (!this.file_name) {
+                var p = this.getPageName();
+                var r = this.query.getRoot();
+                this.file_name = config.SITE_BASE
+                    + '/'
+                    + r     // this.query.getRoot()
+                    + '/'
+                    + p     // this.getPageName()
+                    + '.html';
+            }
+        } catch (error) {
+            this.file_name = null;
         }
         return this.file_name;
     },
@@ -237,12 +242,14 @@ PagesCollection.prototype = {
     doload: function () {
         this.pages.map(function (page) {
             if (!page.amILoaded()) {
+                console.log('AjaxGetPage of ' + page.pageName)
                 return new AjaxGetPage(page);
             } else {
                 return null;
             }
         }).forEach(function (req) {
             if (req) {
+                console.log('req.send of ' + req.page.pageName)
                 req.send();
             }
         });
@@ -302,6 +309,32 @@ PageArticle.prototype = {
 };
 
 
+var clickdEventListener = function (e) {
+    // cf http://www.sitepoint.com/javascript-this-event-handlers/
+    e = e || window.event;
+    var myself = e.target || e.srcElement;
+    var href = myself.href;
+    var query = new HTMLQuery(href);
+    var lroot = query.getRoot();
+
+    console.log('clickdEventListener: start');
+    myself.self.query = query;
+    myself.self.mainHTMLQuery = query;
+    if (lroot !== myself.currentRoot) {
+        console.log('clickdEventListener: reloadAll');
+        allPages.reloadAll(new PageNavigation(new HTMLQuery('content', lroot), 'toc', query, true),
+            new PageNavigation(new HTMLQuery('navigation', lroot), 'navigation', query),
+            new Page(false, new HTMLQuery('footer', lroot), 'footer', true),
+            new PageArticle(query, 'article'));
+    } else {
+        console.log('clickdEventListener: reloadArticle');
+        allPages.reloadArticle(new PageArticle(query, 'article'));
+    }
+    myself.self.toc_presentation(query);
+    console.log('clickdEventListener: end');
+    return true;
+}
+
 function PageNavigation (query, place, mainHTMLQuery, hasTitle) {
     this.Super = new Page(this, query, place, false);
     this.mainHTMLQuery = mainHTMLQuery;
@@ -340,7 +373,7 @@ PageNavigation.prototype = {
                 element.href = element.getAttribute('href');
                 element.currentRoot = currentRoot;
                 console.log('addEvent to ' + element.href.toString());
-                purejsLib.addEvent(element, 'click', pageModule.clickdEventListener);
+                purejsLib.addEvent(element, 'click', window.clickdEventListener);
             });
         this.toc_presentation(this.mainHTMLQuery);
     },
@@ -380,36 +413,10 @@ PageNavigation.prototype = {
 };
 
 
-var clickdEventListener = function (e) {
-    // cf http://www.sitepoint.com/javascript-this-event-handlers/
-    e = e || window.event;
-    var myself = e.target || e.srcElement;
-    var href = myself.href;
-    var query = new HTMLQuery(href);
-    var lroot = query.getRoot();
-
-    console.log('clickdEventListener: start');
-    myself.self.query = query;
-    myself.self.mainHTMLQuery = query;
-    if (lroot !== myself.currentRoot) {
-        console.log('clickdEventListener: reloadAll');
-        allPages.reloadAll(new PageNavigation(new HTMLQuery('content', lroot), 'toc', query, true),
-            new PageNavigation(new HTMLQuery('navigation', lroot), 'navigation', query),
-            new Page(false, new HTMLQuery('footer', lroot), 'footer', true),
-            new PageArticle(query, 'article'));
-    } else {
-        console.log('clickdEventListener: reloadArticle');
-        allPages.reloadArticle(new PageArticle(query, 'article'));
-    }
-    myself.self.toc_presentation(query);
-    console.log('clickdEventListener: end');
-    return true;
-}
-
 function start() {
     console.log('start...');
     window.article = null;
-    pageModule.clickdEventListener = clickdEventListener;
+    window.clickdEventListener = clickdEventListener;
     purejsLib.addEvent(window, 'resize', function (e) {
         // cf http://www.sitepoint.com/javascript-this-event-handlers/
         e = e || window.event;
