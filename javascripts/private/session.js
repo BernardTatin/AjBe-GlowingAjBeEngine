@@ -5,7 +5,7 @@
 "use strict";
 
 var session = (function() {
-    var query = null;
+    let query = null;
     function initialize() {
         query = new HTMLQuery();
     }
@@ -13,10 +13,11 @@ var session = (function() {
     return {
         load: function () {
             initialize();
-            var broot = query.getRoot();
-            allPages = new PagesCollection(new PageNavigation(new HTMLQuery('content', broot), 'toc', query, true),
+            let broot = query.getRoot();
+            allPages = new PagesCollection(
+                new PageNavigation(new HTMLQuery('content', broot), 'toc', query, true),
                 new PageNavigation(new HTMLQuery('navigation', broot), 'navigation', query),
-                new Page(new HTMLQuery('footer', broot), 'footer', true),
+                new PageFooter(query, new HTMLQuery('footer', broot)),
                 new PageArticle(query, 'article'));
 
             utils.getElementById('site-name').innerHTML = config.SITE_NAME;

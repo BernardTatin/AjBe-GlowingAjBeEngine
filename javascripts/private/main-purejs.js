@@ -45,10 +45,11 @@ HTMLQuery.prototype = {
     }
 };
 
-function BasePage(self, place) {
+function BasePage(self, place, pageName) {
     this.isItLoaded = false;
     this.place = place;
     this.self = self;
+    this.pageName = pageName;
 }
 BasePage.prototype = {
     setHTMLByClassName: function (className, html) {
@@ -72,6 +73,9 @@ BasePage.prototype = {
             onElement(elements[i]);
         }
     },
+    getName: function() {
+        return this.pageName;
+    },
     getPlace: function() {
         return this.place;
     },
@@ -81,11 +85,11 @@ BasePage.prototype = {
 };
 
 
-function Page(self, query, place, hasCopyright) {
+function Page(self, query, place, hasCopyright, pageName) {
     if (!self) {
-        this.Super = new BasePage(this, place);
+        this.Super = new BasePage(this, place, pageName);
     } else {
-        this.Super = new BasePage(self, place);
+        this.Super = new BasePage(self, place, pageName);
     }
     this.query = query;
     this.hasCopyright = hasCopyright;
@@ -96,9 +100,13 @@ Page.prototype = {
     getPageName: function () {
         return this.query.getPageName();
     },
+    getName: function() {
+        return this.Super.getName();
+    },
     fileName: function () {
+        console.log('try to find the file of page ' + this.getName());
         try {
-
+/*
             if (utils.isUndefined(this.query)) {
                 console.log('Page.fileName.query is  undefined');
             }
@@ -109,7 +117,8 @@ Page.prototype = {
             for (var item in this.query) {
                 console.log('-> ' + item);
             }
-            console.log('Properties af Page.query end');
+            console.log('Properties of Page.query end');
+*/            
             /*
     Here is the bug, a query with these properties!
     Properties af Page.query... main-purejs.js:106:17
@@ -266,12 +275,16 @@ PagesCollection.prototype = {
 };
 
 function PageArticle (query, place, hasCopyright) {
-    this.Super = new Page(this, query, place, hasCopyright);
+    this.Super = new Page(this, query, place, hasCopyright, 'article');
     window.article = this;
 }
 
 PageArticle.prototype = {
+    getName: function() {
+        return this.Super.getName();
+    },
     resizeSVG: function () {
+        /*
         var maxWidth = utils.getElementById(this.getPlace()).clientWidth;
 
         this.forEachElementById('svg',
@@ -282,6 +295,7 @@ PageArticle.prototype = {
                 element.style.width = maxWidth + 'px';
                 element.style.height = newHeight + 'px';
             });
+        */
     },
     after_on_success: function () {
         this.resizeSVG();
@@ -323,8 +337,8 @@ var clickdEventListener = function (e) {
     if (lroot !== myself.currentRoot) {
         console.log('clickdEventListener: reloadAll');
         allPages.reloadAll(new PageNavigation(new HTMLQuery('content', lroot), 'toc', query, true),
+            new PageFooter(query, new HTMLQuery('footer', lroot)),
             new PageNavigation(new HTMLQuery('navigation', lroot), 'navigation', query),
-            new Page(false, new HTMLQuery('footer', lroot), 'footer', true),
             new PageArticle(query, 'article'));
     } else {
         console.log('clickdEventListener: reloadArticle');
@@ -334,14 +348,64 @@ var clickdEventListener = function (e) {
     console.log('clickdEventListener: end');
     return true;
 }
+/*
+    this.Super = new Page(this, query, place, false, 'Navigation ' + place);
+    this.mainHTMLQuery = mainHTMLQuery;
+    this.query = mainHTMLQuery;
+    this.hasTitle = hasTitle;
+*/
+
+function PageFooter (query, mainHTMLQuery) {
+    this.Super = new Page(this, query, 'footer', true, 'footer');
+    this.mainHTMLQuery = mainHTMLQuery;
+    this.query = mainHTMLQuery;
+    this.hasTitle = false;
+}
+
+PageFooter.prototype = {
+    // from base class Page
+    getName: function() {
+        return this.Super.getName();
+    },
+    amILoaded: function () {
+        return this.Super.amILoaded();
+    },
+    fileName: function() {
+        try {
+            if (!this.file_name) {
+                var p = 'footer';
+                var r = this.mainHTMLQuery.getRoot();
+                this.file_name = config.SITE_BASE
+                    + '/'
+                    + r     // this.query.getRoot()
+                    + '/'
+                    + p     // this.getPageName()
+                    + '.html';
+            }
+        } catch (error) {
+            this.file_name = null;
+        }
+        return this.file_name;
+    },
+    getPlace: function() {
+        return this.Super.getPlace();
+    },
+    getSelf: function() {
+        return this.Super.self;
+    }
+};
 
 function PageNavigation (query, place, mainHTMLQuery, hasTitle) {
-    this.Super = new Page(this, query, place, false);
+    this.Super = new Page(this, query, place, false, 'Navigation ' + place);
     this.mainHTMLQuery = mainHTMLQuery;
+    this.query = mainHTMLQuery;
     this.hasTitle = hasTitle;
 }
 
 PageNavigation.prototype = {
+    getName: function() {
+        return this.Super.getName();
+    },
     toc_presentation: function (query) {
         var currentPage = query.getPageName();
         var currentRoot = query.getRoot();
@@ -367,7 +431,7 @@ PageNavigation.prototype = {
         var currentRoot = this.query.getRoot();
         var self = this;
 
-        this.forEachElementById('p',
+        window.forEachElementById('p',
             function (element) {
                 element.self = self;
                 element.href = element.getAttribute('href');
