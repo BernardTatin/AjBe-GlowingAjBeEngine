@@ -225,11 +225,11 @@ function AjaxGetPage(page) {
 }
 AjaxGetPage.prototype= {
     on_receive: function(data) {
-        console.log('AjaxGetPage.prototype.on_receive');
+        console.log('AjaxGetPage.prototype.on_receive ' + this.page.getName());
         this.page.on_success(data);
     },
     on_failure: function (data) {
-        console.log('AjaxGetPage.prototype.on_failure');
+        console.log('AjaxGetPage.prototype.on_failure ' + this.page.getName());
         this.page.on_failure(data);
     },
     createRequest: function () {
@@ -276,15 +276,17 @@ PagesCollection.prototype = {
 
 function PageArticle (query, place, hasCopyright) {
     this.Super = new Page(this, query, place, hasCopyright, 'article');
-    window.article = this;
+    pageModule.article = this;
 }
 
 PageArticle.prototype = {
     getName: function() {
         return this.Super.getName();
     },
+    forEachElementById: function (id, onElement) {
+        return this.Super.forEachElementById(id, onElement);
+    },
     resizeSVG: function () {
-        /*
         var maxWidth = utils.getElementById(this.getPlace()).clientWidth;
 
         this.forEachElementById('svg',
@@ -295,7 +297,6 @@ PageArticle.prototype = {
                 element.style.width = maxWidth + 'px';
                 element.style.height = newHeight + 'px';
             });
-        */
     },
     after_on_success: function () {
         this.resizeSVG();
@@ -309,6 +310,10 @@ PageArticle.prototype = {
     },
     fileName: function() {
         return this.Super.fileName();
+    },
+    on_failure: function(result) {
+        console.log('PageArticle.on_failure');
+        return this.Super.on_failure(result);
     },
     on_success: function(result) {
         console.log('PageArticle.on_success');
@@ -363,7 +368,18 @@ function PageFooter (query, mainHTMLQuery) {
 }
 
 PageFooter.prototype = {
-    // from base class Page
+    // from base class Pagesuccess
+    on_failure: function(result) {
+        console.log('PageFooter.on_failure');
+        return this.Super.on_failure(result);
+    },
+    on_success: function(result) {
+        console.log('PageFooter.on_success');
+        return this.Super.on_success(result);
+    },
+    forEachElementById: function (id, onElement) {
+        return this.Super.forEachElementById(id, onElement);
+    },
     getName: function() {
         return this.Super.getName();
     },
@@ -431,13 +447,13 @@ PageNavigation.prototype = {
         var currentRoot = this.query.getRoot();
         var self = this;
 
-        window.forEachElementById('p',
+        this.forEachElementById('p',
             function (element) {
                 element.self = self;
                 element.href = element.getAttribute('href');
                 element.currentRoot = currentRoot;
                 console.log('addEvent to ' + element.href.toString());
-                purejsLib.addEvent(element, 'click', window.clickdEventListener);
+                purejsLib.addEvent(element, 'click', pageModule.clickdEventListener);
             });
         this.toc_presentation(this.mainHTMLQuery);
     },
@@ -460,6 +476,17 @@ PageNavigation.prototype = {
         }
     },
     // from base class Page
+    on_failure: function(result) {
+        console.log('PageNavigation.on_failure');
+        return this.Super.on_failure(result);
+    },
+    on_success: function(result) {
+        console.log('PageNavigation.on_success');
+        return this.Super.on_success(result);
+    },
+    forEachElementById: function (id, onElement) {
+        return this.Super.forEachElementById(id, onElement);
+    },
     amILoaded: function () {
         return this.Super.amILoaded();
     },
@@ -479,14 +506,14 @@ PageNavigation.prototype = {
 
 function start() {
     console.log('start...');
-    window.article = null;
-    window.clickdEventListener = clickdEventListener;
+    pageModule.article = null;
+    pageModule.clickdEventListener = clickdEventListener;
     purejsLib.addEvent(window, 'resize', function (e) {
         // cf http://www.sitepoint.com/javascript-this-event-handlers/
         e = e || window.event;
         var myself = e.target || e.srcElement;
 
-        var article = window.article;
+        var article = pageModule.article;
         console.log('Resize...');
         if (article) {
             console.log('Resize: article modification');
