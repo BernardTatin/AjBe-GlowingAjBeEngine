@@ -69,6 +69,7 @@ BasePage.prototype = {
     },
     forEachElementById: function (id, onElement) {
         var elements = utils.getElementById(this.getPlace()).getElementsByTagName(id);
+        console.log(`forEachElementById length: ${elements.length}`)
         for (var i = 0, el = elements.length; i < el; i++) {
             onElement(elements[i]);
         }
@@ -106,38 +107,6 @@ Page.prototype = {
     fileName: function () {
         console.log('try to find the file of page ' + this.getName());
         try {
-/*
-            if (utils.isUndefined(this.query)) {
-                console.log('Page.fileName.query is  undefined');
-            }
-            if (this.query == null || this.query === null) {
-                console.log('Page.fileName.query is null');
-            }
-            console.log('Properties af Page.query...');
-            for (var item in this.query) {
-                console.log('-> ' + item);
-            }
-            console.log('Properties of Page.query end');
-*/            
-            /*
-    Here is the bug, a query with these properties!
-    Properties af Page.query... main-purejs.js:106:17
-    -> 0                        main-purejs.js:108:21
-    -> 1                        main-purejs.js:108:21
-    -> 2                        main-purejs.js:108:21
-    -> 3                        main-purejs.js:108:21
-    -> 4                        main-purejs.js:108:21
-    -> 5                        main-purejs.js:108:21
-    Properties af Page.query end
-    instead of these:
-    Properties af Page.query... main-purejs.js:106:17
-    -> root                     main-purejs.js:108:21
-    -> pageName                 main-purejs.js:108:21
-    -> getPageName              main-purejs.js:108:21
-    -> getRoot                  main-purejs.js:108:21
-    -> urlParam                 main-purejs.js:108:21
-    Properties af Page.query end
-             */
             if (!this.file_name) {
                 var p = this.getPageName();
                 var r = this.query.getRoot();
@@ -168,9 +137,7 @@ Page.prototype = {
         utils.getElementById(place).innerHTML = this.supressMetaTags(result);
     },
     main_on_sucess: function (result) {
-        if (this.getSelf()) {
-            this.getSelf().main_on_sucess(result);
-        }
+        console.log('    Page.main_on_success');
     },
     after_on_success: function () {
         if (this.hasCopyright) {
@@ -184,13 +151,21 @@ Page.prototype = {
         utils.getElementById(place).style.display = 'none';
     },
     on_success: function (result) {
-        console.log('Page.on_success');
-        var place = this.getPlace();
+        console.log('    Page.on_success');
+        var place = this.getSelf().getPlace();
         utils.getElementById(place).style.display = 'block';
-        this.before_on_success(result);
-        this.main_on_sucess(result);
-        this.after_on_success();
-        this.set();
+        if (this.getSelf().before_on_success) {
+            this.getSelf().before_on_success(result);
+        }
+        if (this.getSelf().main_on_sucess) {
+            this.getSelf().main_on_sucess(result);
+        }
+        if (this.getSelf().after_on_success) {
+            this.getSelf().after_on_success();
+        }
+        if (this.getSelf().set) {
+            this.getSelf().set();
+        }
     },
     // from base class BasePage
     amILoaded: function () {
@@ -225,11 +200,11 @@ function AjaxGetPage(page) {
 }
 AjaxGetPage.prototype= {
     on_receive: function(data) {
-        console.log('AjaxGetPage.prototype.on_receive ' + this.page.getName());
+        // console.log('AjaxGetPage.prototype.on_receive ' + this.page.getName());
         this.page.on_success(data);
     },
     on_failure: function (data) {
-        console.log('AjaxGetPage.prototype.on_failure ' + this.page.getName());
+        // console.log('AjaxGetPage.prototype.on_failure ' + this.page.getName());
         this.page.on_failure(data);
     },
     createRequest: function () {
@@ -251,14 +226,14 @@ PagesCollection.prototype = {
     doload: function () {
         this.pages.map(function (page) {
             if (!page.amILoaded()) {
-                console.log('AjaxGetPage of ' + page.pageName)
+                // console.log('AjaxGetPage of ' + page.pageName)
                 return new AjaxGetPage(page);
             } else {
                 return null;
             }
         }).forEach(function (req) {
             if (req) {
-                console.log('req.send of ' + req.page.pageName)
+                // console.log('req.send of ' + req.page.pageName)
                 req.send();
             }
         });
@@ -304,6 +279,7 @@ PageArticle.prototype = {
     },
     // from base class Page
     main_on_sucess: function (result) {
+        return this.Super.main_on_sucess(result);
     },
     amILoaded: function () {
         return this.Super.amILoaded();
@@ -312,11 +288,11 @@ PageArticle.prototype = {
         return this.Super.fileName();
     },
     on_failure: function(result) {
-        console.log('PageArticle.on_failure');
+        // console.log('PageArticle.on_failure');
         return this.Super.on_failure(result);
     },
     on_success: function(result) {
-        console.log('PageArticle.on_success');
+        // console.log('PageArticle.on_success');
         return this.Super.on_success(result);
     },
     getPlace: function() {
@@ -370,11 +346,11 @@ function PageFooter (query, mainHTMLQuery) {
 PageFooter.prototype = {
     // from base class Pagesuccess
     on_failure: function(result) {
-        console.log('PageFooter.on_failure');
+        // console.log('PageFooter.on_failure');
         return this.Super.on_failure(result);
     },
     on_success: function(result) {
-        console.log('PageFooter.on_success');
+        // console.log('PageFooter.on_success');
         return this.Super.on_success(result);
     },
     forEachElementById: function (id, onElement) {
@@ -387,6 +363,7 @@ PageFooter.prototype = {
         return this.Super.amILoaded();
     },
     fileName: function() {
+        console.log('try to find the file of page ' + this.getName());
         try {
             if (!this.file_name) {
                 var p = 'footer';
@@ -423,19 +400,20 @@ PageNavigation.prototype = {
         return this.Super.getName();
     },
     toc_presentation: function (query) {
-        var currentPage = query.getPageName();
-        var currentRoot = query.getRoot();
-        var url = query.url;
+        let currentPage = query.getPageName();
+        let currentRoot = query.getRoot();
+        let url = query.url;
+        console.log('PageNavigation.toc_presentation');
 
         this.forEachElementById('p',
             function (element) {
-                var href = element.getAttribute('href');
-                var query = new HTMLQuery(href);
+                let href = element.getAttribute('href');
+                let query = new HTMLQuery(href);
 
                 element.className = 'normal-node';
                 if (query.getPageName() === currentPage &&
                     query.getRoot() === currentRoot) {
-                    var title = element.innerHTML;
+                    let title = element.innerHTML;
                     utils.getElementById('main_title').innerHTML = title;
                     utils.setUrlInBrowser(url);
                     document.title = title;
@@ -444,6 +422,7 @@ PageNavigation.prototype = {
             });
     },
     main_on_sucess: function (result) {
+        console.log('PageNavigation.main_on_sucess');
         var currentRoot = this.query.getRoot();
         var self = this;
 
@@ -458,6 +437,7 @@ PageNavigation.prototype = {
         this.toc_presentation(this.mainHTMLQuery);
     },
     after_on_success: function () {
+        console.log('PageNavigation.after_on_success');
         this.toc_presentation(this.mainHTMLQuery);
         this.Super.after_on_success();
     },
@@ -468,21 +448,18 @@ PageNavigation.prototype = {
         this.Super.before_on_success(result);
     },
     on_success: function (result) {
-        console.log('PageNavigation.on_success');
         if (!jprint.isInPrint()) {
+            console.log('PageNavigation.on_success && !jprint.isInPrint');
             this.Super.on_success(result);
         } else {
+            console.log('PageNavigation.on_success &&  jprint.isInPrint');
             utils.getElementById(this.getPlace()).style.display = 'none';
         }
     },
     // from base class Page
     on_failure: function(result) {
-        console.log('PageNavigation.on_failure');
+        // console.log('PageNavigation.on_failure');
         return this.Super.on_failure(result);
-    },
-    on_success: function(result) {
-        console.log('PageNavigation.on_success');
-        return this.Super.on_success(result);
     },
     forEachElementById: function (id, onElement) {
         return this.Super.forEachElementById(id, onElement);
@@ -503,26 +480,34 @@ PageNavigation.prototype = {
 
 };
 
+function resizeEvtListener(e) {
+    // cf http://www.sitepoint.com/javascript-this-event-handlers/
+    /*
+        function EventHandler(e) {
+            e = e || window.event;
+            var target = e.target || e.srcElement;
+            console.log(target);
+        }
+    */
+    e = e || window.event;
+    var myself = e.target || e.srcElement;
+
+    var article = pageModule.article;
+    console.log('Resize...');
+    if (article) {
+        console.log('Resize: article modification');
+        article.resizeSVG();
+    } else {
+        console.log('Resize: article is null');
+    }
+    console.log('Resize OK');
+}
 
 function start() {
     console.log('start...');
     pageModule.article = null;
     pageModule.clickdEventListener = clickdEventListener;
-    purejsLib.addEvent(window, 'resize', function (e) {
-        // cf http://www.sitepoint.com/javascript-this-event-handlers/
-        e = e || window.event;
-        var myself = e.target || e.srcElement;
-
-        var article = pageModule.article;
-        console.log('Resize...');
-        if (article) {
-            console.log('Resize: article modification');
-            article.resizeSVG();
-        } else {
-            console.log('Resize: article is null');
-        }
-        console.log('Resize OK');
-    });
+    purejsLib.addEvent(window, 'resize', resizeEvtListener);
     console.log('start: create and load Session');
     session.load();
     console.log('start: OK');
