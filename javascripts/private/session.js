@@ -5,14 +5,9 @@
 "use strict";
 
 var session = (function() {
-    let query = null;
-    function initialize() {
-        query = new HTMLQuery();
-    }
-
     return {
         load: function () {
-            initialize();
+            let query = new HTMLQuery();
             let broot = query.getRoot();
             allPages = new PagesCollection(
                 new PageNavigation(new HTMLQuery('content', broot), 'toc', query, true),
