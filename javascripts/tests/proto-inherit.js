@@ -11,7 +11,7 @@ function Animal(theSpecie, theName) {
     this.specie = theSpecie;
     this.name = theName;
 }
-Animal.prototype.getSpecie = function() {
+/* Animal.prototype.getSpecie = function() {
     return this.specie;
 }
 Animal.prototype.getName = function() {
@@ -21,9 +21,9 @@ Animal.prototype.print = function() {
     console.log(this.getName()
         + ' is a '
         + this.getSpecie());
-}
+} */
 
-/* Animal.prototype = {
+Animal.prototype = {
     getName: function() {
         return this.name;
     },
@@ -35,7 +35,7 @@ Animal.prototype.print = function() {
     getSpecie: function () {
         return this.specie;
     }
-} */
+}
 
 function Cat(theName) {
     Animal.call(this, 'Cat', theName);
@@ -58,6 +58,27 @@ Dog.prototype.print = function() {
         + ' and shout '
         + this.talk());
 }
+
+/*
+    =========================================================
+    this form of prototype definition does not work for 
+    the children, we must add each elements to the prototype 
+    as above and not create a full new prototype which can
+    erase the wanted one.
+    =========================================================
+ */
+/* Dog.prototype = {
+    talk: function () {
+        return 'Ouaf';
+    },
+    print: function () {
+        console.log(this.getName()
+            + ' is a '
+            + this.getSpecie()
+            + ' and shout '
+            + this.talk());
+    }
+} */
 
 Cat.prototype.shout = function() {
     return "it's the night...";
