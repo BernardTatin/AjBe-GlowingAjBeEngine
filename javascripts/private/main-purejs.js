@@ -88,9 +88,9 @@ BasePage.prototype = {
 
 function Page(self, query, place, hasCopyright, pageName) {
     if (!self) {
-        this.Super = new BasePage(this, place, pageName);
+        BasePage.call(this, this, place, pageName);
     } else {
-        this.Super = new BasePage(self, place, pageName);
+        BasePage.call(this, self, place, pageName);
     }
     this.query = query;
     this.hasCopyright = hasCopyright;
@@ -217,58 +217,26 @@ PagesCollection.prototype = {
 };
 
 function PageArticle (query, place, hasCopyright) {
-    this.Super = new Page(this, query, place, hasCopyright, 'article');
+    Page.call(this, this, query, place, hasCopyright, 'article');
     pageModule.article = this;
 }
 
-PageArticle.prototype = {
-    getName: function() {
-        return this.Super.getName();
-    },
-    forEachElementById: function (id, onElement) {
-        return this.Super.forEachElementById(id, onElement);
-    },
-    resizeSVG: function () {
-        var maxWidth = utils.getElementById(this.getPlace()).clientWidth;
+PageArticle.prototype.resizeSVG = function () {
+    var maxWidth = utils.getElementById(this.getPlace()).clientWidth;
 
-        this.forEachElementById('svg',
-            function (element) {
-                var width = element.clientWidth;
-                var height = element.clientHeight;
-                var newHeight = height * maxWidth / width;
-                element.style.width = maxWidth + 'px';
-                element.style.height = newHeight + 'px';
-            });
-    },
-    after_on_success: function () {
-        this.resizeSVG();
-        this.Super.after_on_success();
-    },
-    // from base class Page
-    main_on_sucess: function (result) {
-        return this.Super.main_on_sucess(result);
-    },
-    amILoaded: function () {
-        return this.Super.amILoaded();
-    },
-    fileName: function() {
-        return this.Super.fileName();
-    },
-    on_failure: function(result) {
-        // console.log('PageArticle.on_failure');
-        return this.Super.on_failure(result);
-    },
-    on_success: function(result) {
-        // console.log('PageArticle.on_success');
-        return this.Super.on_success(result);
-    },
-    getPlace: function() {
-        return this.Super.getPlace();
-    },
-    getSelf: function() {
-        return this.Super.self;
-    }
-};
+    this.forEachElementById('svg',
+        function (element) {
+            var width = element.clientWidth;
+            var height = element.clientHeight;
+            var newHeight = height * maxWidth / width;
+            element.style.width = maxWidth + 'px';
+            element.style.height = newHeight + 'px';
+        });
+}
+PageArticle.prototype.after_on_success = function () {
+    this.resizeSVG();
+    this.Super.after_on_success();
+}
 
 
 var clickdEventListener = function (e) {
@@ -296,12 +264,6 @@ var clickdEventListener = function (e) {
     console.log('clickdEventListener: end');
     return true;
 }
-/*
-    this.Super = new Page(this, query, place, false, 'Navigation ' + place);
-    this.mainHTMLQuery = mainHTMLQuery;
-    this.query = mainHTMLQuery;
-    this.hasTitle = hasTitle;
-*/
 
 function PageFooter (query, mainHTMLQuery) {
     this.Super = new Page(this, query, 'footer', true, 'footer');
