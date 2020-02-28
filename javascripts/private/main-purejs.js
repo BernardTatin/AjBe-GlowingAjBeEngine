@@ -97,99 +97,72 @@ function Page(self, query, place, hasCopyright, pageName) {
     this.file_name = false;
 }
 
-Page.prototype = {
-    getPageName: function () {
-        return this.query.getPageName();
-    },
-    getName: function() {
-        return this.Super.getName();
-    },
-    fileName: function () {
-        console.log('try to find the file of page ' + this.getName());
-        try {
-            if (!this.file_name) {
-                var p = this.getPageName();
-                var r = this.query.getRoot();
-                this.file_name = config.SITE_BASE
-                    + '/'
-                    + r     // this.query.getRoot()
-                    + '/'
-                    + p     // this.getPageName()
-                    + '.html';
-            }
-        } catch (error) {
-            this.file_name = null;
+Page.prototype.getPageName = function () {
+    return this.query.getPageName();
+},
+Page.prototype.fileName = function () {
+    console.log('try to find the file of page ' + this.getName());
+    try {
+        if (!this.file_name) {
+            var p = this.getPageName();
+            var r = this.query.getRoot();
+            this.file_name = config.SITE_BASE
+                + '/'
+                + r     // this.query.getRoot()
+                + '/'
+                + p     // this.getPageName()
+                + '.html';
         }
-        return this.file_name;
-    },
-    copyright: function () {
-        this.setHTMLByClassName('copyright', config.COPYRIGHT);
-    },
-    authors: function () {
-        this.setHTMLByClassName('authors', config.AUTHORS);
-    },
-    supressMetaTags: function (str) {
-        var metaPattern = /<meta.+\/?>/g;
-        return str.replace(metaPattern, '');
-    },
-    before_on_success: function (result) {
-        var place = this.getPlace();
-        utils.getElementById(place).innerHTML = this.supressMetaTags(result);
-    },
-    main_on_sucess: function (result) {
-        console.log('    Page.main_on_success');
-    },
-    after_on_success: function () {
-        if (this.hasCopyright) {
-            this.copyright();
-            this.authors();
-        }
-        utils.app_string();
-    },
-    on_failure: function (result) {
-        var place = this.getPlace();
-        utils.getElementById(place).style.display = 'none';
-    },
-    on_success: function (result) {
-        console.log('    Page.on_success');
-        var place = this.getSelf().getPlace();
-        utils.getElementById(place).style.display = 'block';
-        if (this.getSelf().before_on_success) {
-            this.getSelf().before_on_success(result);
-        }
-        if (this.getSelf().main_on_sucess) {
-            this.getSelf().main_on_sucess(result);
-        }
-        if (this.getSelf().after_on_success) {
-            this.getSelf().after_on_success();
-        }
-        if (this.getSelf().set) {
-            this.getSelf().set();
-        }
-    },
-    // from base class BasePage
-    amILoaded: function () {
-        return this.Super.amILoaded();
-    },
-    set: function () {
-        return this.Super.set();
-    },
-    reset: function () {
-        return this.Super.reset();
-    },
-    setHTMLByClassName: function (className, html) {
-        return this.Super.setHTMLByClassName(className, html);
-    },
-    forEachElementById: function (id, onElement) {
-        return this.Super.forEachElementById(id, onElement);
-    },
-    getPlace: function() {
-        return this.Super.getPlace();
-    },
-    getSelf: function() {
-        return this.Super.self;
+    } catch (error) {
+        this.file_name = null;
     }
-};
+    return this.file_name;
+}
+Page.prototype.copyright = function () {
+    this.setHTMLByClassName('copyright', config.COPYRIGHT);
+}
+Page.prototype.authors = function () {
+    this.setHTMLByClassName('authors', config.AUTHORS);
+}
+Page.prototype.supressMetaTags = function (str) {
+    var metaPattern = /<meta.+\/?>/g;
+    return str.replace(metaPattern, '');
+}
+Page.prototype.before_on_success = function (result) {
+    var place = this.getPlace();
+    utils.getElementById(place).innerHTML = this.supressMetaTags(result);
+}
+Page.prototype.main_on_sucess = function (result) {
+    console.log('    Page.main_on_success');
+}
+Page.prototype.after_on_success = function () {
+    if (this.hasCopyright) {
+        this.copyright();
+        this.authors();
+    }
+    utils.app_string();
+}
+Page.prototype.on_failure = function (result) {
+    var place = this.getPlace();
+    utils.getElementById(place).style.display = 'none';
+}
+Page.prototype.on_success = function (result) {
+    console.log('    Page.on_success');
+    var place = this.getSelf().getPlace();
+    utils.getElementById(place).style.display = 'block';
+    if (this.getSelf().before_on_success) {
+        this.getSelf().before_on_success(result);
+    }
+    if (this.getSelf().main_on_sucess) {
+        this.getSelf().main_on_sucess(result);
+    }
+    if (this.getSelf().after_on_success) {
+        this.getSelf().after_on_success();
+    }
+    if (this.getSelf().set) {
+        this.getSelf().set();
+    }
+}
 
 
 function AjaxGetPage(page) {
