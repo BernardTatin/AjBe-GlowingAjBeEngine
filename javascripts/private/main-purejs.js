@@ -193,29 +193,23 @@ Page.prototype = {
 
 
 function AjaxGetPage(page) {
-    this.Super = new AjaxGet(this, page.fileName());
+    AjaxGet.call(this, page.fileName());
     this.page = page;
-    this.self = this;
     this.name = 'AjaxGetPage';
 }
-AjaxGetPage.prototype= {
-    on_receive: function(data) {
-        // console.log('AjaxGetPage.prototype.on_receive ' + this.page.getName());
-        this.page.on_success(data);
-    },
-    on_failure: function (data) {
-        // console.log('AjaxGetPage.prototype.on_failure ' + this.page.getName());
-        this.page.on_failure(data);
-    },
-    createRequest: function () {
-        this.Super.createRequest();
-    },
-    send: function (data) {
-        this.Super.send(data);
-    },
-    getRoot: function() {
-    }
-};
+
+AjaxGetPage.prototype = Object.create(AjaxGet.prototype);
+
+AjaxGetPage.prototype.on_receive = function(data) {
+    // console.log('AjaxGetPage.prototype.on_receive ' + this.page.getName());
+    this.page.on_success(data);
+}
+AjaxGetPage.prototype.on_failure = function (data) {
+    // console.log('AjaxGetPage.prototype.on_failure ' + this.page.getName());
+    this.page.on_failure(data);
+}
+AjaxGetPage.prototype.getRoot = function() {
+}
 
 
 function PagesCollection (content, navigation, footer, article) {
@@ -226,7 +220,7 @@ PagesCollection.prototype = {
     doload: function () {
         this.pages.map(function (page) {
             if (!page.amILoaded()) {
-                // console.log('AjaxGetPage of ' + page.pageName)
+                console.log('AjaxGetPage of ' + page.getName())
                 return new AjaxGetPage(page);
             } else {
                 return null;
