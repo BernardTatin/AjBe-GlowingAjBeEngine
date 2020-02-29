@@ -69,7 +69,6 @@ BasePage.prototype = {
     },
     forEachElementById: function (id, onElement) {
         var elements = utils.getElementById(this.getPlace()).getElementsByTagName(id);
-        console.log(`forEachElementById length: ${elements.length}`)
         for (var i = 0, el = elements.length; i < el; i++) {
             onElement(elements[i]);
         }
@@ -128,7 +127,6 @@ Page.prototype.authors = function () {
 }
 Page.prototype.supressMetaTags = function (str) {
     var metaPattern = /<meta.+\/?>/g;
-    console.log("supressMetaTags(" + str + ")");
     return str.replace(metaPattern, '');
 }
 Page.prototype.kbefore_on_success = function (result) {
@@ -136,7 +134,7 @@ Page.prototype.kbefore_on_success = function (result) {
     utils.getElementById(place).innerHTML = this.supressMetaTags(result);
 }
 Page.prototype.before_on_success = function (result) {
-    this.kbefore_on_success();
+    this.kbefore_on_success(result);
 }
 Page.prototype.main_on_sucess = function (result) {
     console.log('    Page.main_on_success');
@@ -165,7 +163,7 @@ Page.prototype.kon_success = function (result) {
     this.set();
 }
 Page.prototype.on_success = function (result) {
-    this.kon_success();
+    this.kon_success(result);
 }
 
 
@@ -204,7 +202,7 @@ PagesCollection.prototype = {
             }
         }).forEach(function (req) {
             if (req) {
-                // console.log('req.send of ' + req.page.pageName)
+                console.log('req.send of ' + req.page.getName())
                 req.send();
             }
         });
@@ -252,7 +250,7 @@ var clickdEventListener = function (e) {
     var query = new HTMLQuery(href);
     var lroot = query.getRoot();
 
-    console.log('clickdEventListener: start');
+    // console.log('clickdEventListener: start');
     myself.self.query = query;
     myself.self.mainHTMLQuery = query;
     if (lroot !== myself.currentRoot) {
@@ -266,7 +264,7 @@ var clickdEventListener = function (e) {
         allPages.reloadArticle(new PageArticle(query, 'article'));
     }
     myself.self.toc_presentation(query);
-    console.log('clickdEventListener: end');
+    // console.log('clickdEventListener: end');
     return true;
 }
 
@@ -309,10 +307,10 @@ function PageNavigation (query, place, mainHTMLQuery, hasTitle) {
 PageNavigation.prototype = Object.create(Page.prototype);
 
 PageNavigation.prototype.toc_presentation = function (query) {
+    console.log('PageNavigation.toc_presentation');
     let currentPage = query.getPageName();
     let currentRoot = query.getRoot();
     let url = query.url;
-    console.log('PageNavigation.toc_presentation');
 
     this.forEachElementById('p',
         function (element) {
@@ -337,11 +335,13 @@ PageNavigation.prototype.main_on_sucess = function (result) {
 
     this.forEachElementById('p',
         function (element) {
-            element.self = self;
             element.href = element.getAttribute('href');
-            element.currentRoot = currentRoot;
-            // console.log('addEvent to ' + element.href.toString());
-            purejsLib.addEvent(element, 'click', pageModule.clickdEventListener);
+            if (element.href) {
+                element.self = self;
+                element.currentRoot = currentRoot;
+                console.log('addEvent to ' + element.href.toString());
+                purejsLib.addEvent(element, 'click', pageModule.clickdEventListener);
+            }
         });
     this.toc_presentation(this.mainHTMLQuery);
 }
