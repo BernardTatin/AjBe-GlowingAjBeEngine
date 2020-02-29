@@ -4,6 +4,10 @@
 
 "use strict";
 
+/*
+ *  PAGESCTS: 
+ *      constants, list of page index
+ */
 var PAGESCTS = (function () {
     return {
         CONTENT: 0,
@@ -13,10 +17,22 @@ var PAGESCTS = (function () {
     };
 })();
 
+/*
+ *  allPages:
+ *      the global PagesCollection inited in session.js
+ */
 var allPages = null;
 
+/*
+ * pageModule:
+ *      global to put all sort of things
+ */
 var pageModule = {};
 
+/*
+ * HTMLQuery:
+ *      the current URL decrypted or the creation of a new URL
+ */
 function HTMLQuery(location, root) {
     if (!utils.isUndefined(location) && !utils.isUndefined(root)) {
         this.root = root;
@@ -45,6 +61,10 @@ HTMLQuery.prototype = {
     }
 };
 
+/*
+ * BasePage:
+ *      base for all prototypes of pages
+ */
 function BasePage(self, place, pageName) {
     this.isItLoaded = false;
     this.place = place;
@@ -294,9 +314,6 @@ PageFooter.prototype.fileName = function() {
     }
     return this.file_name;
 }
-PageFooter.prototype.getSelf = function() {
-    return this.self;
-}
 
 function PageNavigation (query, place, mainHTMLQuery, hasTitle) {
     Page.call(this, this, query, place, false, 'Navigation ' + place);
@@ -364,9 +381,6 @@ PageNavigation.prototype.on_success = function (result) {
         console.log('PageNavigation.on_success &&  jprint.isInPrint');
         utils.getElementById(this.getPlace()).style.display = 'none';
     }
-},
-PageNavigation.prototype.getSelf = function() {
-    return this.self;
 }
 
 
