@@ -97,6 +97,8 @@ function Page(self, query, place, hasCopyright, pageName) {
     this.file_name = false;
 }
 
+Page.prototype = Object.create(BasePage.prototype);
+
 Page.prototype.getPageName = function () {
     return this.query.getPageName();
 },
@@ -126,42 +128,44 @@ Page.prototype.authors = function () {
 }
 Page.prototype.supressMetaTags = function (str) {
     var metaPattern = /<meta.+\/?>/g;
+    console.log("supressMetaTags(" + str + ")");
     return str.replace(metaPattern, '');
 }
-Page.prototype.before_on_success = function (result) {
+Page.prototype.kbefore_on_success = function (result) {
     var place = this.getPlace();
     utils.getElementById(place).innerHTML = this.supressMetaTags(result);
+}
+Page.prototype.before_on_success = function (result) {
+    this.kbefore_on_success();
 }
 Page.prototype.main_on_sucess = function (result) {
     console.log('    Page.main_on_success');
 }
-Page.prototype.after_on_success = function () {
+Page.prototype.kafter_on_success = function () {
     if (this.hasCopyright) {
         this.copyright();
         this.authors();
     }
     utils.app_string();
 }
+Page.prototype.after_on_success = function () {
+    this.kafter_on_success();
+}
 Page.prototype.on_failure = function (result) {
     var place = this.getPlace();
     utils.getElementById(place).style.display = 'none';
 }
-Page.prototype.on_success = function (result) {
+Page.prototype.kon_success = function (result) {
     console.log('    Page.on_success');
-    var place = this.getSelf().getPlace();
+    var place = this.getPlace();
     utils.getElementById(place).style.display = 'block';
-    if (this.getSelf().before_on_success) {
-        this.getSelf().before_on_success(result);
-    }
-    if (this.getSelf().main_on_sucess) {
-        this.getSelf().main_on_sucess(result);
-    }
-    if (this.getSelf().after_on_success) {
-        this.getSelf().after_on_success();
-    }
-    if (this.getSelf().set) {
-        this.getSelf().set();
-    }
+    this.before_on_success(result);
+    this.main_on_sucess(result);
+    this.after_on_success();
+    this.set();
+}
+Page.prototype.on_success = function (result) {
+    this.kon_success();
 }
 
 
@@ -220,6 +224,7 @@ function PageArticle (query, place, hasCopyright) {
     Page.call(this, this, query, place, hasCopyright, 'article');
     pageModule.article = this;
 }
+PageArticle.prototype = Object.create(Page.prototype);
 
 PageArticle.prototype.resizeSVG = function () {
     var maxWidth = utils.getElementById(this.getPlace()).clientWidth;
@@ -235,7 +240,7 @@ PageArticle.prototype.resizeSVG = function () {
 }
 PageArticle.prototype.after_on_success = function () {
     this.resizeSVG();
-    this.Super.after_on_success();
+    this.kafter_on_success();
 }
 
 
@@ -266,148 +271,104 @@ var clickdEventListener = function (e) {
 }
 
 function PageFooter (query, mainHTMLQuery) {
-    this.Super = new Page(this, query, 'footer', true, 'footer');
+    Page.call(this, this, query, 'footer', true, 'footer');
     this.mainHTMLQuery = mainHTMLQuery;
     this.query = mainHTMLQuery;
     this.hasTitle = false;
 }
+PageFooter.prototype = Object.create(Page.prototype);
 
-PageFooter.prototype = {
-    // from base class Pagesuccess
-    on_failure: function(result) {
-        // console.log('PageFooter.on_failure');
-        return this.Super.on_failure(result);
-    },
-    on_success: function(result) {
-        // console.log('PageFooter.on_success');
-        return this.Super.on_success(result);
-    },
-    forEachElementById: function (id, onElement) {
-        return this.Super.forEachElementById(id, onElement);
-    },
-    getName: function() {
-        return this.Super.getName();
-    },
-    amILoaded: function () {
-        return this.Super.amILoaded();
-    },
-    fileName: function() {
-        console.log('try to find the file of page ' + this.getName());
-        try {
-            if (!this.file_name) {
-                var p = 'footer';
-                var r = this.mainHTMLQuery.getRoot();
-                this.file_name = config.SITE_BASE
-                    + '/'
-                    + r     // this.query.getRoot()
-                    + '/'
-                    + p     // this.getPageName()
-                    + '.html';
-            }
-        } catch (error) {
-            this.file_name = null;
+PageFooter.prototype.fileName = function() {
+    console.log('try to find the file of page ' + this.getName());
+    try {
+        if (!this.file_name) {
+            var p = 'footer';
+            var r = this.mainHTMLQuery.getRoot();
+            this.file_name = config.SITE_BASE
+                + '/'
+                + r     // this.query.getRoot()
+                + '/'
+                + p     // this.getPageName()
+                + '.html';
         }
-        return this.file_name;
-    },
-    getPlace: function() {
-        return this.Super.getPlace();
-    },
-    getSelf: function() {
-        return this.Super.self;
+    } catch (error) {
+        this.file_name = null;
     }
-};
+    return this.file_name;
+}
+PageFooter.prototype.getSelf = function() {
+    return this.self;
+}
 
 function PageNavigation (query, place, mainHTMLQuery, hasTitle) {
-    this.Super = new Page(this, query, place, false, 'Navigation ' + place);
+    Page.call(this, this, query, place, false, 'Navigation ' + place);
     this.mainHTMLQuery = mainHTMLQuery;
     this.query = mainHTMLQuery;
     this.hasTitle = hasTitle;
 }
+PageNavigation.prototype = Object.create(Page.prototype);
 
-PageNavigation.prototype = {
-    getName: function() {
-        return this.Super.getName();
-    },
-    toc_presentation: function (query) {
-        let currentPage = query.getPageName();
-        let currentRoot = query.getRoot();
-        let url = query.url;
-        console.log('PageNavigation.toc_presentation');
+PageNavigation.prototype.toc_presentation = function (query) {
+    let currentPage = query.getPageName();
+    let currentRoot = query.getRoot();
+    let url = query.url;
+    console.log('PageNavigation.toc_presentation');
 
-        this.forEachElementById('p',
-            function (element) {
-                let href = element.getAttribute('href');
-                let query = new HTMLQuery(href);
+    this.forEachElementById('p',
+        function (element) {
+            let href = element.getAttribute('href');
+            let query = new HTMLQuery(href);
 
-                element.className = 'normal-node';
-                if (query.getPageName() === currentPage &&
-                    query.getRoot() === currentRoot) {
-                    let title = element.innerHTML;
-                    utils.getElementById('main_title').innerHTML = title;
-                    utils.setUrlInBrowser(url);
-                    document.title = title;
-                    element.className = 'current-node';
-                }
-            });
-    },
-    main_on_sucess: function (result) {
-        console.log('PageNavigation.main_on_sucess');
-        var currentRoot = this.query.getRoot();
-        var self = this;
+            element.className = 'normal-node';
+            if (query.getPageName() === currentPage &&
+                query.getRoot() === currentRoot) {
+                let title = element.innerHTML;
+                utils.getElementById('main_title').innerHTML = title;
+                utils.setUrlInBrowser(url);
+                document.title = title;
+                element.className = 'current-node';
+            }
+        });
+}
+PageNavigation.prototype.main_on_sucess = function (result) {
+    console.log('PageNavigation.main_on_sucess');
+    var currentRoot = this.query.getRoot();
+    var self = this;
 
-        this.forEachElementById('p',
-            function (element) {
-                element.self = self;
-                element.href = element.getAttribute('href');
-                element.currentRoot = currentRoot;
-                console.log('addEvent to ' + element.href.toString());
-                purejsLib.addEvent(element, 'click', pageModule.clickdEventListener);
-            });
-        this.toc_presentation(this.mainHTMLQuery);
-    },
-    after_on_success: function () {
-        console.log('PageNavigation.after_on_success');
-        this.toc_presentation(this.mainHTMLQuery);
-        this.Super.after_on_success();
-    },
-    before_on_success: function (result) {
-        if (this.hasTitle && config.TOC_TITLE) {
-            result = '<h2>' + config.TOC_TITLE + '</h2>' + result;
-        }
-        this.Super.before_on_success(result);
-    },
-    on_success: function (result) {
-        if (!jprint.isInPrint()) {
-            console.log('PageNavigation.on_success && !jprint.isInPrint');
-            this.Super.on_success(result);
-        } else {
-            console.log('PageNavigation.on_success &&  jprint.isInPrint');
-            utils.getElementById(this.getPlace()).style.display = 'none';
-        }
-    },
-    // from base class Page
-    on_failure: function(result) {
-        // console.log('PageNavigation.on_failure');
-        return this.Super.on_failure(result);
-    },
-    forEachElementById: function (id, onElement) {
-        return this.Super.forEachElementById(id, onElement);
-    },
-    amILoaded: function () {
-        return this.Super.amILoaded();
-    },
-    fileName: function() {
-        return this.Super.fileName();
-    },
-    getPlace: function() {
-        return this.Super.getPlace();
-    },
-    getSelf: function() {
-        return this.Super.self;
+    this.forEachElementById('p',
+        function (element) {
+            element.self = self;
+            element.href = element.getAttribute('href');
+            element.currentRoot = currentRoot;
+            // console.log('addEvent to ' + element.href.toString());
+            purejsLib.addEvent(element, 'click', pageModule.clickdEventListener);
+        });
+    this.toc_presentation(this.mainHTMLQuery);
+}
+PageNavigation.prototype.after_on_success = function () {
+    console.log('PageNavigation.after_on_success');
+    this.toc_presentation(this.mainHTMLQuery);
+    this.kafter_on_success();
+}
+PageNavigation.prototype.before_on_success = function (result) {
+    if (this.hasTitle && config.TOC_TITLE) {
+        result = '<h2>' + config.TOC_TITLE + '</h2>' + result;
     }
+    this.kbefore_on_success(result);
+}
+PageNavigation.prototype.on_success = function (result) {
+    if (!jprint.isInPrint()) {
+        console.log('PageNavigation.on_success && !jprint.isInPrint');
+        this.kon_success(result);
+    } else {
+        console.log('PageNavigation.on_success &&  jprint.isInPrint');
+        utils.getElementById(this.getPlace()).style.display = 'none';
+    }
+},
+PageNavigation.prototype.getSelf = function() {
+    return this.self;
+}
 
-
-};
 
 function resizeEvtListener(e) {
     // cf http://www.sitepoint.com/javascript-this-event-handlers/
