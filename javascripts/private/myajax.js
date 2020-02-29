@@ -22,18 +22,17 @@ var HttpStatus = (function () {
     };
 })();
 
-function Ajax (self, url, http_request) {
+function Ajax (url, http_request) {
     this.url = url;
     this.http_request = http_request;
     this.request = null;
-    this.self = self;
     this.name = 'Ajax';
     return this;
 }
 Ajax.prototype = {
     createRequest: function() {
         var req = new XMLHttpRequest();
-        req.self = this.self;
+        req.self = this;
         if (req.timeout) {
             req.timeout = 9000;
         }
@@ -60,14 +59,7 @@ Ajax.prototype = {
     }
 };
 
-function AjaxGet(self, url) {
-    this.Super = new Ajax(self, url, 'GET');
+function AjaxGet(url) {
+    Ajax.call(this, url, 'GET');
 }
-AjaxGet.prototype = {
-    createRequest: function () {
-        this.Super.createRequest();
-    },
-    send: function (data) {
-        this.Super.send(data);
-    }
-};
+AjaxGet.prototype = Object.create(Ajax.prototype);
