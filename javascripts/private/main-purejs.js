@@ -303,24 +303,25 @@ PageNavigation.prototype.toc_presentation = function (query) {
         function (element) {
             let href = element.getAttribute('href');
             let query = new HTMLQuery(href);
+            let eltClassName = 'normal-node';
 
-            element.className = 'normal-node';
             if (query.getPageName() === currentPage &&
                 query.getRoot() === currentRoot) {
                 let title = element.innerHTML;
                 utils.getElementById('main_title').innerHTML = title;
                 utils.setUrlInBrowser(url);
                 document.title = title;
-                element.className = 'current-node';
+                eltClassName = 'current-node';
             }
+            element.className = eltClassName;
         });
 }
 PageNavigation.prototype.main_on_sucess = function (result) {
     console.log('PageNavigation.main_on_sucess');
-    var currentRoot = this.query.getRoot();
     var self = this;
+    var currentRoot = self.query.getRoot();
 
-    this.forEachElementById('p',
+    self.forEachElementById('p',
         function (element) {
             element.href = element.getAttribute('href');
             if (element.href) {
@@ -330,7 +331,7 @@ PageNavigation.prototype.main_on_sucess = function (result) {
                 purejsLib.addEvent(element, 'click', pageModule.clickdEventListener);
             }
         });
-    this.toc_presentation(this.mainHTMLQuery);
+    self.toc_presentation(self.mainHTMLQuery);
 }
 PageNavigation.prototype.after_on_success = function () {
     console.log('PageNavigation.after_on_success');
@@ -364,10 +365,11 @@ var clickdEventListener = function (e) {
     var href = myself.href;
     var query = new HTMLQuery(href);
     var lroot = query.getRoot();
+    var thePage = myself;       // myself.self;
 
     // console.log('clickdEventListener: start');
-    myself.self.query = query;
-    myself.self.mainHTMLQuery = query;
+    thePage.query = query;
+    thePage.mainHTMLQuery = query;
     if (lroot !== myself.currentRoot) {
         console.log('clickdEventListener: reloadAll');
         allPages.reloadAll(new PageNavigation(new HTMLQuery('content', lroot), 'toc', query, true),
@@ -378,7 +380,7 @@ var clickdEventListener = function (e) {
         console.log('clickdEventListener: reloadArticle');
         allPages.reloadArticle(new PageArticle(query, 'article'));
     }
-    myself.self.toc_presentation(query);
+    thePage.toc_presentation(query);
     // console.log('clickdEventListener: end');
     return true;
 }
