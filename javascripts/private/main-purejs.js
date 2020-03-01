@@ -209,40 +209,6 @@ AjaxGetPage.prototype.on_failure = function (data) {
     this.page.on_failure(data);
 }
 
-/*
- * PagesCollection:
- *      the set of all pages and their loading
- */
-function PagesCollection (content, navigation, footer, article) {
-    this.pages = [null, null, null, null];
-    this.reloadAll(content, navigation, footer, article);
-}
-PagesCollection.prototype = {
-    doload: function () {
-        this.pages.map(function (page) {
-            if (!page.amILoaded()) {
-                console.log('AjaxGetPage of ' + page.getName())
-                return new AjaxGetPage(page);
-            } else {
-                return null;
-            }
-        }).forEach(function (req) {
-            if (req) {
-                console.log('req.send of ' + req.page.getName())
-                req.send();
-            }
-        });
-    },
-    reloadAll: function (content, navigation, footer, article) {
-        this.pages = [content, navigation, footer, article];
-        this.doload();
-    },
-    reloadArticle: function (article) {
-        article.reset();
-        this.pages[PAGESCTS.ARTICLE] = article;
-        this.doload();
-    }
-};
 
 /*
  * PageArticle:
@@ -269,36 +235,6 @@ PageArticle.prototype.resizeSVG = function () {
 PageArticle.prototype.after_on_success = function () {
     this.resizeSVG();
     this.kafter_on_success();
-}
-
-/*
- * clickdEventListener:
- *      the listener of click events for each p with an href attribute
- */
-var clickdEventListener = function (e) {
-    // cf http://www.sitepoint.com/javascript-this-event-handlers/
-    e = e || window.event;
-    var myself = e.target || e.srcElement;
-    var href = myself.href;
-    var query = new HTMLQuery(href);
-    var lroot = query.getRoot();
-
-    // console.log('clickdEventListener: start');
-    myself.self.query = query;
-    myself.self.mainHTMLQuery = query;
-    if (lroot !== myself.currentRoot) {
-        console.log('clickdEventListener: reloadAll');
-        allPages.reloadAll(new PageNavigation(new HTMLQuery('content', lroot), 'toc', query, true),
-            new PageFooter(query, new HTMLQuery('footer', lroot)),
-            new PageNavigation(new HTMLQuery('navigation', lroot), 'navigation', query),
-            new PageArticle(query, 'article'));
-    } else {
-        console.log('clickdEventListener: reloadArticle');
-        allPages.reloadArticle(new PageArticle(query, 'article'));
-    }
-    myself.self.toc_presentation(query);
-    // console.log('clickdEventListener: end');
-    return true;
 }
 
 /*
@@ -403,6 +339,71 @@ PageNavigation.prototype.on_success = function (result) {
         utils.getElementById(this.getPlace()).style.display = 'none';
     }
 }
+
+/*
+ * clickdEventListener:
+ *      the listener of click events for each p with an href attribute
+ */
+var clickdEventListener = function (e) {
+    // cf http://www.sitepoint.com/javascript-this-event-handlers/
+    e = e || window.event;
+    var myself = e.target || e.srcElement;
+    var href = myself.href;
+    var query = new HTMLQuery(href);
+    var lroot = query.getRoot();
+
+    // console.log('clickdEventListener: start');
+    myself.self.query = query;
+    myself.self.mainHTMLQuery = query;
+    if (lroot !== myself.currentRoot) {
+        console.log('clickdEventListener: reloadAll');
+        allPages.reloadAll(new PageNavigation(new HTMLQuery('content', lroot), 'toc', query, true),
+            new PageFooter(query, new HTMLQuery('footer', lroot)),
+            new PageNavigation(new HTMLQuery('navigation', lroot), 'navigation', query),
+            new PageArticle(query, 'article'));
+    } else {
+        console.log('clickdEventListener: reloadArticle');
+        allPages.reloadArticle(new PageArticle(query, 'article'));
+    }
+    myself.self.toc_presentation(query);
+    // console.log('clickdEventListener: end');
+    return true;
+}
+
+/*
+ * PagesCollection:
+ *      the set of all pages and their loading
+ */
+function PagesCollection (content, navigation, footer, article) {
+    this.pages = [null, null, null, null];
+    this.reloadAll(content, navigation, footer, article);
+}
+PagesCollection.prototype = {
+    doload: function () {
+        this.pages.map(function (page) {
+            if (!page.amILoaded()) {
+                console.log('AjaxGetPage of ' + page.getName())
+                return new AjaxGetPage(page);
+            } else {
+                return null;
+            }
+        }).forEach(function (req) {
+            if (req) {
+                console.log('req.send of ' + req.page.getName())
+                req.send();
+            }
+        });
+    },
+    reloadAll: function (content, navigation, footer, article) {
+        this.pages = [content, navigation, footer, article];
+        this.doload();
+    },
+    reloadArticle: function (article) {
+        article.reset();
+        this.pages[PAGESCTS.ARTICLE] = article;
+        this.doload();
+    }
+};
 
 /*
  * resizeEvtListener:
