@@ -104,7 +104,10 @@ BasePage.prototype = {
     }
 };
 
-
+/*
+ * Page:
+ *      a simple page, used for the article content
+ */
 function Page(self, query, place, hasCopyright, pageName) {
     if (!self) {
         BasePage.call(this, this, place, pageName);
@@ -186,11 +189,13 @@ Page.prototype.on_success = function (result) {
     this.kon_success(result);
 }
 
-
+/*
+ * AjaxGetPage:
+ *      prototype of an Ajax query used to load pages
+ */
 function AjaxGetPage(page) {
     AjaxGet.call(this, page.fileName());
     this.page = page;
-    this.name = 'AjaxGetPage';
 }
 
 AjaxGetPage.prototype = Object.create(AjaxGet.prototype);
@@ -202,8 +207,6 @@ AjaxGetPage.prototype.on_receive = function(data) {
 AjaxGetPage.prototype.on_failure = function (data) {
     // console.log('AjaxGetPage.prototype.on_failure ' + this.page.getName());
     this.page.on_failure(data);
-}
-AjaxGetPage.prototype.getRoot = function() {
 }
 
 
