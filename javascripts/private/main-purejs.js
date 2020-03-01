@@ -121,7 +121,7 @@ BasePage.prototype = {
  * Page:
  *      a simple page, used for the article content
  */
-function Page(self, query, place, hasCopyright, pageName) {
+function Page(self, place, pageName, query, hasCopyright) {
     if (!self) {
         BasePage.call(this, this, place, pageName);
     } else {
@@ -228,7 +228,7 @@ AjaxGetPage.prototype.on_failure = function (data) {
  *      the content of the article
  */
 function PageArticle (query, place, hasCopyright) {
-    Page.call(this, this, query, place, hasCopyright, 'article');
+    Page.call(this, this, place, 'article', query, hasCopyright);
     pageModule.article = this;
 }
 PageArticle.prototype = Object.create(Page.prototype);
@@ -255,7 +255,7 @@ PageArticle.prototype.after_on_success = function () {
  *      the page footer...
  */
 function PageFooter (query, mainHTMLQuery) {
-    Page.call(this, this, query, 'footer', true, 'footer');
+    Page.call(this, this, 'footer', 'footer', query, true);
     this.mainHTMLQuery = mainHTMLQuery;
     this.query = mainHTMLQuery;
     this.hasTitle = false;
@@ -286,7 +286,7 @@ PageFooter.prototype.fileName = function() {
  *      for the menus
  */
 function PageNavigation (query, place, mainHTMLQuery, hasTitle) {
-    Page.call(this, this, query, place, false, 'Navigation ' + place);
+    Page.call(this, this, place, 'Navigation ' + place, query, false);
     this.mainHTMLQuery = mainHTMLQuery;
     this.query = mainHTMLQuery;
     this.hasTitle = hasTitle;
