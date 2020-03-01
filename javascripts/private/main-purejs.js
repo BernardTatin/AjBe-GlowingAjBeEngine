@@ -209,7 +209,10 @@ AjaxGetPage.prototype.on_failure = function (data) {
     this.page.on_failure(data);
 }
 
-
+/*
+ * PagesCollection:
+ *      the set of all pages and their loading
+ */
 function PagesCollection (content, navigation, footer, article) {
     this.pages = [null, null, null, null];
     this.reloadAll(content, navigation, footer, article);
@@ -241,6 +244,10 @@ PagesCollection.prototype = {
     }
 };
 
+/*
+ * PageArticle:
+ *      the content of the article
+ */
 function PageArticle (query, place, hasCopyright) {
     Page.call(this, this, query, place, hasCopyright, 'article');
     pageModule.article = this;
@@ -264,7 +271,10 @@ PageArticle.prototype.after_on_success = function () {
     this.kafter_on_success();
 }
 
-
+/*
+ * clickdEventListener:
+ *      the listener of click events for each p with an href attribute
+ */
 var clickdEventListener = function (e) {
     // cf http://www.sitepoint.com/javascript-this-event-handlers/
     e = e || window.event;
@@ -291,6 +301,10 @@ var clickdEventListener = function (e) {
     return true;
 }
 
+/*
+ * PageFooter:
+ *      the page footer...
+ */
 function PageFooter (query, mainHTMLQuery) {
     Page.call(this, this, query, 'footer', true, 'footer');
     this.mainHTMLQuery = mainHTMLQuery;
@@ -318,6 +332,10 @@ PageFooter.prototype.fileName = function() {
     return this.file_name;
 }
 
+/*
+ * PageNavigation:
+ *      for the menus
+ */
 function PageNavigation (query, place, mainHTMLQuery, hasTitle) {
     Page.call(this, this, query, place, false, 'Navigation ' + place);
     this.mainHTMLQuery = mainHTMLQuery;
@@ -386,7 +404,10 @@ PageNavigation.prototype.on_success = function (result) {
     }
 }
 
-
+/*
+ * resizeEvtListener:
+ *      when resize occurs, we resize SVG elements
+ */
 function resizeEvtListener(e) {
     // cf http://www.sitepoint.com/javascript-this-event-handlers/
     /*
@@ -410,6 +431,10 @@ function resizeEvtListener(e) {
     console.log('Resize OK');
 }
 
+/*
+ * start:
+ *      running the application
+ */
 function start() {
     console.log('start...');
     pageModule.article = null;
