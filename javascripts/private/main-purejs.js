@@ -32,6 +32,11 @@ var pageModule = {};
 /*
  * HTMLQuery:
  *      the current URL decrypted or the creation of a new URL
+ * 
+ * fields:
+ *      root: the directory where is the file to get with Ajax
+ *      pageName: the name of the page (footer, article, ...)
+ *      url: the full URL
  */
 function HTMLQuery(location, root) {
     if (!utils.isUndefined(location) && !utils.isUndefined(root)) {
@@ -64,6 +69,14 @@ HTMLQuery.prototype = {
 /*
  * BasePage:
  *      base for all prototypes of pages
+ * 
+ * The hierarchy:
+ *      BasePage
+ *          |
+ *        Page
+ *          +------------+---------------
+ *          |            |              |
+ *      PageArticle    PageFooter    PageNavigation
  */
 function BasePage(self, place, pageName) {
     this.isItLoaded = false;
