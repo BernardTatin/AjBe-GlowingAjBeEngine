@@ -1,6 +1,20 @@
 /*
  * main-purejs.js
+ *
  */
+/*
+ * JSHint options:
+ */
+ /*      global utils: true; */
+ /*      global window: true; */
+ /*      global config: true; */
+ /*      global document: true; */
+ /*      global console: true; */
+ /*      global purejsLib: true; */
+ /*      global jprint: true; */
+ /*      global AjaxGetPage: true; */
+ /*      global session: true; */
+ /*      global docReady: true; */
 
 "use strict";
 
@@ -129,66 +143,66 @@ function Page(self, place, pageName, query, hasCopyright) {
     }
     this.query = query;
     this.hasCopyright = hasCopyright;
-    this.file_name = false;
+    this.file_name = null;
 }
 
 Page.prototype = Object.create(BasePage.prototype);
 
 Page.prototype.getPageName = function () {
     return this.query.getPageName();
-},
+};
 Page.prototype.fileName = function () {
     console.log('try to find the file of page ' + this.getName());
     try {
         if (!this.file_name) {
             var p = this.getPageName();
             var r = this.query.getRoot();
-            this.file_name = config.SITE_BASE
-                + '/'
-                + r     // this.query.getRoot()
-                + '/'
-                + p     // this.getPageName()
-                + '.html';
+            this.file_name = config.SITE_BASE +
+                '/' + 
+                r + 
+                '/' +
+                p +
+                '.html';
         }
     } catch (error) {
         this.file_name = null;
     }
     return this.file_name;
-}
+};
 Page.prototype.copyright = function () {
     this.setHTMLByClassName('copyright', config.COPYRIGHT);
-}
+};
 Page.prototype.authors = function () {
     this.setHTMLByClassName('authors', config.AUTHORS);
-}
+};
 Page.prototype.supressMetaTags = function (str) {
     var metaPattern = /<meta.+\/?>/g;
     return str.replace(metaPattern, '');
-}
+};
 Page.prototype.kbefore_on_success = function (result) {
     var place = this.getPlace();
     utils.getElementById(place).innerHTML = this.supressMetaTags(result);
-}
+};
 Page.prototype.before_on_success = function (result) {
     this.kbefore_on_success(result);
-}
+};
 Page.prototype.main_on_sucess = function (result) {
     console.log('    Page.main_on_success');
-}
+};
 Page.prototype.kafter_on_success = function () {
     if (this.hasCopyright) {
         this.copyright();
         this.authors();
     }
     utils.app_string();
-}
+};
 Page.prototype.after_on_success = function () {
     this.kafter_on_success();
-}
+};
 Page.prototype.on_failure = function (result) {
     var place = this.getPlace();
     utils.getElementById(place).style.display = 'none';
-}
+};
 Page.prototype.kon_success = function (result) {
     console.log('    Page.on_success');
     var place = this.getPlace();
@@ -197,30 +211,10 @@ Page.prototype.kon_success = function (result) {
     this.main_on_sucess(result);
     this.after_on_success();
     this.set();
-}
+};
 Page.prototype.on_success = function (result) {
     this.kon_success(result);
-}
-
-/*
- * AjaxGetPage:
- *      prototype of an Ajax query used to load pages
- */
-function AjaxGetPage(page) {
-    AjaxGet.call(this, page.fileName());
-    this.page = page;
-}
-
-AjaxGetPage.prototype = Object.create(AjaxGet.prototype);
-
-AjaxGetPage.prototype.on_receive = function(data) {
-    // console.log('AjaxGetPage.prototype.on_receive ' + this.page.getName());
-    this.page.on_success(data);
-}
-AjaxGetPage.prototype.on_failure = function (data) {
-    // console.log('AjaxGetPage.prototype.on_failure ' + this.page.getName());
-    this.page.on_failure(data);
-}
+};
 
 
 /*
@@ -244,11 +238,11 @@ PageArticle.prototype.resizeSVG = function () {
             element.style.width = maxWidth + 'px';
             element.style.height = newHeight + 'px';
         });
-}
+};
 PageArticle.prototype.after_on_success = function () {
     this.resizeSVG();
     this.kafter_on_success();
-}
+};
 
 /*
  * PageFooter:
@@ -268,18 +262,18 @@ PageFooter.prototype.fileName = function() {
         if (!this.file_name) {
             var p = 'footer';
             var r = this.mainHTMLQuery.getRoot();
-            this.file_name = config.SITE_BASE
-                + '/'
-                + r     // this.query.getRoot()
-                + '/'
-                + p     // this.getPageName()
-                + '.html';
+            this.file_name = config.SITE_BASE +
+                '/' +
+                r +
+                '/' +
+                p +
+                '.html';
         }
     } catch (error) {
         this.file_name = null;
     }
     return this.file_name;
-}
+};
 
 /*
  * PageNavigation:
@@ -295,19 +289,19 @@ PageNavigation.prototype = Object.create(Page.prototype);
 
 PageNavigation.prototype.toc_presentation = function (query) {
     console.log('PageNavigation.toc_presentation');
-    let currentPage = query.getPageName();
-    let currentRoot = query.getRoot();
-    let url = query.url;
+    var currentPage = query.getPageName();
+    var currentRoot = query.getRoot();
+    var url = query.url;
 
     this.forEachElementById('p',
         function (element) {
-            let href = element.getAttribute('href');
-            let query = new HTMLQuery(href);
-            let eltClassName = 'normal-node';
+            var href = element.getAttribute('href');
+            var query = new HTMLQuery(href);
+            var eltClassName = 'normal-node';
 
             if (query.getPageName() === currentPage &&
                 query.getRoot() === currentRoot) {
-                let title = element.innerHTML;
+                var title = element.innerHTML;
                 utils.getElementById('main_title').innerHTML = title;
                 utils.setUrlInBrowser(url);
                 document.title = title;
@@ -315,7 +309,7 @@ PageNavigation.prototype.toc_presentation = function (query) {
             }
             element.className = eltClassName;
         });
-}
+};
 PageNavigation.prototype.main_on_sucess = function (result) {
     console.log('PageNavigation.main_on_sucess');
     var self = this;
@@ -332,18 +326,18 @@ PageNavigation.prototype.main_on_sucess = function (result) {
             }
         });
     self.toc_presentation(self.mainHTMLQuery);
-}
+};
 PageNavigation.prototype.after_on_success = function () {
     console.log('PageNavigation.after_on_success');
     this.toc_presentation(this.mainHTMLQuery);
     this.kafter_on_success();
-}
+};
 PageNavigation.prototype.before_on_success = function (result) {
     if (this.hasTitle && config.TOC_TITLE) {
         result = '<h2>' + config.TOC_TITLE + '</h2>' + result;
     }
     this.kbefore_on_success(result);
-}
+};
 PageNavigation.prototype.on_success = function (result) {
     if (!jprint.isInPrint()) {
         console.log('PageNavigation.on_success && !jprint.isInPrint');
@@ -352,7 +346,7 @@ PageNavigation.prototype.on_success = function (result) {
         console.log('PageNavigation.on_success &&  jprint.isInPrint');
         utils.getElementById(this.getPlace()).style.display = 'none';
     }
-}
+};
 
 /*
  * clickdEventListener:
@@ -365,7 +359,7 @@ var clickdEventListener = function (e) {
     var href = myself.href;
     var query = new HTMLQuery(href);
     var lroot = query.getRoot();
-    var thePage = myself;       // myself.self;
+    var thePage = myself;
 
     // console.log('clickdEventListener: start');
     thePage.query = query;
@@ -383,7 +377,7 @@ var clickdEventListener = function (e) {
     thePage.toc_presentation(query);
     // console.log('clickdEventListener: end');
     return true;
-}
+};
 
 /*
  * PagesCollection:
@@ -397,14 +391,14 @@ PagesCollection.prototype = {
     doload: function () {
         this.pages.map(function (page) {
             if (!page.amILoaded()) {
-                console.log('AjaxGetPage of ' + page.getName())
+                console.log('AjaxGetPage of ' + page.getName());
                 return new AjaxGetPage(page);
             } else {
                 return null;
             }
         }).forEach(function (req) {
             if (req) {
-                console.log('req.send of ' + req.page.getName())
+                console.log('req.send of ' + req.page.getName());
                 req.send();
             }
         });
