@@ -140,6 +140,15 @@ BasePage.prototype = {
 /*
  * Page:
  *      a simple page, used for the article content
+ * 
+ * fields:
+ *      place: cf. BasePage
+ *      pageName: cf. BasePage
+ *      query:
+ *      hasCopyright: boolean, if the field has a copyrigth, we
+ *          had to fill the tags for the copyright and for the authors
+ *      file_name: the name of the source file, computed
+ *          and returned by fileName()
  */
 function Page(place, pageName, query, hasCopyright) {
     BasePage.call(this, place, pageName);
@@ -224,10 +233,15 @@ Page.prototype.on_success = function (result) {
  *      the content of the article
  * 
  * Fields:
+ *      query: cf. Page
+ *      place: cf Page
+ *      hasCopyright: cf Page
+ * 
+ * Note:
  *      
  */
-function PageArticle (query, place, hasCopyright) {
-    Page.call(this, place, 'article', query, hasCopyright);
+function PageArticle (query) {
+    Page.call(this, 'article', 'article', query, false);
     pageModule.article = this;
 }
 PageArticle.prototype = Object.create(Page.prototype);
@@ -374,10 +388,10 @@ var clickdEventListener = function (e) {
         allPages.reloadAll(new PageNavigation(new HTMLQuery('content', lroot), 'toc', query, true),
             new PageFooter(query, new HTMLQuery('footer', lroot)),
             new PageNavigation(new HTMLQuery('navigation', lroot), 'navigation', query),
-            new PageArticle(query, 'article'));
+            new PageArticle(query));
     } else {
         console.log('clickdEventListener: reloadArticle');
-        allPages.reloadArticle(new PageArticle(query, 'article'));
+        allPages.reloadArticle(new PageArticle(query));
     }
     thePage.toc_presentation(query);
     // console.log('clickdEventListener: end');
