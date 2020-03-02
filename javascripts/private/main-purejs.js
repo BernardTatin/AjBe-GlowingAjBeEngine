@@ -40,6 +40,11 @@ var allPages = null;
 /*
  * pageModule:
  *      global to put all sort of things
+ * 
+ * fields:
+ *      article: the current article, used when resizing
+ *      clickdEventListener: global event listener for click
+ *          events on tags <p> with attibute href
  */
 var pageModule = {};
 
@@ -91,11 +96,15 @@ HTMLQuery.prototype = {
  *          +------------+---------------
  *          |            |              |
  *      PageArticle    PageFooter    PageNavigation
+ * 
+ * fields:
+ *      isItLoaded: boolean, true when the page is loaded
+ *      place: the tag id whre to put the content
+ *      pageName: page name, for debug purpose only
  */
-function BasePage(self, place, pageName) {
+function BasePage(place, pageName) {
     this.isItLoaded = false;
     this.place = place;
-    this.self = self;
     this.pageName = pageName;
 }
 BasePage.prototype = {
@@ -125,9 +134,6 @@ BasePage.prototype = {
     },
     getPlace: function() {
         return this.place;
-    },
-    getSelf: function() {
-        return this.self;
     }
 };
 
@@ -135,12 +141,8 @@ BasePage.prototype = {
  * Page:
  *      a simple page, used for the article content
  */
-function Page(self, place, pageName, query, hasCopyright) {
-    if (!self) {
-        BasePage.call(this, this, place, pageName);
-    } else {
-        BasePage.call(this, self, place, pageName);
-    }
+function Page(place, pageName, query, hasCopyright) {
+    BasePage.call(this, place, pageName);
     this.query = query;
     this.hasCopyright = hasCopyright;
     this.file_name = null;
@@ -220,9 +222,12 @@ Page.prototype.on_success = function (result) {
 /*
  * PageArticle:
  *      the content of the article
+ * 
+ * Fields:
+ *      
  */
 function PageArticle (query, place, hasCopyright) {
-    Page.call(this, this, place, 'article', query, hasCopyright);
+    Page.call(this, place, 'article', query, hasCopyright);
     pageModule.article = this;
 }
 PageArticle.prototype = Object.create(Page.prototype);
@@ -249,7 +254,7 @@ PageArticle.prototype.after_on_success = function () {
  *      the page footer...
  */
 function PageFooter (query, mainHTMLQuery) {
-    Page.call(this, this, 'footer', 'footer', query, true);
+    Page.call(this, 'footer', 'footer', query, true);
     this.mainHTMLQuery = mainHTMLQuery;
     this.query = mainHTMLQuery;
     this.hasTitle = false;
@@ -280,7 +285,7 @@ PageFooter.prototype.fileName = function() {
  *      for the menus
  */
 function PageNavigation (query, place, mainHTMLQuery, hasTitle) {
-    Page.call(this, this, place, 'Navigation ' + place, query, false);
+    Page.call(this, place, 'Navigation ' + place, query, false);
     this.mainHTMLQuery = mainHTMLQuery;
     this.query = mainHTMLQuery;
     this.hasTitle = hasTitle;
@@ -312,20 +317,20 @@ PageNavigation.prototype.toc_presentation = function (query) {
 };
 PageNavigation.prototype.main_on_sucess = function (result) {
     console.log('PageNavigation.main_on_sucess');
-    var self = this;
-    var currentRoot = self.query.getRoot();
+    var currentPage = this;
+    var currentRoot = currentPage.query.getRoot();
 
-    self.forEachElementById('p',
+    currentPage.forEachElementById('p',
         function (element) {
             element.href = element.getAttribute('href');
             if (element.href) {
-                element.self = self;
+                element.currentPage = currentPage;
                 element.currentRoot = currentRoot;
                 console.log('addEvent to ' + element.href.toString());
                 purejsLib.addEvent(element, 'click', pageModule.clickdEventListener);
             }
         });
-    self.toc_presentation(self.mainHTMLQuery);
+    currentPage.toc_presentation(currentPage.mainHTMLQuery);
 };
 PageNavigation.prototype.after_on_success = function () {
     console.log('PageNavigation.after_on_success');
