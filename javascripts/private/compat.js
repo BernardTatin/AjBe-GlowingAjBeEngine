@@ -4,7 +4,13 @@
  *
  * Created on %<%DATE%>%, %<%TIME%>%
  */
+/*
+ * JSHint options:
+ */
+ /*      global document: true; */
+ /*      global Element: true; */
 
+"use strict";
 
 // Production steps of ECMA-262, Edition 5, 15.4.4.18
 // Reference: http://es5.github.io/#x15.4.4.18

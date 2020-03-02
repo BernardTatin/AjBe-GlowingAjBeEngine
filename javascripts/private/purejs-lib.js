@@ -5,9 +5,9 @@
  * Created on 5 Juin 2015, 12:28:05
  */
 
-"use strict";
 
 var purejsLib = (function () {
+    "use strict";
     return {
         // add event cross browser
         addEvent: function (elem, event, fn) {

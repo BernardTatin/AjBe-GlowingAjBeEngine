@@ -1,3 +1,9 @@
+/*
+ * JSHint options:
+ */
+ /*      global utils: true; */
+ /*      global navigator: true; */
+ /*      global LazyLoad: true; */
 "use strict";
 
 var marcel_kernel = (function () {
