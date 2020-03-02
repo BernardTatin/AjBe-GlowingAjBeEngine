@@ -174,6 +174,10 @@ Page.prototype.fileName = function () {
                 '/' +
                 p +
                 '.html';
+            console.log('found the file of page ' +
+                this.getName() +
+                ' -> ' +
+                this.file_name);
         }
     } catch (error) {
         this.file_name = null;
@@ -192,7 +196,8 @@ Page.prototype.supressMetaTags = function (str) {
 };
 Page.prototype.kbefore_on_success = function (result) {
     var place = this.getPlace();
-    utils.getElementById(place).innerHTML = this.supressMetaTags(result);
+    // utils.getElementById(place).innerHTML = this.supressMetaTags(result);
+    utils.getElementById(place).innerHTML = result;
 };
 Page.prototype.before_on_success = function (result) {
     this.kbefore_on_success(result);
@@ -215,13 +220,14 @@ Page.prototype.on_failure = function (result) {
     utils.getElementById(place).style.display = 'none';
 };
 Page.prototype.kon_success = function (result) {
-    console.log('    Page.on_success');
     var place = this.getPlace();
+    console.log('    Page.on_success '  + place + '...');
     utils.getElementById(place).style.display = 'block';
     this.before_on_success(result);
     this.main_on_sucess(result);
     this.after_on_success();
     this.set();
+    console.log('    Page.on_success '  + place + ' OK');
 };
 Page.prototype.on_success = function (result) {
     this.kon_success(result);
@@ -242,6 +248,7 @@ Page.prototype.on_success = function (result) {
  */
 function PageArticle (query) {
     Page.call(this, 'article', 'article', query, false);
+    this.mainHTMLQuery = query;
     pageModule.article = this;
 }
 PageArticle.prototype = Object.create(Page.prototype);
@@ -287,6 +294,10 @@ PageFooter.prototype.fileName = function() {
                 '/' +
                 p +
                 '.html';
+            console.log('found the file of page ' +
+                this.getName() +
+                ' -> ' +
+                this.file_name);
         }
     } catch (error) {
         this.file_name = null;
@@ -299,7 +310,7 @@ PageFooter.prototype.fileName = function() {
  *      for the menus
  */
 function PageNavigation (query, place, mainHTMLQuery, hasTitle) {
-    Page.call(this, place, 'Navigation ' + place, query, false);
+    Page.call(this, place, place, query, false);
     this.mainHTMLQuery = mainHTMLQuery;
     this.query = mainHTMLQuery;
     this.hasTitle = hasTitle;
@@ -366,6 +377,9 @@ PageNavigation.prototype.on_success = function (result) {
         utils.getElementById(this.getPlace()).style.display = 'none';
     }
 };
+PageNavigation.prototype.getPageName = function () {
+    return this.place;
+}
 
 /*
  * clickdEventListener:
@@ -378,23 +392,24 @@ var clickdEventListener = function (e) {
     var href = myself.href;
     var query = new HTMLQuery(href);
     var lroot = query.getRoot();
-    var thePage = myself;
+    var thePage = this;     // e.currentTarget;  // myself;
 
+    console.log('clickdEventListener ' + thePage.fileName());
     // console.log('clickdEventListener: start');
-    thePage.query = query;
-    thePage.mainHTMLQuery = query;
+    // thePage.query = query;
+    // thePage.mainHTMLQuery = query;
     if (lroot !== myself.currentRoot) {
         console.log('clickdEventListener: reloadAll');
         allPages.reloadAll(new PageNavigation(new HTMLQuery('content', lroot), 'toc', query, true),
-            new PageFooter(query, new HTMLQuery('footer', lroot)),
             new PageNavigation(new HTMLQuery('navigation', lroot), 'navigation', query),
+            new PageFooter(query, new HTMLQuery('footer', lroot)),
             new PageArticle(query));
     } else {
         console.log('clickdEventListener: reloadArticle');
         allPages.reloadArticle(new PageArticle(query));
     }
     thePage.toc_presentation(query);
-    // console.log('clickdEventListener: end');
+    console.log('clickdEventListener: end');
     return true;
 };
 
