@@ -163,7 +163,6 @@ Page.prototype.getPageName = function () {
     return this.query.getPageName();
 };
 Page.prototype.fileName = function () {
-    console.log('try to find the file of page ' + this.getName());
     try {
         if (!this.file_name) {
             var p = this.getPageName();
@@ -174,10 +173,6 @@ Page.prototype.fileName = function () {
                 '/' +
                 p +
                 '.html';
-            console.log('found the file of page ' +
-                this.getName() +
-                ' -> ' +
-                this.file_name);
         }
     } catch (error) {
         this.file_name = null;
@@ -203,7 +198,6 @@ Page.prototype.before_on_success = function (result) {
     this.kbefore_on_success(result);
 };
 Page.prototype.main_on_sucess = function (result) {
-    console.log('    Page.main_on_success');
 };
 Page.prototype.kafter_on_success = function () {
     if (this.hasCopyright) {
@@ -221,13 +215,11 @@ Page.prototype.on_failure = function (result) {
 };
 Page.prototype.kon_success = function (result) {
     var place = this.getPlace();
-    console.log('    Page.on_success '  + place + '...');
     utils.getElementById(place).style.display = 'block';
     this.before_on_success(result);
     this.main_on_sucess(result);
     this.after_on_success();
     this.set();
-    console.log('    Page.on_success '  + place + ' OK');
 };
 Page.prototype.on_success = function (result) {
     this.kon_success(result);
@@ -283,7 +275,6 @@ function PageFooter (query, mainHTMLQuery) {
 PageFooter.prototype = Object.create(Page.prototype);
 
 PageFooter.prototype.fileName = function() {
-    console.log('try to find the file of page ' + this.getName());
     try {
         if (!this.file_name) {
             var p = 'footer';
@@ -294,10 +285,6 @@ PageFooter.prototype.fileName = function() {
                 '/' +
                 p +
                 '.html';
-            console.log('found the file of page ' +
-                this.getName() +
-                ' -> ' +
-                this.file_name);
         }
     } catch (error) {
         this.file_name = null;
@@ -318,7 +305,6 @@ function PageNavigation (query, place, mainHTMLQuery, hasTitle) {
 PageNavigation.prototype = Object.create(Page.prototype);
 
 PageNavigation.prototype.toc_presentation = function (query) {
-    console.log('PageNavigation.toc_presentation');
     var currentPage = query.getPageName();
     var currentRoot = query.getRoot();
     var url = query.url;
@@ -341,7 +327,6 @@ PageNavigation.prototype.toc_presentation = function (query) {
         });
 };
 PageNavigation.prototype.main_on_sucess = function (result) {
-    console.log('PageNavigation.main_on_sucess');
     var currentPage = this;
     var currentRoot = currentPage.query.getRoot();
 
@@ -351,14 +336,12 @@ PageNavigation.prototype.main_on_sucess = function (result) {
             if (element.href) {
                 element.currentPage = currentPage;
                 element.currentRoot = currentRoot;
-                console.log('addEvent to ' + element.href.toString());
                 purejsLib.addEvent(element, 'click', pageModule.clickdEventListener);
             }
         });
     currentPage.toc_presentation(currentPage.mainHTMLQuery);
 };
 PageNavigation.prototype.after_on_success = function () {
-    console.log('PageNavigation.after_on_success');
     this.toc_presentation(this.mainHTMLQuery);
     this.kafter_on_success();
 };
@@ -370,10 +353,8 @@ PageNavigation.prototype.before_on_success = function (result) {
 };
 PageNavigation.prototype.on_success = function (result) {
     if (!jprint.isInPrint()) {
-        console.log('PageNavigation.on_success && !jprint.isInPrint');
         this.kon_success(result);
     } else {
-        console.log('PageNavigation.on_success &&  jprint.isInPrint');
         utils.getElementById(this.getPlace()).style.display = 'none';
     }
 };
@@ -394,24 +375,16 @@ var clickdEventListener = function (e) {
     var query = new HTMLQuery(href);
     var lroot = query.getRoot();
 
-    console.log('clickdEventListener ', e);
     var thePage = e.explicitOriginalTarget.currentPage;
-    console.log('clickdEventListener ' + thePage.fileName());
-    // console.log('clickdEventListener: start');
-    // thePage.query = query;
-    // thePage.mainHTMLQuery = query;
     if (lroot !== myself.currentRoot) {
-        console.log('clickdEventListener: reloadAll');
         allPages.reloadAll(new PageNavigation(new HTMLQuery('content', lroot), 'content', query, true),
             new PageNavigation(new HTMLQuery('navigation', lroot), 'navigation', query),
             new PageFooter(query, new HTMLQuery('footer', lroot)),
             new PageArticle(query));
     } else {
-        console.log('clickdEventListener: reloadArticle');
         allPages.reloadArticle(new PageArticle(query));
     }
     thePage.toc_presentation(query);
-    console.log('clickdEventListener: end');
     return true;
 };
 
@@ -427,14 +400,12 @@ PagesCollection.prototype = {
     doload: function () {
         this.pages.map(function (page) {
             if (!page.amILoaded()) {
-                console.log('AjaxGetPage of ' + page.getName());
                 return new AjaxGetPage(page);
             } else {
                 return null;
             }
         }).forEach(function (req) {
             if (req) {
-                console.log('req.send of ' + req.page.getName());
                 req.send();
             }
         });
@@ -467,14 +438,9 @@ function resizeEvtListener(e) {
     var myself = e.target || e.srcElement;
 
     var article = pageModule.article;
-    console.log('Resize...');
     if (article) {
-        console.log('Resize: article modification');
         article.resizeSVG();
-    } else {
-        console.log('Resize: article is null');
     }
-    console.log('Resize OK');
 }
 
 /*
@@ -482,13 +448,10 @@ function resizeEvtListener(e) {
  *      running the application
  */
 function start() {
-    console.log('start...');
     pageModule.article = null;
     pageModule.clickdEventListener = clickdEventListener;
     purejsLib.addEvent(window, 'resize', resizeEvtListener);
-    console.log('start: create and load Session');
     session.load();
-    console.log('start: OK');
 }
 
 docReady(start);
