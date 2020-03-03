@@ -4,6 +4,12 @@
  *
  * Created on %<%DATE%>%, %<%TIME%>%
  */
+/*
+ * JSHint options:
+ */
+ /*      global utils: true; */
+ /*      global window: true; */
+"use strict";
 
 var jprint = (function () {
     var inPrint = false;

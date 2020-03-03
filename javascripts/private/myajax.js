@@ -3,6 +3,12 @@
  *
  * classes for ajax request, using classic Javascript, before version 6
  */
+/*
+ * JSHint options:
+ */
+ /*      globals utils: false; */
+ /*      globals XMLHttpRequest: true; */
+
 "use strict";
 
 var AjaxStates = (function () {
@@ -63,3 +69,23 @@ function AjaxGet(url) {
     Ajax.call(this, url, 'GET');
 }
 AjaxGet.prototype = Object.create(Ajax.prototype);
+
+/*
+ * AjaxGetPage:
+ *      prototype of an Ajax query used to load pages
+ */
+function AjaxGetPage(page) {
+    AjaxGet.call(this, page.fileName());
+    this.page = page;
+}
+
+AjaxGetPage.prototype = Object.create(AjaxGet.prototype);
+
+AjaxGetPage.prototype.on_receive = function(data) {
+    // console.log('AjaxGetPage.prototype.on_receive ' + this.page.getName());
+    this.page.on_success(data);
+};
+AjaxGetPage.prototype.on_failure = function (data) {
+    // console.log('AjaxGetPage.prototype.on_failure ' + this.page.getName());
+    this.page.on_failure(data);
+};

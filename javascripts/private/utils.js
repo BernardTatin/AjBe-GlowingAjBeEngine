@@ -1,6 +1,6 @@
-"use strict";
 
 var utils = (function () {
+    "use strict";
     var env = null;
     var vername = null;
     /**
@@ -18,11 +18,11 @@ var utils = (function () {
             env = {
             };
 
-            (env.webkit = /AppleWebKit\//.test(ua))
-                || (env.ie = /MSIE|Trident/.test(ua))
-                || (env.opera = /Opera/.test(ua))
-                || (env.gecko = /Gecko\//.test(ua))
-                || (env.unknown = true);
+            (env.webkit = /AppleWebKit\//.test(ua)) ||
+                (env.ie = /MSIE|Trident/.test(ua)) ||
+                (env.opera = /Opera/.test(ua)) ||
+                (env.gecko = /Gecko\//.test(ua)) ||
+                (env.unknown = true);
             if (env.webkit) {
                 env.name = 'Webkit';
             } else if (env.ie) {
