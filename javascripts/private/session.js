@@ -22,9 +22,9 @@ var session = (function() {
             var query = new HTMLQuery();
             var broot = query.getRoot();
             allPages = new PagesCollection(
-                new PageNavigation(new HTMLQuery('content', broot), 'content', query, true),
-                new PageNavigation(new HTMLQuery('navigation', broot), 'navigation', query),
-                new PageFooter(query, new HTMLQuery('footer', broot)),
+                new PageNavigation(new HTMLQuery(PAGES_ID.CONTENT, broot), PAGES_ID.CONTENT, query, true),
+                new PageNavigation(new HTMLQuery(PAGES_ID.NAVIGATION, broot), PAGES_ID.NAVIGATION, query),
+                new PageFooter(query, new HTMLQuery(PAGES_ID.FOOTER, broot)),
                 new PageArticle(query));
 
             utils.getElementById('site-name').innerHTML = config.SITE_NAME;

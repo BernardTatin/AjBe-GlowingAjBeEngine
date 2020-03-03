@@ -16,6 +16,10 @@
  /*      global session: true; */
  /*      global docReady: true; */
 
+ /*     global FOOTER_ZONES: false; */
+ /*     global PAGES_ID: false; */
+ /*     global PAGESCTS: false; */
+
 "use strict";
 
 /*
@@ -167,10 +171,10 @@ Page.prototype.fileName = function () {
     return this.file_name;
 };
 Page.prototype.copyright = function () {
-    this.setHTMLByClassName('copyright', config.COPYRIGHT);
+    this.setHTMLByClassName(FOOTER_ZONES.COPYRIGHT, config.COPYRIGHT);
 };
 Page.prototype.authors = function () {
-    this.setHTMLByClassName('authors', config.AUTHORS);
+    this.setHTMLByClassName(FOOTER_ZONES.AUTHORS, config.AUTHORS);
 };
 Page.prototype.supressMetaTags = function (str) {
     var metaPattern = /<meta.+\/?>/g;
@@ -226,7 +230,7 @@ Page.prototype.on_success = function (result) {
  *      
  */
 function PageArticle (query) {
-    Page.call(this, 'article', 'article', query, false);
+    Page.call(this, PAGES_ID.ARTICLE, PAGES_ID.ARTICLE, query, false);
     this.mainHTMLQuery = query;
     pageModule.article = this;
 }
@@ -254,7 +258,7 @@ PageArticle.prototype.after_on_success = function () {
  *      the page footer...
  */
 function PageFooter (query, mainHTMLQuery) {
-    Page.call(this, 'footer', 'footer', query, true);
+    Page.call(this, PAGES_ID.FOOTER, PAGES_ID.FOOTER, query, true);
     this.mainHTMLQuery = mainHTMLQuery;
     this.query = mainHTMLQuery;
     this.hasTitle = false;
@@ -264,7 +268,7 @@ PageFooter.prototype = Object.create(Page.prototype);
 PageFooter.prototype.fileName = function() {
     try {
         if (!this.file_name) {
-            var p = 'footer';
+            var p = PAGES_ID.FOOTER;
             var r = this.mainHTMLQuery.getRoot();
             this.file_name = config.SITE_BASE +
                 '/' +
@@ -364,9 +368,9 @@ var clickdEventListener = function (e) {
 
     var thePage = e.explicitOriginalTarget.currentPage;
     if (lroot !== myself.currentRoot) {
-        allPages.reloadAll(new PageNavigation(new HTMLQuery('content', lroot), 'content', query, true),
-            new PageNavigation(new HTMLQuery('navigation', lroot), 'navigation', query),
-            new PageFooter(query, new HTMLQuery('footer', lroot)),
+        allPages.reloadAll(new PageNavigation(new HTMLQuery(PAGES_ID.CONTENT, lroot), PAGES_ID.CONTENT, query, true),
+            new PageNavigation(new HTMLQuery(PAGES_ID.NAVIGATION, lroot), PAGES_ID.NAVIGATION, query),
+            new PageFooter(query, new HTMLQuery(PAGES_ID.FOOTER, lroot)),
             new PageArticle(query));
     } else {
         allPages.reloadArticle(new PageArticle(query));
