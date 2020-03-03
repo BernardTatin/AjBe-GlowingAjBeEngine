@@ -387,20 +387,22 @@ PageNavigation.prototype.getPageName = function () {
  */
 var clickdEventListener = function (e) {
     // cf http://www.sitepoint.com/javascript-this-event-handlers/
+    e.stopImmediatePropagation();
     e = e || window.event;
     var myself = e.target || e.srcElement;
     var href = myself.href;
     var query = new HTMLQuery(href);
     var lroot = query.getRoot();
-    var thePage = this;     // e.currentTarget;  // myself;
 
+    console.log('clickdEventListener ', e);
+    var thePage = e.explicitOriginalTarget.currentPage;
     console.log('clickdEventListener ' + thePage.fileName());
     // console.log('clickdEventListener: start');
     // thePage.query = query;
     // thePage.mainHTMLQuery = query;
     if (lroot !== myself.currentRoot) {
         console.log('clickdEventListener: reloadAll');
-        allPages.reloadAll(new PageNavigation(new HTMLQuery('content', lroot), 'toc', query, true),
+        allPages.reloadAll(new PageNavigation(new HTMLQuery('content', lroot), 'content', query, true),
             new PageNavigation(new HTMLQuery('navigation', lroot), 'navigation', query),
             new PageFooter(query, new HTMLQuery('footer', lroot)),
             new PageArticle(query));

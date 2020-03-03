@@ -22,7 +22,7 @@ var session = (function() {
             var query = new HTMLQuery();
             var broot = query.getRoot();
             allPages = new PagesCollection(
-                new PageNavigation(new HTMLQuery('content', broot), 'toc', query, true),
+                new PageNavigation(new HTMLQuery('content', broot), 'content', query, true),
                 new PageNavigation(new HTMLQuery('navigation', broot), 'navigation', query),
                 new PageFooter(query, new HTMLQuery('footer', broot)),
                 new PageArticle(query));

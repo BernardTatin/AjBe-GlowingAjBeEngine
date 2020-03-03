@@ -500,7 +500,7 @@ a:hover {
   color: #f60;
 }
 @media not print {
-  #toc {
+  #content {
     -webkit-break-inside: avoid;
     -moz-break-inside: avoid;
     break-inside: avoid;
@@ -511,27 +511,27 @@ a:hover {
     letter-spacing: -1px;
     border: 1px solid rgba(0, 0, 0, 0.7);
   }
-  #toc h2 {
+  #content h2 {
     margin: 20px 0 10px;
     font-size: 1.45em;
     color: #f60;
   }
-  #toc ul {
+  #content ul {
     display: block;
     padding-left: 2em;
     list-style-type: square;
   }
-  #toc ul li a,
-  #toc ul li p {
+  #content ul li a,
+  #content ul li p {
     color: #417090;
   }
-  #toc ul li a:hover,
-  #toc ul li p:hover {
+  #content ul li a:hover,
+  #content ul li p:hover {
     color: #417090;
     text-decoration: underline;
     cursor: pointer;
   }
-  #toc ul ul {
+  #content ul ul {
     display: block;
     list-style-type: disc;
   }
@@ -557,7 +557,7 @@ a:hover {
     cursor: pointer;
   }
 }
-#toc .hidden,
+#content .hidden,
 #navigation .hidden {
   display: none;
 }
