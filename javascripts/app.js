@@ -15,7 +15,7 @@ var marcel_kernel = (function () {
     // can be modified by program in a future release
     appVariables = {
         // code entry point
-        main_code: 'private/main-purejs.js',
+        main_code: ['private/constants.js', 'private/main-purejs.js'],
         // first libs to load
         beforelibs: ['private/utils.js'],
         // all libs
@@ -42,7 +42,7 @@ var marcel_kernel = (function () {
             // two step loader
             LazyLoad.js(appVariables.beforelibs.map(normalize_libname), function () {
                 LazyLoad.js(appVariables.libs.map(normalize_libname), function () {
-                    LazyLoad.js(normalize_libname(appVariables.main_code), function () {
+                    LazyLoad.js(appVariables.main_code.map(normalize_libname), function () {
                     });
                 });
             });
