@@ -365,17 +365,26 @@ var clickdEventListener = function (e) {
     var href = myself.href;
     var query = new HTMLQuery(href);
     var lroot = query.getRoot();
+    var pageFile = e.currentTarget.currentPage.file_name;
+    var thePage = null;
 
-    var thePage = e.explicitOriginalTarget.currentPage;
-    if (lroot !== myself.currentRoot) {
-        allPages.reloadAll(new PageNavigation(new HTMLQuery(PAGES_ID.CONTENT, lroot), PAGES_ID.CONTENT, query, true),
-            new PageNavigation(new HTMLQuery(PAGES_ID.NAVIGATION, lroot), PAGES_ID.NAVIGATION, query),
-            new PageFooter(query, new HTMLQuery(PAGES_ID.FOOTER, lroot)),
-            new PageArticle(query));
-    } else {
-        allPages.reloadArticle(new PageArticle(query));
+    // bad code !!!
+    if (pageFile.endsWith('content.html')) {
+        thePage = allPages.pages[PAGESCTS.CONTENT];
+    } else if (pageFile.endsWith('navigation.html')) {
+        thePage = allPages.pages[PAGESCTS.NAVIGATION];
     }
-    thePage.toc_presentation(query);
+    if (thePage) {
+        if (lroot !== myself.currentRoot) {
+            allPages.reloadAll(new PageNavigation(new HTMLQuery(PAGES_ID.CONTENT, lroot), PAGES_ID.CONTENT, query, true),
+                new PageNavigation(new HTMLQuery(PAGES_ID.NAVIGATION, lroot), PAGES_ID.NAVIGATION, query),
+                new PageFooter(query, new HTMLQuery(PAGES_ID.FOOTER, lroot)),
+                new PageArticle(query));
+        } else {
+            allPages.reloadArticle(new PageArticle(query));
+            thePage.toc_presentation(query);
+        }
+    }
     return true;
 };
 
