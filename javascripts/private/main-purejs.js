@@ -426,17 +426,6 @@ PagesCollection.prototype = {
  *      when resize occurs, we resize SVG elements
  */
 function resizeEvtListener(e) {
-    // cf http://www.sitepoint.com/javascript-this-event-handlers/
-    /*
-        function EventHandler(e) {
-            e = e || window.event;
-            var target = e.target || e.srcElement;
-            console.log(target);
-        }
-    */
-    e = e || window.event;
-    var myself = e.target || e.srcElement;
-
     var article = pageModule.article;
     if (article) {
         article.resizeSVG();
